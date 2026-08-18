@@ -6,7 +6,8 @@
 }
 
 .featureSvg {
-  height: 200px;
-  width: 200px;
-  object-fit: contain; /* [ADICIONADO] evita distorcer a imagem */
+  height: 300px;
+  width: 400px;
+  border-radius: 10%;
+  /* object-fit: contain; /* [ADICIONADO] evita distorcer a imagem */
 }
