@@ -107,50 +107,38 @@ const config: Config = {
         },
       ],
     },
+    // [ALTERADO] footer limpo: removidos links de template (Stack Overflow, Discord, X, Docusaurus)
     footer: {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Cursos',
           items: [
             {
-              label: 'Tutorial',
+              label: 'Construa um robô autônomo',
               to: '/robo/parte-0-boas-vindas',
             },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
+              label: 'IA num Chip (ESP32-S3)',
+              to: '/ia-chip/parte-2-o-que-e-llm',
             },
           ],
         },
         {
-          title: 'More',
+          title: 'Projeto',
           items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
             {
               label: 'GitHub',
               href: 'https://github.com/luanabuscariolo',
             },
+            {
+              label: 'Blog',
+              to: '/blog',
+            },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Luana Buscariolo. Feito com Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
