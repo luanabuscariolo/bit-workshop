@@ -1,30 +1,85 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * Tema RoverMind — paleta Neon Teal + fonte Orbitron + toques cyberpunk.
+ * Pensado para modo claro E escuro.
  */
 
-/* You can override the default Infima variables here. */
+/* ═══════════════ PALETA — MODO CLARO ═══════════════ */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  /* [ALTERADO] Neon Teal (versão mais escura, p/ contraste em fundo claro) */
+  --ifm-color-primary: #0a9396;
+  --ifm-color-primary-dark: #098d90;
+  --ifm-color-primary-darker: #077f81;
+  --ifm-color-primary-darkest: #075e60;
+  --ifm-color-primary-light: #0ba0a3;
+  --ifm-color-primary-lighter: #10b0b3;
+  --ifm-color-primary-lightest: #1ac6c9;
+
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  /* [ADICIONADO] fonte tech dos títulos */
+  --rovermind-font-titulo: 'Orbitron', sans-serif;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* ═══════════════ PALETA — MODO ESCURO ═══════════════ */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  /* [ALTERADO] Neon Teal (versão brilhante, p/ contraste em fundo escuro) */
+  --ifm-color-primary: #2ee6d6;
+  --ifm-color-primary-dark: #26dccb;
+  --ifm-color-primary-darker: #1fd0c1;
+  --ifm-color-primary-darkest: #17bfb1;
+  --ifm-color-primary-light: #45e9db;
+  --ifm-color-primary-lighter: #5cece0;
+  --ifm-color-primary-lightest: #83f1e8;
+
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* ═══════════════ FONTE TECH NOS TÍTULOS ═══════════════ */
+/* [ADICIONADO] Orbitron nos títulos maiores e na navbar.
+   Deixei h3+ na fonte padrão para não atrapalhar a leitura de títulos longos. */
+h1,
+h2,
+.hero__title,
+.navbar__title {
+  font-family: var(--rovermind-font-titulo);
+  letter-spacing: 0.03em;
+}
+
+/* ═══════════════ HERO CYBERPUNK ═══════════════ */
+/* [ADICIONADO] fundo escuro constante nos dois modos — é onde o neon brilha */
+.hero--primary {
+  --ifm-hero-text-color: #eafffb;
+  background-color: #0a0e1a;
+  background-image:
+    radial-gradient(circle at 20% 25%, rgba(46, 230, 214, 0.16), transparent 42%),
+    radial-gradient(circle at 82% 75%, rgba(10, 147, 150, 0.20), transparent 46%);
+}
+
+.hero__title {
+  text-transform: uppercase;
+  color: #eafffb;
+  /* brilho neon */
+  text-shadow:
+    0 0 8px rgba(46, 230, 214, 0.75),
+    0 0 22px rgba(46, 230, 214, 0.45);
+}
+
+.hero__subtitle {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ═══════════════ GLOW NOS BOTÕES ═══════════════ */
+/* [ADICIONADO] brilho ao passar o mouse */
+.button--primary,
+.button--secondary {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.button--primary:hover,
+.button--secondary:hover {
+  box-shadow:
+    0 0 4px rgba(46, 230, 214, 0.8),
+    0 0 14px rgba(46, 230, 214, 0.55);
+  transform: translateY(-1px);
 }

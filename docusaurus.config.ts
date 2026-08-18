@@ -31,7 +31,10 @@ const config: Config = {
     defaultLocale: 'en',
     locales: ['en'],
   },
-
+  // [ADICIONADO] carrega a fonte Orbitron (Google Fonts) para os títulos
+  stylesheets: [
+    'https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap',
+  ],
   plugins: [
     [
       '@docusaurus/plugin-content-docs',
