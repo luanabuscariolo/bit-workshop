@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'CircuitLab',
-  tagline: 'Da eletrônica à inteligência artificial',
+  title: 'AxonLabs Academy',
+  tagline: 'Conectando a lógica, a eletricidade e a inteligência para dar vida à tecnologia',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -74,7 +74,7 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'CircuitLab',
+      title: 'AxonLabs Academy',
       logo: {
         alt: 'My Site Logo',
         src: 'img/logo.svg',
@@ -100,6 +100,7 @@ const config: Config = {
           ],
         },
         {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/sobre', label: 'Sobre', position: 'left'}, // [ADICIONADO]
         {
           href: 'https://github.com/luanabuscariolo',
           label: 'GitHub',
@@ -130,6 +131,10 @@ const config: Config = {
             {
               label: 'GitHub',
               href: 'https://github.com/luanabuscariolo',
+            },
+            {
+              label: 'LinkedIn',                                        // [ADICIONADO]
+              href: 'https://www.linkedin.com/in/luana-buscariolo',
             },
             {
               label: 'Blog',

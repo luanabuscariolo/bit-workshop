@@ -1,0 +1,122 @@
+/* [ADICIONADO] Estilos da página Sobre/Portfólio */
+
+/* ── HERO ── */
+.hero {
+  background: var(--ifm-color-primary);
+  padding: 3rem 1rem;
+}
+
+.heroInner {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.foto {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.8);
+  flex-shrink: 0;
+}
+
+.heroNome {
+  color: #fff !important;
+  margin-bottom: 0.4rem !important;
+}
+
+.heroTitulo {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.05rem;
+  margin-bottom: 0.25rem;
+}
+
+.heroLocal {
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 1rem;
+}
+
+.contatos {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ── CONTEÚDO ── */
+.main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.secao {
+  margin-bottom: 3rem;
+}
+
+/* ── CARD PROJETO ── */
+.projetoCard {
+  border: 2px solid var(--ifm-color-primary);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+/* ── EXPERIÊNCIA / FORMAÇÃO ── */
+.item {
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 0.2rem;
+}
+
+.periodo {
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.875rem;
+}
+
+.cargo {
+  color: var(--ifm-color-emphasis-700);
+  margin: 0.1rem 0 0.4rem;
+}
+
+/* ── HABILIDADES ── */
+.habilidades {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.subTitulo {
+  font-size: 1rem !important;
+  margin-bottom: 0.6rem !important;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tag {
+  background: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darkest);
+  padding: 0.2rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.82rem;
+}

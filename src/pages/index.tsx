@@ -21,7 +21,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/robo/parte-0-boas-vindas">
-           Construir meu robô
+           Começar minha jornada
           </Link>
         </div>
       </div>
