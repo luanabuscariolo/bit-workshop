@@ -1,0 +1,48 @@
+<svg width="620" height="380" viewBox="0 0 620 380" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="620" height="380" fill="#ffffff"/>
+  <text x="310" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#333">Os componentes do robô e o que cada um faz</text>
+
+  <!-- ESP32 -->
+  <rect x="230" y="150" width="160" height="80" rx="10" fill="#e6f0fa" stroke="#3B8BD4" stroke-width="1.8"/>
+  <text x="310" y="182" text-anchor="middle" font-size="14" font-weight="700" fill="#3B8BD4">ESP32</text>
+  <text x="310" y="202" text-anchor="middle" font-size="11" fill="#333">o cérebro: processa</text>
+  <text x="310" y="216" text-anchor="middle" font-size="11" fill="#333">sensores e comanda</text>
+
+  <!-- HC-SR04 -->
+  <rect x="30" y="40" width="150" height="60" rx="10" fill="#e8f4f0" stroke="#0F6E56" stroke-width="1.5"/>
+  <text x="105" y="62" text-anchor="middle" font-size="13" font-weight="700" fill="#0F6E56">HC-SR04</text>
+  <text x="105" y="80" text-anchor="middle" font-size="11" fill="#333">sensor de distância</text>
+  <line x1="155" y1="100" x2="242" y2="165" stroke="#0F6E56" stroke-width="1.3" stroke-dasharray="4 3"/>
+
+  <!-- SG90 -->
+  <rect x="30" y="140" width="150" height="60" rx="10" fill="#f4f2fc" stroke="#534AB7" stroke-width="1.5"/>
+  <text x="105" y="162" text-anchor="middle" font-size="13" font-weight="700" fill="#534AB7">SG90 (servo)</text>
+  <text x="105" y="180" text-anchor="middle" font-size="11" fill="#333">gira o sensor</text>
+  <line x1="180" y1="170" x2="228" y2="190" stroke="#534AB7" stroke-width="1.3" stroke-dasharray="4 3"/>
+
+  <!-- L298N -->
+  <rect x="30" y="250" width="150" height="60" rx="10" fill="#fdeee0" stroke="#BA7517" stroke-width="1.5"/>
+  <text x="105" y="272" text-anchor="middle" font-size="13" font-weight="700" fill="#BA7517">L298N</text>
+  <text x="105" y="292" text-anchor="middle" font-size="11" fill="#333">ponte H: controla</text>
+  <line x1="180" y1="278" x2="228" y2="220" stroke="#BA7517" stroke-width="1.3" stroke-dasharray="4 3"/>
+
+  <!-- Motores -->
+  <rect x="440" y="250" width="150" height="60" rx="10" fill="#fdeee0" stroke="#BA7517" stroke-width="1.5"/>
+  <text x="515" y="272" text-anchor="middle" font-size="13" font-weight="700" fill="#BA7517">Motores TT</text>
+  <text x="515" y="292" text-anchor="middle" font-size="11" fill="#333">movem as rodas</text>
+  <line x1="440" y1="278" x2="392" y2="220" stroke="#BA7517" stroke-width="1.3" stroke-dasharray="4 3"/>
+
+  <!-- Pilhas -->
+  <rect x="440" y="140" width="150" height="60" rx="10" fill="#fbe6e2" stroke="#B23A2E" stroke-width="1.5"/>
+  <text x="515" y="162" text-anchor="middle" font-size="13" font-weight="700" fill="#B23A2E">4× pilhas AA</text>
+  <text x="515" y="182" text-anchor="middle" font-size="11" fill="#333">energia (~6V)</text>
+  <line x1="440" y1="170" x2="392" y2="190" stroke="#B23A2E" stroke-width="1.3" stroke-dasharray="4 3"/>
+
+  <!-- Protoboard -->
+  <rect x="440" y="40" width="150" height="60" rx="10" fill="#f5f5f4" stroke="#888" stroke-width="1.3"/>
+  <text x="515" y="62" text-anchor="middle" font-size="13" font-weight="700" fill="#555">Protoboard</text>
+  <text x="515" y="80" text-anchor="middle" font-size="11" fill="#555">distribui VCC e GND</text>
+  <line x1="440" y1="70" x2="392" y2="165" stroke="#888" stroke-width="1" stroke-dasharray="4 3"/>
+
+  <text x="310" y="358" text-anchor="middle" font-size="12" fill="#777">Todos os fios pretos (GND) precisam estar unidos — é a regra de ouro elétrica.</text>
+</svg>

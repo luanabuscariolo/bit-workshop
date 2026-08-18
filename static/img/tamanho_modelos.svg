@@ -1,0 +1,27 @@
+<svg width="620" height="320" viewBox="0 0 620 320" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="620" height="320" fill="#ffffff"/>
+  <text x="310" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#333">Tamanho dos modelos (número de "neurônios ajustáveis")</text>
+
+  <!-- nano-grump -->
+  <text x="150" y="76" text-anchor="end" font-size="12" fill="#333">nosso robô</text>
+  <rect x="160" y="64" width="6" height="20" rx="2" fill="#0F6E56"/>
+  <text x="176" y="79" font-size="11" fill="#0F6E56">~211 mil parâmetros (cabe no ESP32)</text>
+
+  <!-- TinyStories -->
+  <text x="150" y="126" text-anchor="end" font-size="12" fill="#333">TinyStories</text>
+  <rect x="160" y="114" width="40" height="20" rx="2" fill="#3B8BD4"/>
+  <text x="210" y="129" font-size="11" fill="#3B8BD4">~29 milhões</text>
+
+  <!-- GPT-2 -->
+  <text x="150" y="176" text-anchor="end" font-size="12" fill="#333">GPT-2 (menor)</text>
+  <rect x="160" y="164" width="120" height="20" rx="2" fill="#534AB7"/>
+  <text x="290" y="179" font-size="11" fill="#534AB7">124 milhões</text>
+
+  <!-- GPT grande -->
+  <text x="150" y="226" text-anchor="end" font-size="12" fill="#333">LLM de nuvem</text>
+  <rect x="160" y="214" width="420" height="20" rx="2" fill="#B23A2E"/>
+  <text x="350" y="229" font-size="11" fill="#fff" font-weight="700">centenas de bilhões</text>
+
+  <text x="310" y="278" text-anchor="middle" font-size="12" fill="#555">Quanto maior, mais capaz — e mais pesado. Modelos de nuvem precisam de data centers.</text>
+  <text x="310" y="300" text-anchor="middle" font-size="12" fill="#0F6E56">O nosso é minúsculo de propósito: precisa caber e rodar num chip de poucos dólares.</text>
+</svg>

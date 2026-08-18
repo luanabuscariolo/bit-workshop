@@ -1,0 +1,32 @@
+<svg width="620" height="330" viewBox="0 0 620 330" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="620" height="330" fill="#ffffff"/>
+  <text x="310" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#333">O erro mede a surpresa com a resposta certa (aqui, 'a')</text>
+
+  <text x="165" y="54" text-anchor="middle" font-size="13" font-weight="700" fill="#333">modelo bom</text>
+  <line x1="60" y1="230" x2="280" y2="230" stroke="#999" stroke-width="1"/>
+  <rect x="80" y="100" width="45" height="130" fill="#fbe6e2" stroke="#B23A2E" stroke-width="1.2"/>
+  <text x="102" y="248" text-anchor="middle" font-size="11" fill="#333">a=0,7</text>
+  <text x="102" y="92" text-anchor="middle" font-size="10" fill="#B23A2E">certa</text>
+  <rect x="150" y="190" width="45" height="40" fill="#eee" stroke="#999" stroke-width="1"/>
+  <text x="172" y="248" text-anchor="middle" font-size="11" fill="#333">b=0,2</text>
+  <rect x="220" y="210" width="45" height="20" fill="#eee" stroke="#999" stroke-width="1"/>
+  <text x="242" y="248" text-anchor="middle" font-size="11" fill="#333">c=0,1</text>
+  <rect x="60" y="262" width="220" height="40" rx="8" fill="#e8f4f0" stroke="#0F6E56" stroke-width="1.3"/>
+  <text x="170" y="280" text-anchor="middle" font-size="12" fill="#333">erro = -log(0,7) ≈ 0,36</text>
+  <text x="170" y="296" text-anchor="middle" font-size="12" font-weight="700" fill="#0F6E56">BAIXO</text>
+
+  <line x1="310" y1="45" x2="310" y2="305" stroke="#ddd" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <text x="455" y="54" text-anchor="middle" font-size="13" font-weight="700" fill="#333">modelo ruim</text>
+  <line x1="350" y1="230" x2="570" y2="230" stroke="#999" stroke-width="1"/>
+  <rect x="370" y="210" width="45" height="20" fill="#fbe6e2" stroke="#B23A2E" stroke-width="1.2"/>
+  <text x="392" y="248" text-anchor="middle" font-size="11" fill="#333">a=0,1</text>
+  <text x="392" y="202" text-anchor="middle" font-size="10" fill="#B23A2E">certa</text>
+  <rect x="440" y="110" width="45" height="120" fill="#eee" stroke="#999" stroke-width="1"/>
+  <text x="462" y="248" text-anchor="middle" font-size="11" fill="#333">b=0,6</text>
+  <rect x="510" y="170" width="45" height="60" fill="#eee" stroke="#999" stroke-width="1"/>
+  <text x="532" y="248" text-anchor="middle" font-size="11" fill="#333">c=0,3</text>
+  <rect x="350" y="262" width="220" height="40" rx="8" fill="#fdeee0" stroke="#BA7517" stroke-width="1.3"/>
+  <text x="460" y="280" text-anchor="middle" font-size="12" fill="#333">erro = -log(0,1) ≈ 2,30</text>
+  <text x="460" y="296" text-anchor="middle" font-size="12" font-weight="700" fill="#BA7517">ALTO</text>
+</svg>

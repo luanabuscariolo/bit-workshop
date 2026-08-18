@@ -1,0 +1,32 @@
+<svg width="620" height="200" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs><marker id="e1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <rect width="620" height="200" fill="#ffffff"/>
+  <text x="310" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">Do treino no PC até o chip: o caminho dos pesos</text>
+
+  <rect x="20" y="70" width="120" height="60" rx="10" fill="#f4f2fc" stroke="#534AB7" stroke-width="1.5"/>
+  <text x="80" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="#534AB7">modelo</text>
+  <text x="80" y="112" text-anchor="middle" font-size="10" fill="#333">.pt (PyTorch)</text>
+
+  <line x1="140" y1="100" x2="172" y2="100" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#e1)"/>
+  <text x="156" y="90" text-anchor="middle" font-size="9" fill="#777">export.py</text>
+
+  <rect x="174" y="70" width="120" height="60" rx="10" fill="#e8f4f0" stroke="#0F6E56" stroke-width="1.5"/>
+  <text x="234" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="#0F6E56">nano-grump</text>
+  <text x="234" y="112" text-anchor="middle" font-size="10" fill="#333">.bin (824 KB)</text>
+
+  <line x1="294" y1="100" x2="326" y2="100" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#e1)"/>
+  <text x="310" y="90" text-anchor="middle" font-size="9" fill="#777">esptool</text>
+
+  <rect x="328" y="70" width="120" height="60" rx="10" fill="#fdeee0" stroke="#BA7517" stroke-width="1.5"/>
+  <text x="388" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="#BA7517">flash do S3</text>
+  <text x="388" y="112" text-anchor="middle" font-size="10" fill="#333">0x110000</text>
+
+  <line x1="448" y1="100" x2="480" y2="100" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#e1)"/>
+  <text x="464" y="90" text-anchor="middle" font-size="9" fill="#777">firmware C</text>
+
+  <rect x="482" y="70" width="120" height="60" rx="10" fill="#e6f0fa" stroke="#3B8BD4" stroke-width="1.5"/>
+  <text x="542" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="#3B8BD4">ESP32-S3</text>
+  <text x="542" y="112" text-anchor="middle" font-size="10" fill="#333">gera texto</text>
+
+  <text x="310" y="170" text-anchor="middle" font-size="12" fill="#777">O treino é no PC. No chip só roda a inferência (geração), lendo os pesos da flash.</text>
+</svg>

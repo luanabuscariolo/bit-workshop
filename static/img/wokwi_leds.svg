@@ -1,0 +1,43 @@
+<svg width="620" height="280" viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="wa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect width="620" height="280" fill="#ffffff"/>
+  <text x="310" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#333">No Wokwi: LEDs no lugar dos motores</text>
+
+  <!-- ESP32 -->
+  <rect x="220" y="70" width="180" height="140" rx="10" fill="#e6f0fa" stroke="#3B8BD4" stroke-width="1.8"/>
+  <text x="310" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#3B8BD4">ESP32</text>
+  <text x="310" y="120" text-anchor="middle" font-size="11" fill="#333">GPIO14 (frente)</text>
+  <text x="310" y="138" text-anchor="middle" font-size="11" fill="#333">GPIO27 (ré)</text>
+  <text x="310" y="156" text-anchor="middle" font-size="11" fill="#333">GPIO26 (esquerda)</text>
+  <text x="310" y="174" text-anchor="middle" font-size="11" fill="#333">GPIO25 (direita)</text>
+  <text x="310" y="194" text-anchor="middle" font-size="11" fill="#555">+ HC-SR04 + SG90</text>
+
+  <!-- LEDs -->
+  <circle cx="100" cy="90" r="18" fill="#4CAF50" stroke="#388E3C" stroke-width="1.5"/>
+  <text x="100" y="95" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">14</text>
+  <text x="100" y="122" text-anchor="middle" font-size="11" fill="#333">Frente</text>
+
+  <circle cx="100" cy="160" r="18" fill="#F44336" stroke="#C62828" stroke-width="1.5"/>
+  <text x="100" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">27</text>
+  <text x="100" y="192" text-anchor="middle" font-size="11" fill="#333">Ré</text>
+
+  <circle cx="520" cy="90" r="18" fill="#FFEB3B" stroke="#F9A825" stroke-width="1.5"/>
+  <text x="520" y="95" text-anchor="middle" font-size="11" font-weight="700" fill="#333">26</text>
+  <text x="520" y="122" text-anchor="middle" font-size="11" fill="#333">Esquerda</text>
+
+  <circle cx="520" cy="160" r="18" fill="#2196F3" stroke="#1565C0" stroke-width="1.5"/>
+  <text x="520" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">25</text>
+  <text x="520" y="192" text-anchor="middle" font-size="11" fill="#333">Direita</text>
+
+  <line x1="118" y1="90" x2="218" y2="120" stroke="#4CAF50" stroke-width="1.5" marker-end="url(#wa)"/>
+  <line x1="118" y1="160" x2="218" y2="140" stroke="#F44336" stroke-width="1.5" marker-end="url(#wa)"/>
+  <line x1="402" y1="120" x2="500" y2="90" stroke="#F9A825" stroke-width="1.5" marker-end="url(#wa)"/>
+  <line x1="402" y1="140" x2="500" y2="158" stroke="#2196F3" stroke-width="1.5" marker-end="url(#wa)"/>
+
+  <text x="310" y="250" text-anchor="middle" font-size="12" fill="#777">O código é o mesmo do robô real — só a saída muda (LED em vez de motor).</text>
+  <text x="310" y="268" text-anchor="middle" font-size="12" fill="#534AB7">A flag #define MODO_SIMULACAO controla qual versão rodar.</text>
+</svg>

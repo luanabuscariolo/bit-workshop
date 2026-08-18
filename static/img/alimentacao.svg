@@ -1,0 +1,52 @@
+<svg width="620" height="300" viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="pa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#B23A2E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="pb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect width="620" height="300" fill="#ffffff"/>
+  <text x="310" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#333">Esquema de alimentação: um conjunto de pilhas abastece tudo</text>
+
+  <!-- pilhas -->
+  <rect x="30" y="110" width="100" height="60" rx="10" fill="#fbe6e2" stroke="#B23A2E" stroke-width="1.8"/>
+  <text x="80" y="136" text-anchor="middle" font-size="13" font-weight="700" fill="#B23A2E">4× AA</text>
+  <text x="80" y="154" text-anchor="middle" font-size="12" fill="#333">~6V</text>
+
+  <!-- L298N -->
+  <rect x="210" y="90" width="130" height="100" rx="10" fill="#fdeee0" stroke="#BA7517" stroke-width="1.8"/>
+  <text x="275" y="118" text-anchor="middle" font-size="13" font-weight="700" fill="#BA7517">L298N</text>
+  <text x="275" y="138" text-anchor="middle" font-size="11" fill="#333">pino 12V (entra ~6V)</text>
+  <text x="275" y="156" text-anchor="middle" font-size="11" fill="#333">regula → 5V</text>
+  <text x="275" y="172" text-anchor="middle" font-size="10" fill="#777">(jumper instalado)</text>
+
+  <!-- Motores -->
+  <rect x="210" y="220" width="130" height="50" rx="9" fill="#fdeee0" stroke="#BA7517" stroke-width="1.4"/>
+  <text x="275" y="250" text-anchor="middle" font-size="13" fill="#BA7517">Motores DC</text>
+  <line x1="275" y1="190" x2="275" y2="218" stroke="#BA7517" stroke-width="1.5" marker-end="url(#pb)"/>
+  <text x="295" y="208" font-size="10" fill="#777">OUT1-4</text>
+
+  <!-- ESP32 -->
+  <rect x="430" y="60" width="130" height="60" rx="10" fill="#e6f0fa" stroke="#3B8BD4" stroke-width="1.8"/>
+  <text x="495" y="87" text-anchor="middle" font-size="13" font-weight="700" fill="#3B8BD4">ESP32</text>
+  <text x="495" y="106" text-anchor="middle" font-size="11" fill="#333">VIN (recebe 5V)</text>
+
+  <!-- Sensores -->
+  <rect x="430" y="160" width="130" height="60" rx="10" fill="#e8f4f0" stroke="#0F6E56" stroke-width="1.5"/>
+  <text x="495" y="185" text-anchor="middle" font-size="12" font-weight="700" fill="#0F6E56">HC-SR04 + SG90</text>
+  <text x="495" y="204" text-anchor="middle" font-size="11" fill="#333">5V do trilho</text>
+
+  <!-- setas de energia -->
+  <line x1="130" y1="140" x2="208" y2="140" stroke="#B23A2E" stroke-width="2" marker-end="url(#pa)"/>
+  <text x="169" y="130" text-anchor="middle" font-size="11" fill="#B23A2E">~6V</text>
+  <line x1="340" y1="120" x2="428" y2="100" stroke="#0F6E56" stroke-width="2" marker-end="url(#pb)"/>
+  <text x="393" y="100" text-anchor="middle" font-size="11" fill="#0F6E56">5V → VIN</text>
+  <line x1="340" y1="155" x2="428" y2="188" stroke="#0F6E56" stroke-width="2" marker-end="url(#pb)"/>
+  <text x="400" y="162" text-anchor="middle" font-size="11" fill="#0F6E56">5V trilho</text>
+
+  <!-- GND -->
+  <text x="310" y="275" text-anchor="middle" font-size="12" font-weight="700" fill="#333">GND das pilhas = GND do L298N = GND do ESP32 = GND dos sensores</text>
+  <text x="310" y="293" text-anchor="middle" font-size="11" fill="#777">Todos os terras unidos — sem isso, o circuito não funciona.</text>
+</svg>

@@ -1,0 +1,30 @@
+<svg width="620" height="240" viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs><marker id="r1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="r2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#B23A2E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+  <rect width="620" height="240" fill="#ffffff"/>
+  <text x="310" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#333">Conexão residual: soma a entrada de volta na saída</text>
+
+  <rect x="20" y="110" width="90" height="46" rx="9" fill="#e6f0fa" stroke="#3B8BD4" stroke-width="1.4"/>
+  <text x="65" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#3B8BD4">x</text>
+  <text x="65" y="148" text-anchor="middle" font-size="12" fill="#333">[ 2 , 5 ]</text>
+
+  <line x1="110" y1="133" x2="166" y2="133" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#r1)"/>
+  <rect x="168" y="110" width="170" height="46" rx="9" fill="#e8f4f0" stroke="#0F6E56" stroke-width="1.4"/>
+  <text x="253" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#0F6E56">bloco: f(x)</text>
+  <text x="253" y="148" text-anchor="middle" font-size="12" fill="#333">[ 0.3 , -1 ]</text>
+
+  <line x1="338" y1="133" x2="394" y2="133" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#r1)"/>
+  <circle cx="420" cy="133" r="22" fill="#fbe6e2" stroke="#B23A2E" stroke-width="1.4"/>
+  <text x="420" y="140" text-anchor="middle" font-size="20" font-weight="700" fill="#B23A2E">+</text>
+
+  <!-- atalho -->
+  <path d="M65 110 C 65 55, 420 55, 420 108" fill="none" stroke="#B23A2E" stroke-width="2" marker-end="url(#r2)"/>
+  <text x="243" y="48" text-anchor="middle" font-size="12" fill="#B23A2E">atalho: a entrada passa direto</text>
+
+  <line x1="442" y1="133" x2="478" y2="133" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#r1)"/>
+  <rect x="480" y="110" width="120" height="46" rx="9" fill="#eaf5e0" stroke="#639922" stroke-width="1.4"/>
+  <text x="540" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="#333">x + f(x)</text>
+  <text x="540" y="148" text-anchor="middle" font-size="12" fill="#333">[ 2.3 , 4 ]</text>
+
+  <text x="310" y="210" text-anchor="middle" font-size="12" fill="#777">O original é preservado; o bloco só soma um pequeno ajuste (o "resíduo").</text>
+</svg>

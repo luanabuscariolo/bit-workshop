@@ -1,0 +1,24 @@
+<svg width="620" height="360" viewBox="0 0 620 360" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="620" height="360" fill="#ffffff"/>
+  <text x="310" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">A estrutura do arquivo nano-grump.bin</text>
+
+  <!-- cabeçalho -->
+  <rect x="120" y="46" width="380" height="86" rx="8" fill="#f4f2fc" stroke="#534AB7" stroke-width="1.6"/>
+  <text x="310" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="#534AB7">CABEÇALHO — 6 inteiros (24 bytes)</text>
+  <text x="140" y="86" font-size="11" fill="#333">vocab_size = 59    n_embd = 64    block_size = 64</text>
+  <text x="140" y="104" font-size="11" fill="#333">n_layer = 4    n_heads = 4    reservado = 0</text>
+  <text x="140" y="122" font-size="10" fill="#777">a "etiqueta": diz ao ESP32 as dimensões antes de ler os números</text>
+
+  <!-- pesos -->
+  <rect x="120" y="142" width="380" height="180" rx="8" fill="#e8f4f0" stroke="#0F6E56" stroke-width="1.6"/>
+  <text x="310" y="162" text-anchor="middle" font-size="13" font-weight="700" fill="#0F6E56">PESOS — 210.944 números float32, em ordem fixa</text>
+  <text x="140" y="184" font-size="11" fill="#333">emb_token (59 × 64)</text>
+  <text x="140" y="202" font-size="11" fill="#333">emb_posicao (64 × 64)</text>
+  <text x="140" y="224" font-size="11" fill="#333">bloco 0:  ln1 · q,k,v,proj · ln2 · ffn1, ffn2</text>
+  <text x="140" y="242" font-size="11" fill="#333">bloco 1:  (idem)</text>
+  <text x="140" y="260" font-size="11" fill="#333">bloco 2:  (idem)</text>
+  <text x="140" y="278" font-size="11" fill="#333">bloco 3:  (idem)</text>
+  <text x="140" y="300" font-size="11" fill="#333">ln_final · camada de saída</text>
+
+  <text x="310" y="345" text-anchor="middle" font-size="12" fill="#777">O firmware C lê de cima para baixo, na MESMA ordem. Python e C precisam concordar.</text>
+</svg>
