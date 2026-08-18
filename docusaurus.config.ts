@@ -80,11 +80,24 @@ const config: Config = {
         src: 'img/logo.svg',
       },
       items: [
+        // [ALTERADO] era item simples "Tutorial" → agora dropdown com os dois cursos
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          type: 'dropdown',
+          label: 'Cursos',
           position: 'left',
-          label: 'Tutorial',
+          items: [
+            {
+              type: 'docSidebar',
+              sidebarId: 'tutorialSidebar',
+              label: 'Construa um robô autônomo',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'iaChipSidebar',
+              docsPluginId: 'ia-chip',
+              label: 'IA num Chip (ESP32-S3)',
+            },
+          ],
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
