@@ -49,8 +49,8 @@ const CURSOS: Curso[] = [
         situação com personalidade.
       </>
     ),
-    link: '#',
-    disponivel: false,
+    link: '/rovermind/parte-4-esp32-s3', // [ALTERADO] era '#'
+    disponivel: true, // [ALTERADO] era false — Curso 3 agora tem conteúdo
   },
 ];
 

@@ -42,6 +42,15 @@ const config: Config = {
         sidebarPath: './sidebars-ia-chip.ts', // barra lateral própria (criamos no passo 2)
       },
     ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'rovermind',                        // [ADICIONADO] Curso 3 — RoverMind Completo
+        path: 'docs/rovermind',                 // onde mora o material do Curso 3
+        routeBasePath: 'rovermind',             // endereço: /rovermind/...
+        sidebarPath: './sidebars-rovermind.ts', // o sidebar que você criou no Passo 2
+      },
+    ],
   ],
 
   presets: [
@@ -96,6 +105,12 @@ const config: Config = {
               sidebarId: 'iaChipSidebar',
               docsPluginId: 'ia-chip',
               label: 'IA num Chip (ESP32-S3)',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'rovermindSidebar',   // [ADICIONADO] sidebar do Passo 2
+              docsPluginId: 'rovermind',       // aponta para a instância do Passo 3
+              label: 'RoverMind Completo',
             },
           ],
         },
