@@ -32,12 +32,26 @@ const config: Config = {
     locales: ['en'],
   },
 
+  plugins: [
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'ia-chip',                       // identificador único desta instância
+        path: 'docs/ia-chip',                // onde moram os arquivos do Curso 2
+        routeBasePath: 'ia-chip',            // endereço: /ia-chip/...
+        sidebarPath: './sidebars-ia-chip.ts', // barra lateral própria (criamos no passo 2)
+      },
+    ],
+  ],
+
   presets: [
     [
       'classic',
       {
         docs: {
           sidebarPath: './sidebars.ts',
+            routeBasePath: 'robo',    // [ALTERADO] era 'rovermind' → agora /robo/...
+            path: 'docs/robo',        // [ALTERADO] era 'docs/rovermind'
           },
         blog: {
           showReadingTime: true,
@@ -88,7 +102,7 @@ const config: Config = {
           items: [
             {
               label: 'Tutorial',
-              to: '/docs/parte-0-boas-vindas',
+              to: '/robo/parte-0-boas-vindas',
             },
           ],
         },
