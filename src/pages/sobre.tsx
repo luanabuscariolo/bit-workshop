@@ -132,11 +132,13 @@ export default function Sobre(): ReactNode {
             IA generativa com integração de LLMs via API (Anthropic), pipelines RAG com
             embeddings e busca vetorial, e experiência prática com MCP e agentes de IA.
           </p>
+          {/*
           <p>
             Hoje atuo como <strong>professora na Happy Code Portugal</strong> e canalizo esse
             conhecimento para criar material didático acessível — como os cursos desta
             plataforma, que ensinam robótica e IA embarcada do zero.
           </p>
+           */}
         </section>
 
         {/* PROJETO DESTAQUE */}

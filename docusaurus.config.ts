@@ -117,7 +117,7 @@ const config: Config = {
             },
           ],
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        //{to: '/blog', label: 'Blog', position: 'left'},
         {to: '/sobre', label: 'Sobre', position: 'left'}, // [ADICIONADO]
         {
           href: 'https://github.com/luanabuscariolo',
@@ -154,10 +154,10 @@ const config: Config = {
               label: 'LinkedIn',                                        // [ADICIONADO]
               href: 'https://www.linkedin.com/in/luana-buscariolo',
             },
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
+            // {
+            //   label: 'Blog',
+            //   to: '/blog',
+            // },
           ],
         },
       ],
