@@ -1,6 +1,8 @@
 ---
+title: "Parte 3 — O Cérebro (LLM)"
 sidebar_position: 3
 ---
+
 # Parte 3 — O Cérebro: construindo uma LLM do zero
 
 > **Onde estamos na jornada.** Na Parte 1 você montou o *corpo* do robô (motores,
@@ -20,7 +22,11 @@ E, mais importante, você vai **entender** por que ele funciona.
 
 Construir o cérebro tem cinco grandes etapas. Aqui está o caminho inteiro:
 
-![Pipeline de construção do cérebro](/img/pipeline_cerebro.svg)
+![Pipeline de construção do cérebro](/img/parte-3_fig01_pipeline_de_construcao_do_cerebro.png)
+
+![A cadeia da Parte 3](/img/parte-3_fig02_a_cadeia_da_parte_3.png)
+
+Use esta cadeia como um "você está aqui": cada elo é uma seção desta parte, e cada um só existe para alimentar o próximo.
 
 Vamos seguir esse mapa na ordem, e — como fizemos com o robô — **testar cada peça
 sozinha** antes de juntar. Essa é a regra de ouro que transforma "nada funciona,
@@ -47,6 +53,11 @@ escreve frases inteiras.
 No nosso caso, o "pedacinho" será **um caractere** (uma letra, um espaço, um
 sinal de pontuação). O robô vê uma situação (por exemplo, bateu num obstáculo) e
 o cérebro escreve, caractere por caractere, uma reclamação sarcástica.
+
+Antes de mergulhar nas peças, veja a máquina inteira de uma vez. Não precisa entender
+os detalhes agora — só perceber o caminho que um marcador percorre até virar uma frase:
+
+![Panorama: do marcador ao próximo caractere](/img/parte-3_fig03_panorama_do_marcador_ao_proximo_caractere.png)
 
 Guarde essa frase: **prever o próximo caractere**. Todo o resto existe para fazer
 isso bem feito.
@@ -179,7 +190,7 @@ minúsculo: só as letras, espaço e pontuação que aparecem no dataset — no 
 caso, **59 símbolos**. Um vocabulário pequeno é perfeito para um modelo que vai
 caber num microcontrolador.
 
-![O tokenizer troca caractere por número](/img/tokenizer_mapa.svg)
+![O tokenizer troca caractere por número](/img/parte-3_fig04_o_tokenizer_troca_caractere_por_numero.png)
 
 **O exemplo concreto.** Vamos fingir um vocabulário de 3 caracteres: `a`, `b`, `c`.
 O tokenizer dá um número para cada:
@@ -257,8 +268,12 @@ Voltou: <obstacle> Oh look, a wall.
 Bateu igual? True
 ```
 
+![Teste de ida e volta do tokenizer](/img/parte-3_fig05_teste_de_ida_e_volta_do_tokenizer.png)
+
 Aquele **`Bateu igual? True`** é o sinal de sucesso: o tokenizer traduziu para
-números e voltou sem perder nada. E foi criado um arquivo `vocab.json`, que guarda
+números e voltou sem perder nada. **Esse é o nosso primeiro teste isolado de peça** —
+a mesma regra de ouro do robô, agora no cérebro: se o texto não voltar idêntico, algo
+está errado no tokenizer, e a gente conserta antes de seguir. E foi criado um arquivo `vocab.json`, que guarda
 o alfabeto para as próximas etapas usarem exatamente o mesmo mapeamento.
 
 **A frase-resumo (para repetir com propriedade):**
@@ -312,7 +327,7 @@ Para pegar o embedding do `'c'`: o tokenizer diz que `'c'` é o número `2`, ent
 vamos na tabela e **pegamos a linha 2**. Simples assim — o número é o *endereço* da
 linha, e a linha *é* o vetor.
 
-![Consulta na tabela de embeddings](/img/embedding_consulta.svg)
+![Consulta na tabela de embeddings](/img/parte-3_fig06_consulta_na_tabela_de_embeddings.png)
 
 **A parte mágica:** aquela tabela começa preenchida com **números aleatórios**. Ela
 não sabe nada no início. Durante o **treino**, o modelo ajusta esses números para
@@ -341,7 +356,7 @@ vetores — o do caractere e o da posição.
 = vetor final     [ 0.3,  0.7, -0.1,  0.4]
 ```
 
-![Soma do embedding de caractere e de posição](/img/embedding_posicao.svg)
+![Soma do embedding de caractere e de posição](/img/parte-3_fig07_soma_do_embedding_de_caractere_e_de_posicao.png)
 
 Agora cada caractere carrega **duas informações num vetor só**: *quem ele é* +
 *onde ele está*. Se o `'c'` estivesse em outra posição, o resultado seria diferente
@@ -401,7 +416,7 @@ um vetor de 32 números, já "temperado" com a posição.
 
 ---
 
-## 3.7 Atenção: como cada caractere "olha" para os outros
+## 3.6 Atenção: como cada caractere "olha" para os outros
 
 Chegamos ao mecanismo que fez os transformers mudarem o mundo: a **atenção**
 (*self-attention*). É a peça mais rica, então vamos com calma.
@@ -431,14 +446,14 @@ outros, dando **mais peso** a quem combinou melhor. O detalhe elegante: cada tok
 é **ao mesmo tempo leitor e livro** — tem um Query (para procurar) e também um Key
 e um Value (para ser encontrado).
 
-![Analogia da biblioteca para atenção](/img/atencao_biblioteca.svg)
+![Analogia da biblioteca para atenção](/img/parte-3_fig08_analogia_da_biblioteca_para_atencao.png)
 
 **De onde saem Q, K e V?** Cada token já tem seu vetor (a soma dos embeddings).
 Multiplicamos esse vetor por **três tabelas de pesos aprendíveis** (chamadas Wq, Wk,
 Wv), e saem três vetores: o Q, o K e o V. São três "vistas diferentes" do mesmo
 token. As tabelas começam aleatórias e o treino as ajusta.
 
-## 3.8 A mecânica da atenção, com números
+## 3.7 A mecânica da atenção, com números
 
 Vamos ver as contas com um exemplo minúsculo: 2 tokens (`'a'` e `'b'`), vetores de
 tamanho 2. Suponha que já saíram estes Q, K, V:
@@ -457,6 +472,8 @@ Key de cada token. O produto escalar multiplica posição por posição e soma:
 notas de 'a' = [2, 0]
 ```
 
+> *Até aqui, temos apenas notas — o quanto o pedido de `'a'` casou com a etiqueta de cada token.*
+
 **Passo 2 — virar pesos (softmax).** As notas `[2, 0]` viram pesos que somam 100%.
 O softmax faz `e^nota` para cada uma e divide pelo total:
 
@@ -466,6 +483,8 @@ pesos = [7,39/8,39 , 1/8,39] ≈ [0,88 , 0,12]
 ```
 
 Então `'a'` presta 88% de atenção em si mesmo e 12% em `'b'`.
+
+> *Agora as notas viraram pesos que somam 100% — é onde o modelo decide em quem focar.*
 
 **Passo 3 — misturar os Values.** A nova versão de `'a'` é a soma dos Values,
 ponderada pelos pesos:
@@ -477,7 +496,9 @@ ponderada pelos pesos:
 `'a'` saiu como `[8,8, 1,2]` — quase todo o conteúdo dele mesmo, com um tempero de
 `'b'`. Ele reuniu contexto.
 
-![Os três passos da atenção](/img/atencao_mecanica.svg)
+> *Agora usamos os pesos para misturar os Values — o token sai transformado, carregando um pouco dos vizinhos que importaram.*
+
+![Os três passos da atenção](/img/parte-3_fig09_os_tres_passos_da_atencao.png)
 
 > **Detalhe técnico:** na prática, antes do softmax, dividimos as notas por
 > `√(tamanho do vetor)` — um ajuste que estabiliza o treino. As "notas cruas" que
@@ -494,7 +515,7 @@ infinito** (`-∞`) nelas. Como o softmax faz `e^nota`, e `e^(-∞) = 0`, a posi
 futura vira **peso zero**. Fazendo isso para todos os tokens, a grade de pesos vira
 um **triângulo**.
 
-![Máscara causal triangular](/img/mascara_causal.svg)
+![Máscara causal triangular](/img/parte-3_fig10_mascara_causal_triangular.png)
 
 ### O código da atenção
 
@@ -524,6 +545,8 @@ saida = pesos @ V
 print(saida)
 ```
 
+Repare que o código é **exatamente** as contas que você acabou de acompanhar, na mesma ordem: o passo 1 (produto escalar + escala) é a linha `notas = Q @ K.T / ...`; o passo 2 (máscara causal) são as linhas do `triangulo`/`masked_fill`; o passo 3 (softmax) é `pesos = F.softmax(...)`; e o passo 4 (soma ponderada) é `saida = pesos @ V`. O código não traz mágica nova — ele implementa a matemática.
+
 **Traduzindo os símbolos estranhos:**
 
 - `@` é multiplicação de matrizes — faz o produto escalar de todos com todos de uma
@@ -549,10 +572,11 @@ print(saida)
 
 ---
 
-## 3.9 A FFN: onde cada token "pensa" sozinho
+## 3.8 A FFN: onde cada token "pensa" sozinho
 
-A atenção mistura informação **entre** os tokens. Falta um lugar onde cada token
-processe, sozinho, o que reuniu. Essa é a **FFN** (rede feed-forward).
+A atenção mistura informação **entre** os tokens (cada um olhou os vizinhos e reuniu contexto). Falta agora um lugar onde cada token **processe, sozinho**, aquilo que reuniu. Essa é a **FFN** (rede feed-forward):
+
+> *A atenção reúne o contexto; a FFN transforma a representação de cada posição, uma por uma.*
 
 **A ideia em uma frase:** a FFN "abre" o vetor de cada token num espaço maior,
 aplica um filtro que corta os negativos, e "fecha" de volta ao tamanho original.
@@ -566,7 +590,7 @@ A FFN tem 3 etapas. Com um vetor de tamanho 2, `[1, -2]`:
 2. **ReLU** (mantém positivos, zera negativos): `[1, 0, 0, 3]`
 3. **Contrair** (de 4 de volta para 2): `[4, 0]`
 
-![A camada FFN](/img/ffn.svg)
+![A camada FFN](/img/parte-3_fig11_a_camada_ffn.png)
 
 **O que é uma "camada linear"?** É uma tabela de pesos: cada número de saída é uma
 combinação dos números de entrada, multiplicados por pesos. A ReLU (*Rectified
@@ -574,7 +598,7 @@ Linear Unit*) é uma **função de ativação**: a não-linearidade que dá ao m
 de aprender padrões complexos. Sem ela, empilhar camadas não adiantaria (viraria
 tudo uma conta só).
 
-## 3.10 As duas pecinhas de cola: residual e LayerNorm
+## 3.9 As duas pecinhas de cola: residual e LayerNorm
 
 Para um modelo de vários blocos treinar bem, precisamos de duas peças de apoio.
 
@@ -582,15 +606,15 @@ Para um modelo de vários blocos treinar bem, precisamos de duas peças de apoio
 que aprendeu ao vetor original: `saída = x + f(x)`. Isso cria um atalho que preserva
 a informação ao longo dos blocos e ajuda o treino. O bloco aprende só o "ajuste".
 
-![Conexão residual](/img/residual.svg)
+![Conexão residual](/img/parte-3_fig12_conexao_residual.png)
 
 **LayerNorm.** Ajeita os números de cada vetor para uma escala padrão (subtrai a
 média, divide pelo desvio padrão). Assim os valores não explodem nem somem ao passar
 pela rede — o treino fica estável.
 
-![LayerNorm](/img/layernorm.svg)
+![LayerNorm](/img/parte-3_fig13_layernorm.png)
 
-## 3.11 O bloco e o modelo completo
+## 3.10 O bloco e o modelo completo
 
 Um **bloco** junta atenção e FFN, cada uma embrulhada com LayerNorm e conexão
 residual. O padrão se repete duas vezes:
@@ -600,12 +624,12 @@ x = x + Atenção(LayerNorm(x))    # sub-camada 1
 x = x + FFN(LayerNorm(x))        # sub-camada 2
 ```
 
-![Anatomia de um bloco](/img/bloco_anatomia.svg)
+![Anatomia de um bloco](/img/parte-3_fig14_anatomia_de_um_bloco.png)
 
 O modelo completo é: embeddings → alguns blocos empilhados → LayerNorm final →
 camada de saída (que dá uma nota para cada caractere).
 
-![O mini-GPT completo](/img/modelo_completo.svg)
+![O mini-GPT completo](/img/parte-3_fig15_o_mini-gpt_completo.png)
 
 ### O código do modelo
 
@@ -684,7 +708,7 @@ parâmetros** — minúsculo, de propósito, para caber num microcontrolador.
 
 ---
 
-## 3.12 Treino: como o modelo aprende
+## 3.11 Treino: como o modelo aprende
 
 O modelo recém-criado é um recém-nascido: pesos aleatórios, respostas sem sentido.
 O **treino** ajusta esses pesos. É um laço repetido milhares de vezes:
@@ -701,7 +725,7 @@ O modelo dá uma **probabilidade** para cada caractere. O erro mede a *surpresa*
 a resposta certa: probabilidade alta na resposta certa → erro baixo; probabilidade
 baixa → erro alto. A fórmula (**cross-entropy**) é `-log(prob da resposta certa)`.
 
-![O erro / loss](/img/erro_loss.svg)
+![O erro / loss](/img/parte-3_fig16_o_erro_loss.png)
 
 ### O gradiente (a descida da montanha)
 
@@ -709,7 +733,7 @@ O gradiente diz, para cada peso, se aumentá-lo faz o erro subir ou descer. Anda
 sentido **contrário** (ladeira abaixo), com passo dado pela **taxa de aprendizado**.
 Repetindo, chegamos ao fundo do vale (menor erro).
 
-![Descida do gradiente](/img/gradiente.svg)
+![Descida do gradiente](/img/parte-3_fig17_descida_do_gradiente.png)
 
 O PyTorch calcula os gradientes de todos os ~42.700 pesos automaticamente — isso se
 chama **backpropagation** — com uma linha: `loss.backward()`.
@@ -769,12 +793,12 @@ torch.save(modelo.state_dict(), pasta / "modelo_treinado.pt")
 um arquivo `modelo_treinado.pt` salvo no fim. O `AdamW` é o **otimizador** — quem dá
 o passo de descida.
 
-## 3.13 Geração: ouvir o robô falar
+## 3.12 Geração: ouvir o robô falar
 
 O modelo gera texto de forma **autorregressiva**: prevê o próximo caractere, anexa ao
 contexto, e repete. Cada caractere gerado realimenta a entrada.
 
-![Ciclo de geração](/img/geracao_ciclo.svg)
+![Ciclo de geração](/img/parte-3_fig18_ciclo_de_geracao.png)
 
 Em cada passo, o modelo dá probabilidades e a gente **sorteia** um caractere (como um
 dado viciado). Sortear, em vez de sempre pegar o mais provável, dá **variedade** — por
@@ -845,3 +869,4 @@ Você construiu, do zero e entendendo cada peça, um **modelo de linguagem compl
 Isso é algo que muita gente que *usa* IA nunca fez: você entende o que acontece por
 dentro. Na **Parte 4**, vamos levar esse cérebro para o microcontrolador ESP32-S3 e
 uni-lo ao corpo do robô.
+

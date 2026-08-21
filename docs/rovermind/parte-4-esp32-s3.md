@@ -1,6 +1,8 @@
 ---
+title: "Parte 4 — ESP32-S3"
 sidebar_position: 4
 ---
+
 # Parte 4 — A União: o cérebro no ESP32-S3
 
 > **Onde estamos na jornada.** Na Parte 1 montamos o corpo do robô. Na Parte 3
@@ -15,8 +17,8 @@ cada peça.
 > **Nota sobre a versão do modelo.** Para o embarque, o nano-grump foi turbinado para
 > uma versão 2.0 mais capaz — ainda minúscula, mas com mais "musculatura" para falar
 > melhor rodando sozinho no chip. As dimensões usadas nesta parte são: `vocab_size=59`,
-> `n_embd=64`, `block_size=64`, `n_layer=4`, `n_heads=4` (atenção de 4 cabeças), com
-> ~211 mil parâmetros. A arquitetura é a mesma que você aprendeu na Parte 3 — só um
+> `n_embd=64`, `block_size=128`, `n_layer=4`, `n_heads=4` (atenção de 4 cabeças), com
+> ~215 mil parâmetros. A arquitetura é a mesma que você aprendeu na Parte 3 — só um
 > pouco maior. Se você seguiu a Parte 3 com a versão de 42 mil parâmetros, o processo
 > aqui é idêntico; só mudam os números do cabeçalho.
 
@@ -34,7 +36,7 @@ ingrediente nem passo, só reescrever no idioma que o chip entende.
 
 O caminho completo, do PC ao chip:
 
-![Pipeline de embarque](/img/embarque_pipeline.svg)
+![Pipeline de embarque](/img/parte-4_fig01_pipeline_de_embarque.png)
 
 Repare num ponto fundamental: **o treino acontece no PC**. O chip só roda a
 **inferência** (a geração de texto). O modelo não "aprende" no robô — ele já vem
@@ -50,7 +52,7 @@ Vamos dividir o embarque em três etapas:
 
 ## 4.2 Etapa 1 — Exportar os pesos (.pt → .bin)
 
-**A ideia em uma frase:** o script de exportação pega os ~211 mil números do modelo
+**A ideia em uma frase:** o script de exportação pega os ~215 mil números do modelo
 treinado, converte todos para um formato universal (float32), e salva num arquivo
 binário com uma "etiqueta" no começo.
 
@@ -59,14 +61,14 @@ um arquivo que só o computador entende — uma sequência de bytes puros. O `.b
 desse segundo tipo: números empacotados de forma que o C leia rapidamente.
 
 **O que são os "pesos"?** O modelo treinado é, no fundo, uma **coleção de números** —
-os ~211 mil valores que o treino ajustou. São eles que dão personalidade ao robô.
+os ~215 mil valores que o treino ajustou. São eles que dão personalidade ao robô.
 Exportar é só empacotar esses números num formato que o C leia.
 
 ### A estrutura do arquivo .bin
 
 O arquivo tem duas partes, nesta ordem:
 
-![Estrutura do arquivo .bin](/img/bin_estrutura.svg)
+![Estrutura do arquivo .bin](/img/parte-4_fig02_estrutura_do_arquivo_bin.png)
 
 A **ordem dos pesos tem que ser idêntica** nos dois lados: o `export.py` escreve numa
 ordem, e o firmware C lê exatamente na mesma. É como combinar previamente em que
@@ -127,8 +129,8 @@ print("nano-grump.bin gerado.")
   nativamente. É como trocar "xícaras" por "mililitros": mesmo valor, unidade universal.
 - `"wb"` abre o arquivo em modo de **escrita binária**.
 
-Rode com `uv run export.py`. Você deve ver a criação do `nano-grump.bin` de **~824 KB**
-(≈211 mil números × 4 bytes).
+Rode com `uv run export.py`. Você deve ver a criação do `nano-grump.bin` de **~840 KB**
+(≈215 mil números × 4 bytes).
 
 ---
 
@@ -138,9 +140,9 @@ Rode com `uv run export.py`. Você deve ver a criação do `nano-grump.bin` de *
 
 A flash do ESP32-S3 (16 MB) é dividida em **regiões** (partições), como um HD. Um
 arquivo `partitions.csv` define essas regiões. A que nos interessa é a `model`, no
-endereço `0x110000`, com 14,9 MB — onde o `nano-grump.bin` (824 KB) cabe folgado.
+endereço `0x110000`, com 14,9 MB — onde o `nano-grump.bin` (~840 KB) cabe folgado.
 
-![Partições da flash e comunicação](/img/particoes_comunicacao.svg)
+![Partições da flash e comunicação](/img/parte-4_fig03_particoes_da_flash_e_comunicacao.png)
 
 **Conteúdo do `partitions.csv`:**
 
@@ -215,7 +217,7 @@ void loop() {}
 ```
 
 Grave e abra o Monitor Serial (115200 baud). Você deve ver
-`vocab_size=59 n_embd=64 block_size=64 n_layer=4 n_heads=4`. Se bater, a ponte
+`vocab_size=59 n_embd=64 block_size=128 n_layer=4 n_heads=4`. Se bater, a ponte
 Python → C está funcionando.
 
 ---
@@ -230,7 +232,7 @@ você diz explicitamente onde cada número está na memória.
 
 Pense em três mesas de trabalho de tamanhos diferentes:
 
-- **Flash** (16 MB) — mesa gigante, mas **só leitura**. Aqui ficam os pesos (824 KB).
+- **Flash** (16 MB) — mesa gigante, mas **só leitura**. Aqui ficam os pesos (~840 KB).
 - **PSRAM** (8 MB) — mesa grande, leitura e escrita. Aqui fica o "cache" da sequência.
 - **SRAM** (512 KB) — mesa pequena e rápida. Aqui ficam os vetores de cálculo.
 
@@ -289,11 +291,17 @@ static void forward(int token, int pos) {
   }
 
   // 3. LAYERNORM FINAL + CAMADA DE SAÍDA -> logits (59 notas)
-  rmsnorm(xb, x, w.ln_final_w, N_EMBD);
+  layernorm(xb, x, w.ln_final_w, w.ln_final_b, N_EMBD);
   matmul(logits, xb, w.saida_w, VOCAB_SIZE, N_EMBD);
 }
 ```
 
+> **Cuidado com o LayerNorm (lição aprendida na prática).** É tentador simplificar o
+> LayerNorm por um primo mais simples chamado RMSNorm no firmware — mas o modelo foi
+> **treinado com LayerNorm completo** (com média e bias). Usar RMSNorm no chip faz as
+> contas divergirem do treino e o robô gera "palavras tortas". Use o mesmo LayerNorm
+> dos dois lados: subtrai a média, divide pelo desvio, aplica peso e bias.
+>
 > O firmware completo (com a atenção multi-cabeça detalhada, o cache KV que guarda as
 > keys e values das posições anteriores, e o mapeamento dos ponteiros para a flash)
 > é longo. O ponto para você levar: **cada função é uma peça que você já entende da
@@ -436,3 +444,6 @@ construiu, treinou e embarcou, entendendo cada peça do caminho. 🎉
 > desempenho). Se algo não gerar texto coerente de primeira, é normal — depura-se uma
 > peça de cada vez, começando pelo cabeçalho (que já validamos) e seguindo função por
 > função. A jornada de entender cada etapa é o que torna esse ajuste possível.
+
+
+---

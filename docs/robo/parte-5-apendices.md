@@ -1,6 +1,8 @@
 ---
+title: "Parte 5 — Apêndices"
 sidebar_position: 5
 ---
+
 # Parte 5 — Apêndices
 
 > Material de consulta: um glossário completo de todos os termos do projeto, uma
@@ -16,6 +18,12 @@ Todos os termos do projeto, em ordem alfabética, em linguagem simples.
 **Atenção (self-attention)** — O mecanismo do modelo que faz cada pedacinho de texto
 "olhar" para os outros e decidir em quais prestar atenção. É o coração do transformer.
 
+**AdamW (otimizador)** — O "treinador" que decide o tamanho e a direção de cada
+ajuste nos parâmetros a cada passo do treino, a partir dos gradientes.
+
+**Autorregressivo** — A forma como o modelo gera texto: prevê um pedacinho, anexa ao
+que já tem, e usa o resultado para prever o próximo. Um caractere puxa o seguinte.
+
 **Backpropagation** — O cálculo automático de como cada parâmetro deve mudar para
 diminuir o erro durante o treino. No PyTorch, é a linha `loss.backward()`.
 
@@ -29,6 +37,9 @@ modelo, que o firmware lê antes dos pesos.
 
 **Cache KV** — Uma memória que guarda as *keys* e *values* das posições já
 processadas, para o modelo não recalcular tudo a cada novo caractere.
+
+**Checkpoint** — Salvar o modelo no melhor momento do treino (quando o erro de
+validação está mais baixo), não apenas no final. Protege contra o overfitting.
 
 **Caractere (character)** — No nosso projeto, o "pedacinho" de texto que o modelo
 processa. Trabalhamos com um modelo de nível de caractere (uma letra por vez).
@@ -57,6 +68,9 @@ exportamos os pesos.
 
 **Forward pass** — A passagem dos dados pelo modelo, da entrada até a saída (os
 logits). É o "pensar" do modelo.
+
+**Gradiente** — A indicação, para cada parâmetro, de qual direção diminui o erro.
+O treino "desce a ladeira" seguindo o gradiente ao contrário.
 
 **GND (terra)** — O polo negativo do circuito. Regra de ouro: todos os GNDs unidos.
 
@@ -99,6 +113,10 @@ array, sem copiar.
 **n_head** — O número de "cabeças" de atenção que olham o texto em paralelo.
 
 **n_layer** — O número de blocos empilhados no modelo (sua profundidade).
+
+**Overfitting (sobreajuste)** — Quando o modelo decora os exemplos de treino em vez
+de aprender o padrão geral, e passa a ir mal em texto novo. Detecta-se separando uma
+parte dos dados para validação.
 
 **Parâmetros** — Os números ajustáveis que guardam o "conhecimento" do modelo.
 
@@ -144,6 +162,10 @@ sorteio.
 entre placa e computador.
 
 **uv** — O gerenciador de pacotes Python usado no projeto.
+
+**Validação (split treino/validação)** — Separar uma fração dos dados para medir se
+o modelo generaliza, em vez de só decorar. Se o erro de treino cai mas o de validação
+não, é sinal de overfitting.
 
 **Vetor** — Uma lista de números. Um embedding é um vetor.
 
@@ -204,16 +226,19 @@ O modelo "nano-grump" na versão embarcada (Parte 4):
 | Tipo | Transformer decoder-only, nível de caractere |
 | Vocabulário | 59 caracteres |
 | Dimensão do embedding (n_embd) | 64 |
-| Janela de contexto (block_size) | 64 |
+| Janela de contexto (block_size) | 128 |
 | Número de blocos (n_layer) | 4 |
 | Cabeças de atenção (n_head) | 4 |
-| Parâmetros | ~211 mil |
-| Tamanho exportado (.bin) | ~824 KB (float32) |
+| Parâmetros | ~215 mil |
+| Tamanho exportado (.bin) | ~840 KB (float32) |
 | Geração | top-k = 4, temperatura = 0.75 |
 | Marcadores | `<start>`, `<explore>`, `<obstacle>`, `<turn_left>`, `<turn_right>`, `<backup>`, `<stuck>`, `<clear>` |
 
-> A Parte 3 usa uma versão didática ainda menor (~42 mil parâmetros) para o
-> aprendizado. A arquitetura é a mesma; só mudam os números da configuração.
+> **Duas versões, mesma arquitetura.** A Parte 3 usa uma versão *didática* ainda
+> menor (~42 mil parâmetros: `n_embd=32`, `block_size=32`, `n_layer=3`, 1 cabeça),
+> pensada para você acompanhar cada conta à mão. A versão *embarcada* acima é um
+> pouco maior para falar melhor rodando sozinha no chip. O passo a passo é idêntico;
+> só mudam os números da configuração.
 
 ---
 

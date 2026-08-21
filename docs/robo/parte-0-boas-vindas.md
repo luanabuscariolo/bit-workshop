@@ -1,6 +1,27 @@
 ---
+title: "Boas-vindas"
 sidebar_position: 0
 ---
+
+# Tutorial Completo — Robô Autônomo com Cérebro LLM (nano-grump)
+
+> Material de estudos para iniciante total: construir, do zero, um robô autônomo com
+> personalidade sarcástica, movido por um modelo de linguagem (LLM) que você mesmo cria,
+> treina e embarca. Este arquivo único reúne as 6 partes e todas as figuras embutidas.
+
+---
+
+## Sumário
+
+- **Parte 0** — Boas-vindas
+- **Parte 1** — O Robô (o corpo)
+- **Parte 2** — O que é uma LLM
+- **Parte 3** — A LLM do zero (o cérebro)
+- **Parte 4** — ESP32-S3 (a união)
+- **Parte 5** — Apêndices
+
+---
+
 # Parte 0 — Boas-vindas
 
 > Um robô que anda sozinho, desvia de obstáculos e **reclama com sarcasmo** de tudo
@@ -38,13 +59,11 @@ e pode pular direto para as partes que interessam.
 
 O projeto tem **duas metades que conversam entre si**:
 
-![Visão geral do projeto](/img/visao_geral.svg)
+![Visão geral do projeto](/img/parte-0_fig01_visao_geral_do_projeto.png)
 
-- **O corpo** é um robô físico controlado por um microcontrolador ESP32. Ele anda,
-  enxerga com um sensor de distância e desvia sozinho de obstáculos.
-- **O cérebro** é um pequeno modelo de linguagem (uma "IA" minúscula) rodando num
-  segundo microcontrolador. A cada situação do robô, ele gera uma frase curta, em
-  inglês, com um tom preguiçoso e debochado.
+- **O corpo** (um ESP32) anda, enxerga com um sensor de distância e desvia sozinho.
+- **O cérebro** (um segundo microcontrolador com uma IA minúscula) recebe cada situação
+  do robô e gera uma frase curta, debochada, em inglês.
 
 O resultado é um robozinho com **personalidade**: ele não só desvia de uma parede —
 ele resmunga sobre a parede enquanto desvia.
@@ -54,9 +73,11 @@ ele resmunga sobre a parede enquanto desvia.
 ## O que torna este projeto especial
 
 Existe muito tutorial de robô por aí, e muito tutorial de IA. O diferencial deste é a
-filosofia: **entender antes de integrar**. Nada de copiar código pronto de uma
-biblioteca mágica que ninguém sabe como funciona. Aqui, cada componente é construído
-e testado isoladamente, com explicação, antes de virar parte do todo.
+filosofia: **entender antes de integrar**. Em vez de baixar uma biblioteca de IA
+pronta e só apertar "rodar", você vai ver cada número que entra e sai — como um
+relojoeiro que monta o relógio peça por peça, não alguém que só troca a pilha. Aqui,
+cada componente é construído e testado isoladamente, com explicação, antes de virar
+parte do todo.
 
 Ao final, você não vai só ter um robô funcionando — você vai **entender por que ele
 funciona**, do sensor de ultrassom até o mecanismo de atenção do modelo de linguagem.
@@ -69,7 +90,7 @@ Isso é raro, e é o que transforma um seguidor de tutoriais num criador.
 O guia é dividido em partes. Cada uma se apoia na anterior, mas você pode navegar como
 preferir:
 
-![Mapa das partes do tutorial](/img/mapa_partes.svg)
+![Mapa das partes do tutorial](/img/parte-0_fig02_mapa_das_partes_do_tutorial.png)
 
 - **Parte 1 — O Robô:** monta o corpo, na simulação e no hardware real.
 - **Parte 2 — O que é uma LLM:** explica a grande ideia da IA de linguagem, sem código.
@@ -88,8 +109,10 @@ Este tutorial segue um método testado, pensado para não sobrecarregar você:
 
 1. **Um conceito de cada vez.** Cada ideia nova vem sozinha, com tempo para assentar.
 2. **Sempre uma explicação antes do código.** Você nunca vai copiar algo sem saber o
-   que faz. O padrão é: ideia em uma frase → analogia do dia a dia → exemplo com
-   números pequenos → diagrama → código comentado → uma frase-resumo.
+   que faz. Nos conceitos de IA (a partir da Parte 3), cada ideia segue sempre o mesmo
+   ritmo, que você vai reconhecer: ideia em uma frase → analogia do dia a dia → exemplo
+   com números pequenos → diagrama → código comentado → uma frase-resumo para repetir a
+   quem entende do assunto.
 3. **Teste cada peça isoladamente (a "regra de ouro").** Nunca montamos tudo de uma
    vez. Montamos uma peça, testamos ela sozinha, confirmamos que funciona, e só então
    seguimos. Isso transforma a depuração de um pesadelo ("nada funciona!") em algo
@@ -124,11 +147,16 @@ simulando e entendendo — e comprar os componentes quando decidir montar.
 
 ## Uma palavra antes de começar
 
-Projetos assim são maratonas, não corridas de 100 metros. Vai ter momento em que algo
-não funciona de primeira — e tudo bem, faz parte. Cada peça que você testar e ver
-funcionando é uma pequena vitória. Comemore essas vitórias.
+Projetos assim são maratonas, não corridas de 100 metros. **Não há pressa nem prazo:**
+tem gente que faz só a Parte 1 num fim de semana e para por ali, feliz com um robô que
+anda — e está ótimo. Vai ter momento em que algo não funciona de primeira — e tudo bem,
+faz parte. Cada peça que você testar e ver funcionando é uma pequena vitória. Comemore
+essas vitórias.
 
 No fim, você vai olhar para um robozinho debochado andando pela sala e pensar: *"eu
 entendo tudo o que está acontecendo aí dentro"*. Esse é o objetivo.
 
 Vamos começar. Siga para a **Parte 1** e vamos dar vida ao corpo do robô. 🤖
+
+
+---
