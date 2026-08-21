@@ -1,0 +1,2722 @@
+# Tutorial Completo — Robô Autônomo com Cérebro LLM (nano-grump)
+
+> Material de estudos para iniciante total: construir, do zero, um robô autônomo com
+> personalidade sarcástica, movido por um modelo de linguagem (LLM) que você mesmo cria,
+> treina e embarca. Este arquivo único reúne as 6 partes e todas as figuras embutidas.
+
+---
+
+## Sumário
+
+- **Parte 0** — Boas-vindas
+- **Parte 1** — O Robô (o corpo)
+- **Parte 2** — O que é uma LLM
+- **Parte 3** — A LLM do zero (o cérebro)
+- **Parte 4** — ESP32-S3 (a união)
+- **Parte 5** — Apêndices
+
+---
+
+# Parte 0 — Boas-vindas
+
+> Um robô que anda sozinho, desvia de obstáculos e **reclama com sarcasmo** de tudo
+> que acontece com ele — usando um modelo de inteligência artificial que você mesmo
+> vai construir, treinar e colocar para rodar dentro dele. Do zero. Entendendo cada
+> peça.
+
+Seja muito bem-vindo(a). Este é o guia completo de um projeto que une **eletrônica**,
+**robótica** e **inteligência artificial** num só lugar — e foi escrito para que
+qualquer pessoa curiosa consiga acompanhar, mesmo começando do absoluto zero.
+
+---
+
+## Para quem é este tutorial
+
+Este material foi feito pensando em você, **iniciante total**. Você **não** precisa:
+
+- Saber programar (vamos explicar cada trecho de código)
+- Entender de eletrônica (começamos pela protoboard)
+- Saber o que é inteligência artificial (a Parte 2 explica do zero)
+- Ter feito faculdade de nada disso
+
+Você **precisa** apenas de:
+
+- Curiosidade e vontade de aprender fazendo
+- Paciência para ir um passo de cada vez
+- Um computador (Windows, mas o essencial serve para qualquer sistema)
+
+Se você já tem experiência com Arduino, Python ou IA, ótimo — vai avançar mais rápido
+e pode pular direto para as partes que interessam.
+
+---
+
+## O que você vai construir
+
+O projeto tem **duas metades que conversam entre si**:
+
+![Visão geral do projeto](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMzMCIgdmlld0JveD0iMCAwIDYyMCAzMzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0idjEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjciIG1hcmtlckhlaWdodD0iNyIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMzMwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+TyBwcm9qZXRvOiB1bSByb2LDtCBjb20gY29ycG8gZSBjw6lyZWJybzwvdGV4dD4KCiAgPCEtLSBjb3JwbyAtLT4KICA8cmVjdCB4PSI0MCIgeT0iNzAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMTgwIiByeD0iMTIiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjgiLz4KICA8dGV4dCB4PSIxNjAiIHk9Ijk4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjM0I4QkQ0Ij5PIENPUlBPPC90ZXh0PgogIDx0ZXh0IHg9IjE2MCIgeT0iMTIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjNTU1Ij5FU1AzMi1XUk9PTS0zMjwvdGV4dD4KICA8dGV4dCB4PSIxNjAiIHk9IjE0NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+4oCiIGFuZGEgY29tIDIgbW90b3JlczwvdGV4dD4KICA8dGV4dCB4PSIxNjAiIHk9IjE2OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+4oCiIHNlbnNvciBkZSBkaXN0w6JuY2lhPC90ZXh0PgogIDx0ZXh0IHg9IjE2MCIgeT0iMTkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj7igKIgZGVzdmlhIGRlIG9ic3TDoWN1bG9zPC90ZXh0PgogIDx0ZXh0IHg9IjE2MCIgeT0iMjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj7igKIgZGV0ZWN0YSBhIHNpdHVhw6fDo288L3RleHQ+CiAgPHRleHQgeD0iMTYwIiB5PSIyMzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM3NzciPihQYXJ0ZSAxKTwvdGV4dD4KCiAgPCEtLSBjw6lyZWJybyAtLT4KICA8cmVjdCB4PSIzNDAiIHk9IjcwIiB3aWR0aD0iMjQwIiBoZWlnaHQ9IjE4MCIgcng9IjEyIiBmaWxsPSIjZmRlZWUwIiBzdHJva2U9IiNCQTc1MTciIHN0cm9rZS13aWR0aD0iMS44Ii8+CiAgPHRleHQgeD0iNDYwIiB5PSI5OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0JBNzUxNyI+TyBDw4lSRUJSTzwvdGV4dD4KICA8dGV4dCB4PSI0NjAiIHk9IjEyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzU1NSI+RVNQMzItUzMgKyBMTE0gcHLDs3ByaWE8L3RleHQ+CiAgPHRleHQgeD0iNDYwIiB5PSIxNDYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPuKAoiByZWNlYmUgYSBzaXR1YcOnw6NvPC90ZXh0PgogIDx0ZXh0IHg9IjQ2MCIgeT0iMTY4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj7igKIgZ2VyYSBmcmFzZSBzYXJjw6FzdGljYTwvdGV4dD4KICA8dGV4dCB4PSI0NjAiIHk9IjE5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+4oCiIG1vc3RyYSBubyBkaXNwbGF5PC90ZXh0PgogIDx0ZXh0IHg9IjQ2MCIgeT0iMjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj7igKIgdGVtIHBlcnNvbmFsaWRhZGU8L3RleHQ+CiAgPHRleHQgeD0iNDYwIiB5PSIyMzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM3NzciPihQYXJ0ZXMgMyBlIDQpPC90ZXh0PgoKICA8bGluZSB4MT0iMjgyIiB5MT0iMTUwIiB4Mj0iMzM4IiB5Mj0iMTUwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMi41IiBtYXJrZXItZW5kPSJ1cmwoI3YxKSIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwIiBmaWxsPSIjMEY2RTU2Ij5zaXR1YcOnw6NvPC90ZXh0PgoKICA8dGV4dCB4PSIzMTAiIHk9IjI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzMzMyI+IkJhdGkgbnVtIG9ic3TDoWN1bG8iIOKGkiAiT2ggbG9vaywgYSB3YWxsLiBHcm91bmRicmVha2luZy4gVHVybmluZy4iPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMzE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzc3Ij5Eb2lzIG1pY3JvY29udHJvbGFkb3JlcyBjb252ZXJzYW5kbzogdW0gc2VudGUgbyBtdW5kbywgbyBvdXRybyBjb21lbnRhIGNvbSBkZWJvY2hlLjwvdGV4dD4KPC9zdmc+Cg==)
+
+- **O corpo** (um ESP32) anda, enxerga com um sensor de distância e desvia sozinho.
+- **O cérebro** (um segundo microcontrolador com uma IA minúscula) recebe cada situação
+  do robô e gera uma frase curta, debochada, em inglês.
+
+O resultado é um robozinho com **personalidade**: ele não só desvia de uma parede —
+ele resmunga sobre a parede enquanto desvia.
+
+---
+
+## O que torna este projeto especial
+
+Existe muito tutorial de robô por aí, e muito tutorial de IA. O diferencial deste é a
+filosofia: **entender antes de integrar**. Em vez de baixar uma biblioteca de IA
+pronta e só apertar "rodar", você vai ver cada número que entra e sai — como um
+relojoeiro que monta o relógio peça por peça, não alguém que só troca a pilha. Aqui,
+cada componente é construído e testado isoladamente, com explicação, antes de virar
+parte do todo.
+
+Ao final, você não vai só ter um robô funcionando — você vai **entender por que ele
+funciona**, do sensor de ultrassom até o mecanismo de atenção do modelo de linguagem.
+Isso é raro, e é o que transforma um seguidor de tutoriais num criador.
+
+---
+
+## Como este tutorial está organizado
+
+O guia é dividido em partes. Cada uma se apoia na anterior, mas você pode navegar como
+preferir:
+
+![Mapa das partes do tutorial](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYyMCA0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0ibTEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iNDAwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+TyBjYW1pbmhvIGRvIHR1dG9yaWFsPC90ZXh0PgoKICA8IS0tIFBhcnRlIDAgLS0+CiAgPHJlY3QgeD0iMTgwIiB5PSI0OCIgd2lkdGg9IjI2MCIgaGVpZ2h0PSI0MCIgcng9IjkiIGZpbGw9IiNmNWY1ZjQiIHN0cm9rZT0iIzg4OCIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNTU1Ij5QYXJ0ZSAwIOKAlCBCb2FzLXZpbmRhcyAodm9jw6ogZXN0w6EgYXF1aSk8L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSI4MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzc3NyI+dmlzw6NvIGdlcmFsIGUgY29tbyB1c2FyIG8gbWF0ZXJpYWw8L3RleHQ+CiAgPGxpbmUgeDE9IjMxMCIgeTE9Ijg4IiB4Mj0iMzEwIiB5Mj0iMTAwIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI20xKSIvPgoKICA8cmVjdCB4PSIxODAiIHk9IjEwMiIgd2lkdGg9IjI2MCIgaGVpZ2h0PSI0MCIgcng9IjkiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjEyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzNCOEJENCI+UGFydGUgMSDigJQgTyBSb2LDtCAobyBjb3Jwbyk8L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSIxMzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM3NzciPm1vbnRhZ2VtLCBzaW11bGHDp8OjbyBlIGPDs2RpZ288L3RleHQ+CiAgPGxpbmUgeDE9IjMxMCIgeTE9IjE0MiIgeDI9IjMxMCIgeTI9IjE1NCIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNtMSkiLz4KCiAgPHJlY3QgeD0iMTgwIiB5PSIxNTYiIHdpZHRoPSIyNjAiIGhlaWdodD0iNDAiIHJ4PSI5IiBmaWxsPSIjZWFmNWUwIiBzdHJva2U9IiM2Mzk5MjIiIHN0cm9rZS13aWR0aD0iMS40Ii8+CiAgPHRleHQgeD0iMzEwIiB5PSIxNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM2Mzk5MjIiPlBhcnRlIDIg4oCUIE8gcXVlIMOpIHVtYSBMTE08L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSIxODkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM3NzciPmEgZ3JhbmRlIGlkZWlhLCBzZW0gY8OzZGlnbzwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iMTk2IiB4Mj0iMzEwIiB5Mj0iMjA4IiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI20xKSIvPgoKICA8cmVjdCB4PSIxODAiIHk9IjIxMCIgd2lkdGg9IjI2MCIgaGVpZ2h0PSI0MCIgcng9IjkiIGZpbGw9IiNmNGYyZmMiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzUzNEFCNyI+UGFydGUgMyDigJQgQSBMTE0gZG8gemVybyAobyBjw6lyZWJybyk8L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSIyNDMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM3NzciPmNvbnN0cnVpciBlIHRyZWluYXIgbyBtb2RlbG88L3RleHQ+CiAgPGxpbmUgeDE9IjMxMCIgeTE9IjI1MCIgeDI9IjMxMCIgeTI9IjI2MiIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNtMSkiLz4KCiAgPHJlY3QgeD0iMTgwIiB5PSIyNjQiIHdpZHRoPSIyNjAiIGhlaWdodD0iNDAiIHJ4PSI5IiBmaWxsPSIjZmRlZWUwIiBzdHJva2U9IiNCQTc1MTciIHN0cm9rZS13aWR0aD0iMS40Ii8+CiAgPHRleHQgeD0iMzEwIiB5PSIyODIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCQTc1MTciPlBhcnRlIDQg4oCUIEVTUDMyLVMzIChhIHVuacOjbyk8L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSIyOTciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM3NzciPmVtYmFyY2FyIG8gY8OpcmVicm8gbm8gcm9iw7Q8L3RleHQ+CiAgPGxpbmUgeDE9IjMxMCIgeTE9IjMwNCIgeDI9IjMxMCIgeTI9IjMxNiIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNtMSkiLz4KCiAgPHJlY3QgeD0iMTgwIiB5PSIzMTgiIHdpZHRoPSIyNjAiIGhlaWdodD0iNDAiIHJ4PSI5IiBmaWxsPSIjZmJlNmUyIiBzdHJva2U9IiNCMjNBMkUiIHN0cm9rZS13aWR0aD0iMS40Ii8+CiAgPHRleHQgeD0iMzEwIiB5PSIzMzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCMjNBMkUiPlBhcnRlIDUg4oCUIEFww6puZGljZXM8L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSIzNTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM3NzciPmdsb3Nzw6FyaW8sIHByb2JsZW1hcyBlIHByw7N4aW1vcyBwYXNzb3M8L3RleHQ+CgogIDx0ZXh0IHg9IjMxMCIgeT0iMzg0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjNzc3Ij5Wb2PDqiBwb2RlIHNlZ3VpciBlbSBvcmRlbSBvdSBwdWxhciBkaXJldG8gcGFyYSBhIHBhcnRlIHF1ZSBwcmVjaXNhLjwvdGV4dD4KPC9zdmc+Cg==)
+
+- **Parte 1 — O Robô:** monta o corpo, na simulação e no hardware real.
+- **Parte 2 — O que é uma LLM:** explica a grande ideia da IA de linguagem, sem código.
+- **Parte 3 — A LLM do zero:** constrói e treina o cérebro, peça por peça.
+- **Parte 4 — ESP32-S3:** leva o cérebro para o robô e faz os dois conversarem.
+- **Parte 5 — Apêndices:** glossário, solução de problemas e próximos passos.
+
+Se seu interesse é só o robô, faça a Parte 1. Se é só a IA, vá para a 2 e a 3. Se quer
+a experiência completa, siga em ordem.
+
+---
+
+## Como usar este material (o método)
+
+Este tutorial segue um método testado, pensado para não sobrecarregar você:
+
+1. **Um conceito de cada vez.** Cada ideia nova vem sozinha, com tempo para assentar.
+2. **Sempre uma explicação antes do código.** Você nunca vai copiar algo sem saber o
+   que faz. Nos conceitos de IA (a partir da Parte 3), cada ideia segue sempre o mesmo
+   ritmo, que você vai reconhecer: ideia em uma frase → analogia do dia a dia → exemplo
+   com números pequenos → diagrama → código comentado → uma frase-resumo para repetir a
+   quem entende do assunto.
+3. **Teste cada peça isoladamente (a "regra de ouro").** Nunca montamos tudo de uma
+   vez. Montamos uma peça, testamos ela sozinha, confirmamos que funciona, e só então
+   seguimos. Isso transforma a depuração de um pesadelo ("nada funciona!") em algo
+   gerenciável ("só esta peça falhou").
+4. **Segurança sempre.** Quando há energia envolvida, montamos com tudo desligado,
+   conferimos item por item e só então ligamos.
+
+Se em algum momento uma explicação parecer rápida demais ou cheia de termos, respire:
+volte um passo, releia a analogia. O material foi feito para ser digerido devagar.
+
+---
+
+## O que você vai precisar
+
+Uma visão geral (cada parte detalha o seu próprio material):
+
+**Para o robô (Parte 1):**
+- Uma placa ESP32-WROOM-32, sensor HC-SR04, servo SG90, ponte H L298N, 2 motores com
+  rodas, chassi, pilhas e uma protoboard.
+- Ou **nada disso** para começar: a Parte 1 mostra como simular tudo no computador,
+  de graça, antes de comprar qualquer peça.
+
+**Para a IA (Partes 3 e 4):**
+- Um computador com Python. Uma placa de vídeo (GPU) ajuda no treino, mas não é
+  obrigatória para um modelo pequeno como o nosso.
+- Para embarcar: uma placa ESP32-S3 (com PSRAM) e um display OLED.
+
+Não precisa ter tudo agora. Dá para percorrer boa parte do tutorial só lendo,
+simulando e entendendo — e comprar os componentes quando decidir montar.
+
+---
+
+## Uma palavra antes de começar
+
+Projetos assim são maratonas, não corridas de 100 metros. **Não há pressa nem prazo:**
+tem gente que faz só a Parte 1 num fim de semana e para por ali, feliz com um robô que
+anda — e está ótimo. Vai ter momento em que algo não funciona de primeira — e tudo bem,
+faz parte. Cada peça que você testar e ver funcionando é uma pequena vitória. Comemore
+essas vitórias.
+
+No fim, você vai olhar para um robozinho debochado andando pela sala e pensar: *"eu
+entendo tudo o que está acontecendo aí dentro"*. Esse é o objetivo.
+
+Vamos começar. Siga para a **Parte 1** e vamos dar vida ao corpo do robô. 🤖
+
+
+---
+
+# Parte 1 — O Corpo: o robô autônomo
+
+> **Onde estamos na jornada.** Esta é a primeira parte prática do projeto. Vamos
+> montar um robô capaz de andar sozinho, enxergar obstáculos com um sensor de
+> ultrassom e desviar deles — tudo comandado por um pequeno computador, o ESP32.
+> Primeiro simulamos tudo no navegador (sem gastar um parafuso); depois montamos o
+> robô físico, fio por fio, testando cada peça sozinha antes de ligar o conjunto.
+>
+> **O que você já precisa saber:** nada. Se você nunca ligou um LED nem escreveu uma
+> linha de código, esta parte foi feita para você. Cada termo novo é explicado na
+> hora em que aparece.
+
+---
+
+## 1.1 O que vamos construir
+
+Um **robô de duas rodas em modo exploração**: ele anda pelo ambiente em direções que
+mudam de tempos em tempos e, quando o sensor detecta um obstáculo à frente, ele para,
+olha para os dois lados e escolhe o caminho mais livre — sozinho, sem ninguém no
+controle remoto.
+
+A melhor forma de entender o robô não é como uma lista de passos, e sim como um
+**ciclo que se repete o tempo todo**: ele anda, mede a distância à frente, decide se
+há obstáculo e age de acordo. Assim que termina, recomeça — várias vezes por segundo.
+É esse loop girando muito rápido que dá a impressão de que o robô "pensa".
+
+> **O que é um "loop"?** É uma sequência de passos que o programa repete sem parar,
+> como um relógio que volta ao topo assim que completa a volta. Praticamente todo
+> robô funciona assim: perceber → decidir → agir → repetir.
+
+![O ciclo de decisão do robô](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjQ3MCIgdmlld0JveD0iMCAwIDYyMCA0NzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJmYSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNi41IiBtYXJrZXJIZWlnaHQ9IjYuNSIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPgogICAgICA8cGF0aCBkPSJNMiAxTDggNUwyIDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogICAgPC9tYXJrZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iNDcwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+TyBjaWNsbyBkZSBkZWNpc8OjbyBkbyByb2LDtDwvdGV4dD4KCiAgPCEtLSBBbmRhciAtLT4KICA8cmVjdCB4PSIyMjAiIHk9IjUwIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjQ2IiByeD0iMTAiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjgiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjcwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjM0I4QkQ0Ij5BbmRhciBwYXJhIGZyZW50ZTwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9Ijg3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiM1NTUiPm1vdG9yZXMgKEwyOThOKTwvdGV4dD4KCiAgPCEtLSBNZWRpciAtLT4KICA8cmVjdCB4PSIyMjAiIHk9IjEyMCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSI0NiIgcng9IjEwIiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS42Ii8+CiAgPHRleHQgeD0iMzEwIiB5PSIxNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPk1lZGlyIGEgZGlzdMOibmNpYTwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjE1NyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjNTU1Ij5zZW5zb3IgSEMtU1IwNDwvdGV4dD4KCiAgPCEtLSBMb3NhbmdvIGRlY2lzw6NvIC0tPgogIDxwb2x5Z29uIHBvaW50cz0iMzEwLDE5MCA0MTAsMjM1IDMxMCwyODAgMjEwLDIzNSIgZmlsbD0iI2ZkZWVlMCIgc3Ryb2tlPSIjQkE3NTE3IiBzdHJva2Utd2lkdGg9IjEuOCIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCQTc1MTciPk9ic3TDoWN1bG88L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSIyNDciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0JBNzUxNyI+cGVydG8/PC90ZXh0PgoKICA8IS0tIFNldGEgc2V0YXMgcHJpbmNpcGFpcyAtLT4KICA8bGluZSB4MT0iMzEwIiB5MT0iOTYiIHgyPSIzMTAiIHkyPSIxMTgiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjYiIG1hcmtlci1lbmQ9InVybCgjZmEpIi8+CiAgPGxpbmUgeDE9IjMxMCIgeTE9IjE2NiIgeDI9IjMxMCIgeTI9IjE4OCIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNiIgbWFya2VyLWVuZD0idXJsKCNmYSkiLz4KCiAgPCEtLSBOw4NPOiB2b2x0YSBwcmEgY2ltYSBwZWxhIGRpcmVpdGEgLS0+CiAgPHRleHQgeD0iNDMwIiB5PSIyMzAiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM2Mzk5MjIiPk7Dg088L3RleHQ+CiAgPHBhdGggZD0iTTQxMCAyMzUgTDQ4MCAyMzUgTDQ4MCA3MyBMNDAwIDczIiBmaWxsPSJub25lIiBzdHJva2U9IiM2Mzk5MjIiIHN0cm9rZS13aWR0aD0iMS42IiBtYXJrZXItZW5kPSJ1cmwoI2ZhKSIvPgogIDx0ZXh0IHg9IjQ5MiIgeT0iMTU4IiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiM2Mzk5MjIiIHRyYW5zZm9ybT0icm90YXRlKDkwIDQ5MiAxNTgpIj5jb250aW51YSBleHBsb3JhbmRvPC90ZXh0PgoKICA8IS0tIFNJTTogZGVzY2UgLS0+CiAgPHRleHQgeD0iMzE4IiB5PSIzMDAiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCMjNBMkUiPlNJTTwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iMjgwIiB4Mj0iMzEwIiB5Mj0iMzEyIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS42IiBtYXJrZXItZW5kPSJ1cmwoI2ZhKSIvPgoKICA8IS0tIFNlcXXDqm5jaWEgZGUgZGVzdmlvIC0tPgogIDxyZWN0IHg9IjE1MCIgeT0iMzE0IiB3aWR0aD0iMzIwIiBoZWlnaHQ9Ijg2IiByeD0iMTAiIGZpbGw9IiNmYmU2ZTIiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjMzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQjIzQTJFIj5TZXF1w6puY2lhIGRlIGRlc3ZpbzwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjM1NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+cGFyYXIg4oaSIHJlY3VhciDihpIgb2xoYXIgw6AgZXNxdWVyZGEgZSDDoCBkaXJlaXRhPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMzc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj4obyBzZXJ2byBnaXJhIG8gc2Vuc29yKSDihpIgY29tcGFyYXIgb3MgZG9pcyBsYWRvczwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjM5MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+4oaSIHZpcmFyIHBhcmEgbyBsYWRvIG1haXMgbGl2cmU8L3RleHQ+CgogIDwhLS0gdm9sdGEgYW8gdG9wbyAtLT4KICA8cGF0aCBkPSJNMTUwIDM1NyBMOTAgMzU3IEw5MCA3MyBMMjIwIDczIiBmaWxsPSJub25lIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS42IiBtYXJrZXItZW5kPSJ1cmwoI2ZhKSIvPgogIDx0ZXh0IHg9Ijc4IiB5PSIyMTUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzc3NyIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDc4IDIxNSkiPnZvbHRhIGEgYW5kYXI8L3RleHQ+CgogIDx0ZXh0IHg9IjMxMCIgeT0iNDMyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZpbGw9IiM3NzciPkVzc2UgY2ljbG8gc2UgcmVwZXRlIHbDoXJpYXMgdmV6ZXMgcG9yIHNlZ3VuZG8sIG8gdGVtcG8gdG9kby48L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSI0NTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM5OTkiPkRlIHZleiBlbSBxdWFuZG8gbyByb2LDtCB0cm9jYSBkZSBkaXJlw6fDo28gc296aW5obyDigJQgw6kgbyAibW9kbyBleHBsb3Jhw6fDo28iLjwvdGV4dD4KPC9zdmc+Cg==)
+
+> **O que você vai ver acontecer.** Assim que ligado, o robô sai andando. Ao aproximar
+> a mão ou uma parede a menos de ~25 cm da frente dele, ele para, dá uma ré curtinha,
+> gira o sensor para a esquerda e para a direita (você vê o servo mexendo) e então vira
+> para o lado que estava mais livre. Se os dois lados estiverem bloqueados, ele resolve
+> isso também — veremos como no código.
+
+Cada parte desse comportamento é feita por uma peça específica. Guarde esta associação,
+porque ela vai reaparecer o tempo todo:
+
+- **andar e virar** → os motores, comandados pela ponte H (o L298N)
+- **medir a distância** → o sensor de ultrassom (o HC-SR04)
+- **olhar para os lados** → o servo (o SG90), que gira o sensor
+- **decidir o que fazer** → o ESP32, rodando o nosso código
+
+> **Resumo em uma frase.** O robô é um loop "andar → medir → decidir → desviar" onde
+> cada peça tem um papel, e o ESP32 é quem toma as decisões.
+
+---
+
+## 1.2 Lista de componentes
+
+Aqui está tudo que você precisa para montar o robô. A coluna da direita não diz só o
+nome da peça — diz **o que ela faz no comportamento** que você acabou de ver, para você
+já ligar cada item ao seu papel.
+
+| Qtd. | Componente | O que ele faz no robô |
+|---|---|---|
+| 1 | **ESP32-WROOM-32 DevKit** | O pequeno computador que decide tudo: lê o sensor e comanda os motores. É o cérebro do corpo. |
+| 1 | **HC-SR04** | O sensor de distância. É ele que "enxerga" o obstáculo e dispara o desvio. |
+| 1 | **SG90** | O servo motor. Gira o sensor para a esquerda e para a direita, para o robô olhar os lados. |
+| 1 | **L298N** | A ponte H. Recebe as ordens fracas do ESP32 e entrega a corrente forte que os motores precisam. |
+| 2 | **Motor DC TT com caixa de redução** | Giram as rodas. São os "músculos" que movem o robô. |
+| 2 | Rodas compatíveis com motor TT | Onde os motores encostam no chão. |
+| 1 | Roda boba (castor) | Terceiro ponto de apoio, atrás, para o robô não cair. |
+| 1 | Chassi de acrílico 2WD | A estrutura onde tudo é parafusado. |
+| 1 | Suporte para 4× pilhas AA | Segura as pilhas e leva a energia para o circuito. |
+| 4 | Pilhas AA | A fonte de energia de tudo (~6 V com alcalinas). |
+| 1 | Protoboard | Uma plaquinha de furos que distribui energia e terra sem solda. |
+| — | Fios jumper Dupont (macho-macho, macho-fêmea) | Os fios que ligam uma peça na outra. |
+| 1 | Chave liga/desliga (opcional) | Para ligar e desligar sem tirar as pilhas. |
+
+![Os componentes do robô e o que cada um faz](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjM4MCIgdmlld0JveD0iMCAwIDYyMCAzODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIzODAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5PcyBjb21wb25lbnRlcyBkbyByb2LDtCBlIG8gcXVlIGNhZGEgdW0gZmF6PC90ZXh0PgoKICA8IS0tIEVTUDMyIC0tPgogIDxyZWN0IHg9IjIzMCIgeT0iMTUwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjgwIiByeD0iMTAiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjgiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjE4MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzNCOEJENCI+RVNQMzI8L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSIyMDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPm8gY8OpcmVicm86IHByb2Nlc3NhPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5zZW5zb3JlcyBlIGNvbWFuZGE8L3RleHQ+CgogIDwhLS0gSEMtU1IwNCAtLT4KICA8cmVjdCB4PSIzMCIgeT0iNDAiIHdpZHRoPSIxNTAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjEwNSIgeT0iNjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPkhDLVNSMDQ8L3RleHQ+CiAgPHRleHQgeD0iMTA1IiB5PSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+c2Vuc29yIGRlIGRpc3TDom5jaWE8L3RleHQ+CiAgPGxpbmUgeDE9IjE1NSIgeTE9IjEwMCIgeDI9IjI0MiIgeTI9IjE2NSIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuMyIgc3Ryb2tlLWRhc2hhcnJheT0iNCAzIi8+CgogIDwhLS0gU0c5MCAtLT4KICA8cmVjdCB4PSIzMCIgeT0iMTQwIiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNmNGYyZmMiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSIxMDUiIHk9IjE2MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzUzNEFCNyI+U0c5MCAoc2Vydm8pPC90ZXh0PgogIDx0ZXh0IHg9IjEwNSIgeT0iMTgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5naXJhIG8gc2Vuc29yPC90ZXh0PgogIDxsaW5lIHgxPSIxODAiIHkxPSIxNzAiIHgyPSIyMjgiIHkyPSIxOTAiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjMiIHN0cm9rZS1kYXNoYXJyYXk9IjQgMyIvPgoKICA8IS0tIEwyOThOIC0tPgogIDxyZWN0IHg9IjMwIiB5PSIyNTAiIHdpZHRoPSIxNTAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2ZkZWVlMCIgc3Ryb2tlPSIjQkE3NTE3IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjEwNSIgeT0iMjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQkE3NTE3Ij5MMjk4TjwvdGV4dD4KICA8dGV4dCB4PSIxMDUiIHk9IjI5MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+cG9udGUgSDogY29udHJvbGE8L3RleHQ+CiAgPGxpbmUgeDE9IjE4MCIgeTE9IjI3OCIgeDI9IjIyOCIgeTI9IjIyMCIgc3Ryb2tlPSIjQkE3NTE3IiBzdHJva2Utd2lkdGg9IjEuMyIgc3Ryb2tlLWRhc2hhcnJheT0iNCAzIi8+CgogIDwhLS0gTW90b3JlcyAtLT4KICA8cmVjdCB4PSI0NDAiIHk9IjI1MCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSI2MCIgcng9IjEwIiBmaWxsPSIjZmRlZWUwIiBzdHJva2U9IiNCQTc1MTciIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iNTE1IiB5PSIyNzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCQTc1MTciPk1vdG9yZXMgVFQ8L3RleHQ+CiAgPHRleHQgeD0iNTE1IiB5PSIyOTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPm1vdmVtIGFzIHJvZGFzPC90ZXh0PgogIDxsaW5lIHgxPSI0NDAiIHkxPSIyNzgiIHgyPSIzOTIiIHkyPSIyMjAiIHN0cm9rZT0iI0JBNzUxNyIgc3Ryb2tlLXdpZHRoPSIxLjMiIHN0cm9rZS1kYXNoYXJyYXk9IjQgMyIvPgoKICA8IS0tIFBpbGhhcyAtLT4KICA8cmVjdCB4PSI0NDAiIHk9IjE0MCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSI2MCIgcng9IjEwIiBmaWxsPSIjZmJlNmUyIiBzdHJva2U9IiNCMjNBMkUiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iNTE1IiB5PSIxNjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCMjNBMkUiPjTDlyBwaWxoYXMgQUE8L3RleHQ+CiAgPHRleHQgeD0iNTE1IiB5PSIxODIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPmVuZXJnaWEgKH42Vik8L3RleHQ+CiAgPGxpbmUgeDE9IjQ0MCIgeTE9IjE3MCIgeDI9IjM5MiIgeTI9IjE5MCIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuMyIgc3Ryb2tlLWRhc2hhcnJheT0iNCAzIi8+CgogIDwhLS0gUHJvdG9ib2FyZCAtLT4KICA8cmVjdCB4PSI0NDAiIHk9IjQwIiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNmNWY1ZjQiIHN0cm9rZT0iIzg4OCIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICA8dGV4dCB4PSI1MTUiIHk9IjYyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNTU1Ij5Qcm90b2JvYXJkPC90ZXh0PgogIDx0ZXh0IHg9IjUxNSIgeT0iODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM1NTUiPmRpc3RyaWJ1aSBWQ0MgZSBHTkQ8L3RleHQ+CiAgPGxpbmUgeDE9IjQ0MCIgeTE9IjcwIiB4Mj0iMzkyIiB5Mj0iMTY1IiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNCAzIi8+CgogIDx0ZXh0IHg9IjMxMCIgeT0iMzU4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzc3Ij5Ub2RvcyBvcyBmaW9zIHByZXRvcyAoR05EKSBwcmVjaXNhbSBlc3RhciB1bmlkb3Mg4oCUIMOpIGEgcmVncmEgZGUgb3VybyBlbMOpdHJpY2EuPC90ZXh0Pgo8L3N2Zz4K)
+
+> **Não compre tudo de uma vez.** Se quiser testar antes de investir, siga a Seção 1.4
+> (simulação no Wokwi): você roda o comportamento completo do robô no navegador, sem
+> nenhuma peça física. Só depois de ver funcionando é que vale comprar os componentes.
+
+---
+
+## 1.3 Entendendo a alimentação antes de montar qualquer fio
+
+Antes de encostar em um fio sequer, precisamos entender como a energia percorre o robô.
+**Errar a alimentação é a causa número um de peças queimadas** — e é também o erro mais
+fácil de evitar quando você entende o caminho da energia.
+
+### A regra de ouro da eletrônica: o GND comum
+
+Todos os componentes do robô precisam compartilhar o mesmo **GND** — o "terra", o
+negativo do circuito. Pense no GND como o **nível do chão** de um prédio: todo mundo
+mede a altura a partir do mesmo chão. Se cada peça tivesse um "chão" diferente, elas não
+teriam como concordar sobre o que é "0 volt", e os sinais elétricos viram bagunça.
+
+> **Na prática:** o GND das pilhas, o GND do L298N, o GND do ESP32 e o GND dos sensores
+> têm que estar **todos ligados entre si**. Sem isso, o circuito simplesmente não
+> funciona — mesmo com tudo o mais certo.
+
+### Por onde a energia caminha
+
+![Esquema de alimentação](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDYyMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJwYSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNiIgbWFya2VySGVpZ2h0PSI2IiBvcmllbnQ9ImF1dG8tc3RhcnQtcmV2ZXJzZSI+CiAgICAgIDxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgICA8L21hcmtlcj4KICAgIDxtYXJrZXIgaWQ9InBiIiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjgiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI2IiBtYXJrZXJIZWlnaHQ9IjYiIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTIgMUw4IDVMMiA5IiBmaWxsPSJub25lIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICAgIDwvbWFya2VyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2ZmZmZmZiIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzMiPkVzcXVlbWEgZGUgYWxpbWVudGHDp8OjbzogdW0gY29uanVudG8gZGUgcGlsaGFzIGFiYXN0ZWNlIHR1ZG88L3RleHQ+CgogIDwhLS0gcGlsaGFzIC0tPgogIDxyZWN0IHg9IjMwIiB5PSIxMTAiIHdpZHRoPSIxMDAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2ZiZTZlMiIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuOCIvPgogIDx0ZXh0IHg9IjgwIiB5PSIxMzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCMjNBMkUiPjTDlyBBQTwvdGV4dD4KICA8dGV4dCB4PSI4MCIgeT0iMTU0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj5+NlY8L3RleHQ+CgogIDwhLS0gTDI5OE4gLS0+CiAgPHJlY3QgeD0iMjEwIiB5PSI5MCIgd2lkdGg9IjEzMCIgaGVpZ2h0PSIxMDAiIHJ4PSIxMCIgZmlsbD0iI2ZkZWVlMCIgc3Ryb2tlPSIjQkE3NTE3IiBzdHJva2Utd2lkdGg9IjEuOCIvPgogIDx0ZXh0IHg9IjI3NSIgeT0iMTE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQkE3NTE3Ij5MMjk4TjwvdGV4dD4KICA8dGV4dCB4PSIyNzUiIHk9IjEzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+cGlubyAxMlYgKGVudHJhIH42Vik8L3RleHQ+CiAgPHRleHQgeD0iMjc1IiB5PSIxNTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPnJlZ3VsYSDihpIgNVY8L3RleHQ+CiAgPHRleHQgeD0iMjc1IiB5PSIxNzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM3NzciPihqdW1wZXIgaW5zdGFsYWRvKTwvdGV4dD4KCiAgPCEtLSBNb3RvcmVzIC0tPgogIDxyZWN0IHg9IjIxMCIgeT0iMjIwIiB3aWR0aD0iMTMwIiBoZWlnaHQ9IjUwIiByeD0iOSIgZmlsbD0iI2ZkZWVlMCIgc3Ryb2tlPSIjQkE3NTE3IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjI3NSIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjQkE3NTE3Ij5Nb3RvcmVzIERDPC90ZXh0PgogIDxsaW5lIHgxPSIyNzUiIHkxPSIxOTAiIHgyPSIyNzUiIHkyPSIyMTgiIHN0cm9rZT0iI0JBNzUxNyIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjcGIpIi8+CiAgPHRleHQgeD0iMjk1IiB5PSIyMDgiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM3NzciPk9VVDEtNDwvdGV4dD4KCiAgPCEtLSBFU1AzMiAtLT4KICA8cmVjdCB4PSI0MzAiIHk9IjYwIiB3aWR0aD0iMTMwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjgiLz4KICA8dGV4dCB4PSI0OTUiIHk9Ijg3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjM0I4QkQ0Ij5FU1AzMjwvdGV4dD4KICA8dGV4dCB4PSI0OTUiIHk9IjEwNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+VklOIChyZWNlYmUgNVYpPC90ZXh0PgoKICA8IS0tIFNlbnNvcmVzIC0tPgogIDxyZWN0IHg9IjQzMCIgeT0iMTYwIiB3aWR0aD0iMTMwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSI0OTUiIHk9IjE4NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBGNkU1NiI+SEMtU1IwNCArIFNHOTA8L3RleHQ+CiAgPHRleHQgeD0iNDk1IiB5PSIyMDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPjVWIGRvIHRyaWxobzwvdGV4dD4KCiAgPCEtLSBzZXRhcyBkZSBlbmVyZ2lhIC0tPgogIDxsaW5lIHgxPSIxMzAiIHkxPSIxNDAiIHgyPSIyMDgiIHkyPSIxNDAiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI3BhKSIvPgogIDx0ZXh0IHg9IjE2OSIgeT0iMTMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjQjIzQTJFIj5+NlY8L3RleHQ+CiAgPGxpbmUgeDE9IjM0MCIgeTE9IjEyMCIgeDI9IjQyOCIgeTI9IjEwMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjcGIpIi8+CiAgPHRleHQgeD0iMzkzIiB5PSIxMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMwRjZFNTYiPjVWIOKGkiBWSU48L3RleHQ+CiAgPGxpbmUgeDE9IjM0MCIgeTE9IjE1NSIgeDI9IjQyOCIgeTI9IjE4OCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjIiIG1hcmtlci1lbmQ9InVybCgjcGIpIi8+CiAgPHRleHQgeD0iNDAwIiB5PSIxNjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMwRjZFNTYiPjVWIHRyaWxobzwvdGV4dD4KCiAgPCEtLSBHTkQgLS0+CiAgPHRleHQgeD0iMzEwIiB5PSIyNzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzMiPkdORCBkYXMgcGlsaGFzID0gR05EIGRvIEwyOThOID0gR05EIGRvIEVTUDMyID0gR05EIGRvcyBzZW5zb3JlczwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjI5MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzc3NyI+VG9kb3Mgb3MgdGVycmFzIHVuaWRvcyDigJQgc2VtIGlzc28sIG8gY2lyY3VpdG8gbsOjbyBmdW5jaW9uYS48L3RleHQ+Cjwvc3ZnPgo=)
+
+Siga o caminho da energia, passo a passo:
+
+1. As **4 pilhas AA** (~6 V) ligam no pino **12V do L298N**. Apesar do nome "12V", esse
+   pino aceita uma faixa de tensão; 6 V funcionam bem.
+2. O **L298N tem um regulador interno de 5V**. Um jumper pequeno (aquele conectorzinho
+   plástico que vem de fábrica) precisa estar colocado para esse regulador ligar. Ele
+   pega os ~6 V das pilhas e produz **5 V estáveis**.
+3. Esses **5 V saem pelo pino "5V" do L298N** e entram no **pino VIN do ESP32**. É assim
+   que as mesmas pilhas alimentam também o cérebro do robô.
+4. O **ESP32** distribui energia para o **HC-SR04** e o **SG90**, através do trilho da
+   protoboard (veremos a protoboard na Seção 1.6).
+
+> **Antes de ligar — confira sempre:**
+> - [ ] Os fios de GND de **todas** as peças estão unidos?
+> - [ ] O positivo e o negativo das pilhas **não** estão se tocando?
+> - [ ] O jumper de 5V do L298N está **colocado**?
+>
+> Essas três conferências evitam a maioria dos acidentes. Faça-as com a energia
+> **desligada**.
+
+> **Curiosidade útil.** O L298N tem dois outros jumpers, chamados **ENA** e **ENB**. Se
+> você removê-los, passa a poder controlar a *velocidade* dos motores pelo ESP32. Se eles
+> ficarem colocados, os motores só andam na velocidade máxima. No nosso robô, vamos
+> controlar a velocidade — então esses dois jumpers saem.
+
+---
+
+## 1.4 Simulação no Wokwi (sem nenhuma peça)
+
+Antes de comprar ou montar qualquer coisa, dá para rodar o robô inteiro no computador.
+Isso serve a um propósito muito claro:
+
+> **O objetivo desta etapa não é construir o robô definitivo. É provar que a lógica do
+> programa funciona** — que o robô "decide" certo — antes de gastar um centavo em peças.
+
+O **Wokwi** (wokwi.com) é um simulador gratuito e online para ESP32 e Arduino. Você
+escreve o código, monta o circuito arrastando peças no navegador e roda tudo ali mesmo,
+sem hardware.
+
+**Um detalhe sobre motores:** o Wokwi não tem um motor DC que se comporte igual ao do
+robô real. A solução é elegante e didática: trocamos cada motor por um **LED colorido**.
+Cada LED aceso significa uma direção de movimento. Assim você *vê* a decisão do robô
+acender na tela.
+
+![LEDs no lugar dos motores no Wokwi](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjI4MCIgdmlld0JveD0iMCAwIDYyMCAyODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJ3YSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNiIgbWFya2VySGVpZ2h0PSI2IiBvcmllbnQ9ImF1dG8tc3RhcnQtcmV2ZXJzZSI+CiAgICAgIDxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIyODAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5ObyBXb2t3aTogTEVEcyBubyBsdWdhciBkb3MgbW90b3JlczwvdGV4dD4KCiAgPCEtLSBFU1AzMiAtLT4KICA8cmVjdCB4PSIyMjAiIHk9IjcwIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE0MCIgcng9IjEwIiBmaWxsPSIjZTZmMGZhIiBzdHJva2U9IiMzQjhCRDQiIHN0cm9rZS13aWR0aD0iMS44Ii8+CiAgPHRleHQgeD0iMzEwIiB5PSIxMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzQjhCRDQiPkVTUDMyPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMTIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5HUElPMTQgKGZyZW50ZSk8L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSIxMzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPkdQSU8yNyAocsOpKTwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjE1NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+R1BJTzI2IChlc3F1ZXJkYSk8L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSIxNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPkdQSU8yNSAoZGlyZWl0YSk8L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSIxOTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM1NTUiPisgSEMtU1IwNCArIFNHOTA8L3RleHQ+CgogIDwhLS0gTEVEcyAtLT4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI5MCIgcj0iMTgiIGZpbGw9IiM0Q0FGNTAiIHN0cm9rZT0iIzM4OEUzQyIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSIxMDAiIHk9Ijk1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIj4xNDwvdGV4dD4KICA8dGV4dCB4PSIxMDAiIHk9IjEyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+RnJlbnRlPC90ZXh0PgoKICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIxNjAiIHI9IjE4IiBmaWxsPSIjRjQ0MzM2IiBzdHJva2U9IiNDNjI4MjgiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iMTAwIiB5PSIxNjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmYiPjI3PC90ZXh0PgogIDx0ZXh0IHg9IjEwMCIgeT0iMTkyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5Sw6k8L3RleHQ+CgogIDxjaXJjbGUgY3g9IjUyMCIgY3k9IjkwIiByPSIxOCIgZmlsbD0iI0ZGRUIzQiIgc3Ryb2tlPSIjRjlBODI1IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjUyMCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzMiPjI2PC90ZXh0PgogIDx0ZXh0IHg9IjUyMCIgeT0iMTIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5Fc3F1ZXJkYTwvdGV4dD4KCiAgPGNpcmNsZSBjeD0iNTIwIiBjeT0iMTYwIiByPSIxOCIgZmlsbD0iIzIxOTZGMyIgc3Ryb2tlPSIjMTU2NUMwIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjUyMCIgeT0iMTY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIj4yNTwvdGV4dD4KICA8dGV4dCB4PSI1MjAiIHk9IjE5MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+RGlyZWl0YTwvdGV4dD4KCiAgPGxpbmUgeDE9IjExOCIgeTE9IjkwIiB4Mj0iMjE4IiB5Mj0iMTIwIiBzdHJva2U9IiM0Q0FGNTAiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI3dhKSIvPgogIDxsaW5lIHgxPSIxMTgiIHkxPSIxNjAiIHgyPSIyMTgiIHkyPSIxNDAiIHN0cm9rZT0iI0Y0NDMzNiIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjd2EpIi8+CiAgPGxpbmUgeDE9IjQwMiIgeTE9IjEyMCIgeDI9IjUwMCIgeTI9IjkwIiBzdHJva2U9IiNGOUE4MjUiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI3dhKSIvPgogIDxsaW5lIHgxPSI0MDIiIHkxPSIxNDAiIHgyPSI1MDAiIHkyPSIxNTgiIHN0cm9rZT0iIzIxOTZGMyIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjd2EpIi8+CgogIDx0ZXh0IHg9IjMxMCIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzc3Ij5PIGPDs2RpZ28gw6kgbyBtZXNtbyBkbyByb2LDtCByZWFsIOKAlCBzw7MgYSBzYcOtZGEgbXVkYSAoTEVEIGVtIHZleiBkZSBtb3RvcikuPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMjY4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNTM0QUI3Ij5BIGZsYWcgI2RlZmluZSBNT0RPX1NJTVVMQUNBTyBjb250cm9sYSBxdWFsIHZlcnPDo28gcm9kYXIuPC90ZXh0Pgo8L3N2Zz4K)
+
+| LED | Cor | GPIO | O que significa quando acende |
+|---|---|---|---|
+| Frente | 🟢 Verde | 14 | Os motores girariam para frente |
+| Ré | 🔴 Vermelho | 27 | Os motores girariam para trás |
+| Esquerda | 🟡 Amarelo | 26 | O robô está virando à esquerda |
+| Direita | 🔵 Azul | 25 | O robô está virando à direita |
+
+O ponto importante: o código é **exatamente o mesmo** do robô real. Só a última etapa —
+a saída — muda (acender um LED em vez de girar um motor). Uma única linha decide qual
+versão roda: `#define MODO_SIMULACAO`. Você vai entender essa linha na próxima seção.
+
+### Montando o Wokwi, passo a passo
+
+1. Acesse **wokwi.com**, clique em **New Project** e escolha **ESP32**.
+2. Abra a aba **`diagram.json`** e substitua todo o conteúdo por este (ele descreve o
+   circuito: o ESP32, o sensor, o servo e os 4 LEDs com seus resistores):
+
+```json
+{
+  "version": 1,
+  "author": "Robô Autônomo ESP32",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-v1", "id": "esp", "top": 100, "left": 200, "attrs": {} },
+    { "type": "wokwi-breadboard-half", "id": "bb", "top": 400, "left": 0, "attrs": {} },
+    { "type": "wokwi-hc-sr04", "id": "ultra", "top": -60, "left": 80, "attrs": {} },
+    { "type": "wokwi-servo", "id": "servo", "top": -60, "left": 350, "attrs": {} },
+    { "type": "wokwi-led", "id": "ledF", "top": 420, "left": 100, "attrs": { "color": "green" } },
+    { "type": "wokwi-led", "id": "ledT", "top": 420, "left": 180, "attrs": { "color": "red" } },
+    { "type": "wokwi-led", "id": "ledE", "top": 420, "left": 260, "attrs": { "color": "yellow" } },
+    { "type": "wokwi-led", "id": "ledD", "top": 420, "left": 340, "attrs": { "color": "blue" } },
+    { "type": "wokwi-resistor", "id": "r1", "top": 460, "left": 100, "attrs": { "value": "220" } },
+    { "type": "wokwi-resistor", "id": "r2", "top": 460, "left": 180, "attrs": { "value": "220" } },
+    { "type": "wokwi-resistor", "id": "r3", "top": 460, "left": 260, "attrs": { "value": "220" } },
+    { "type": "wokwi-resistor", "id": "r4", "top": 460, "left": 340, "attrs": { "value": "220" } }
+  ],
+  "connections": [
+    ["esp:3V3",   "bb:tp.1",  "red",    []],
+    ["esp:GND.1", "bb:tn.1",  "black",  []],
+    ["bb:tp.2",   "ultra:VCC","red",    []],
+    ["bb:tn.2",   "ultra:GND","black",  []],
+    ["esp:D32",   "ultra:TRIG","blue",  []],
+    ["esp:D33",   "ultra:ECHO","green", []],
+    ["bb:tp.3",   "servo:V+", "red",    []],
+    ["bb:tn.3",   "servo:GND","black",  []],
+    ["esp:D13",   "servo:PWM","orange", []],
+    ["esp:D14",   "r1:1",     "green",  []],
+    ["r1:2",      "ledF:A",   "green",  []],
+    ["ledF:C",    "bb:tn.4",  "black",  []],
+    ["esp:D27",   "r2:1",     "red",    []],
+    ["r2:2",      "ledT:A",   "red",    []],
+    ["ledT:C",    "bb:tn.5",  "black",  []],
+    ["esp:D26",   "r3:1",     "yellow", []],
+    ["r3:2",      "ledE:A",   "yellow", []],
+    ["ledE:C",    "bb:tn.6",  "black",  []],
+    ["esp:D25",   "r4:1",     "blue",   []],
+    ["r4:2",      "ledD:A",   "blue",   []],
+    ["ledD:C",    "bb:tn.7",  "black",  []]
+  ]
+}
+```
+
+3. Abra a aba **`sketch.ino`** e cole o código da próxima seção, deixando a linha
+   `#define MODO_SIMULACAO true`.
+4. Clique no ícone de **livro** (Library Manager) e instale a biblioteca **ESP32Servo**.
+5. Clique em **▶ Play**.
+
+> **Como saber que funcionou.** Depois do Play, você deve ver o **LED verde acender**
+> (robô andando para frente). Passe o mouse sobre o sensor HC-SR04 no desenho e ajuste a
+> distância para um valor pequeno: o robô deve **parar, acender o LED vermelho** (ré) e
+> depois um dos LEDs de curva. Se isso acontece, a lógica está correta — antes mesmo de
+> existir um robô de verdade. 🎉
+
+---
+
+## 1.5 O código do robô (um só, serve para Wokwi e para o robô físico)
+
+Aqui está o programa completo. Ele parece grande, mas é organizado em **blocos com
+responsabilidades separadas** — e você não precisa entender cada linha para rodá-lo.
+Vamos primeiro ver o mapa do código; depois o código inteiro; depois um passeio por
+cada bloco.
+
+### O mapa do código (o que cada parte faz)
+
+Antes de ler o código de cima a baixo, veja como ele se divide. Cada bloco cuida de uma
+coisa só:
+
+| Bloco no código | O que ele faz | Qual peça ele controla |
+|---|---|---|
+| Configuração dos pinos | Diz em qual pino cada peça está ligada | — |
+| `medirDistancia()` | Dispara o ultrassom e calcula a distância em cm | HC-SR04 |
+| `andarFrente()`, `andarTras()`, `virar...()`, `parar()` | Ligam os motores (ou os LEDs) na direção certa | L298N → motores |
+| `olharLado()` / uso do servo | Gira o sensor para medir os lados | SG90 |
+| `evitarObstaculo()` | A sequência de desvio: para, recua, olha, escolhe, vira | várias |
+| `iniciarNovoMovimento()` | Sorteia uma nova direção (o "modo exploração") | motores |
+| `loop()` | O ciclo principal: mede, decide, age, repete | todas |
+
+> **A linha mais importante do arquivo** é esta:
+> ```cpp
+> #define MODO_SIMULACAO true
+> ```
+> Ela funciona como uma **chave de dois estados**. Em `true`, o código acende LEDs (modo
+> Wokwi). Em `false`, o mesmo código comanda os motores de verdade (modo físico). Trocar
+> essa única linha é tudo o que separa a simulação do robô real. Isso existe graças aos
+> trechos `#if MODO_SIMULACAO ... #else ... #endif`, que ligam ou desligam pedaços do
+> código conforme a chave.
+
+### O código completo
+
+```cpp
+/*
+=============================================================
+ ROBÔ AUTÔNOMO - MODO EXPLORAÇÃO
+ ESP32 + HC-SR04 + SG90 + L298N
+
+ Para o Wokwi (simulação com LEDs):
+   #define MODO_SIMULACAO true
+
+ Para o robô físico (L298N + motores):
+   #define MODO_SIMULACAO false
+=============================================================
+*/
+
+#include <ESP32Servo.h>
+
+// ============================================================
+// MUDE APENAS ESTA LINHA PARA ALTERNAR ENTRE OS DOIS MODOS
+// ============================================================
+#define MODO_SIMULACAO true
+
+// Pinos do sensor e do servo (iguais nos dois modos)
+const int TRIG_PIN  = 32;
+const int ECHO_PIN  = 33;
+const int SERVO_PIN = 13;
+
+// Pinos do L298N (usados só no robô físico)
+#if !MODO_SIMULACAO
+  const int ENA = 23, IN1 = 22, IN2 = 21;
+  const int ENB = 5,  IN3 = 19, IN4 = 18;
+#endif
+
+// Pinos dos LEDs (usados só no Wokwi)
+#if MODO_SIMULACAO
+  const int LED_FRENTE   = 14;
+  const int LED_TRAS     = 27;
+  const int LED_ESQUERDA = 26;
+  const int LED_DIREITA  = 25;
+#endif
+
+// Configurações gerais
+const int DISTANCIA_OBSTACULO     = 25;
+const int VELOCIDADE_MINIMA       = 140;
+const int VELOCIDADE_MAXIMA       = 220;
+const int VELOCIDADE_RE           = 160;
+const int VELOCIDADE_CURVA        = 190;
+const int TEMPO_RECUO             = 250;
+const int TEMPO_CURVA_OBSTACULO   = 450;
+const unsigned long DUR_MIN_MOV   = 2000;
+const unsigned long DUR_MAX_MOV   = 6000;
+const unsigned long DUR_MIN_CURVA = 300;
+const unsigned long DUR_MAX_CURVA = 800;
+
+const int SERVO_CENTRO   = 90;
+const int SERVO_ESQUERDA = 30;
+const int SERVO_DIREITA  = 150;
+
+Servo sensorServo;
+
+// Controle do modo exploração
+unsigned long inicioMovimento = 0, duracaoMovimento = 0;
+int velocidadeAtual = 0, movimentoAtual = 0, ultimaCurva = 0;
+
+// ============================================================
+// MEDIR DISTÂNCIA
+// ============================================================
+float medirDistancia() {
+  digitalWrite(TRIG_PIN, LOW);  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH); delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+  long dur = pulseIn(ECHO_PIN, HIGH, 30000);
+  if (dur == 0 || dur < 60) return 400;
+  return dur * 0.0343 / 2.0;
+}
+
+// ============================================================
+// CONTROLE DE MOVIMENTO
+// ============================================================
+void desligarLeds() {
+  #if MODO_SIMULACAO
+    digitalWrite(LED_FRENTE, LOW); digitalWrite(LED_TRAS, LOW);
+    digitalWrite(LED_ESQUERDA, LOW); digitalWrite(LED_DIREITA, LOW);
+  #endif
+}
+
+void andarFrente(int v) {
+  #if MODO_SIMULACAO
+    desligarLeds(); digitalWrite(LED_FRENTE, HIGH);
+  #else
+    digitalWrite(IN1,HIGH); digitalWrite(IN2,LOW);
+    digitalWrite(IN3,HIGH); digitalWrite(IN4,LOW);
+    analogWrite(ENA,v); analogWrite(ENB,v);
+  #endif
+}
+
+void andarTras(int v) {
+  #if MODO_SIMULACAO
+    desligarLeds(); digitalWrite(LED_TRAS, HIGH);
+  #else
+    digitalWrite(IN1,LOW); digitalWrite(IN2,HIGH);
+    digitalWrite(IN3,LOW); digitalWrite(IN4,HIGH);
+    analogWrite(ENA,v); analogWrite(ENB,v);
+  #endif
+}
+
+void virarEsquerda(int v) {
+  #if MODO_SIMULACAO
+    desligarLeds(); digitalWrite(LED_ESQUERDA, HIGH);
+  #else
+    digitalWrite(IN1,LOW); digitalWrite(IN2,HIGH);
+    digitalWrite(IN3,HIGH); digitalWrite(IN4,LOW);
+    analogWrite(ENA,v); analogWrite(ENB,v);
+  #endif
+}
+
+void virarDireita(int v) {
+  #if MODO_SIMULACAO
+    desligarLeds(); digitalWrite(LED_DIREITA, HIGH);
+  #else
+    digitalWrite(IN1,HIGH); digitalWrite(IN2,LOW);
+    digitalWrite(IN3,LOW); digitalWrite(IN4,HIGH);
+    analogWrite(ENA,v); analogWrite(ENB,v);
+  #endif
+}
+
+void parar() {
+  #if MODO_SIMULACAO
+    desligarLeds();
+  #else
+    analogWrite(ENA,0); analogWrite(ENB,0);
+    digitalWrite(IN1,LOW); digitalWrite(IN2,LOW);
+    digitalWrite(IN3,LOW); digitalWrite(IN4,LOW);
+  #endif
+}
+
+// ============================================================
+// VARREDURA COM SERVO
+// ============================================================
+float medirLado(int angulo) {
+  sensorServo.write(angulo); delay(400);
+  return medirDistancia();
+}
+
+// ============================================================
+// DESVIO DE OBSTÁCULO
+// ============================================================
+void evitarObstaculo() {
+  parar(); delay(200);
+  andarTras(VELOCIDADE_RE); delay(TEMPO_RECUO);
+  parar(); delay(200);
+  float esq = medirLado(SERVO_ESQUERDA);
+  float dir = medirLado(SERVO_DIREITA);
+  sensorServo.write(SERVO_CENTRO); delay(300);
+  if (esq > dir) { virarEsquerda(VELOCIDADE_CURVA); }
+  else           { virarDireita(VELOCIDADE_CURVA);  }
+  delay(TEMPO_CURVA_OBSTACULO);
+  parar(); delay(100);
+}
+
+// ============================================================
+// MODO EXPLORAÇÃO
+// ============================================================
+void iniciarNovoMovimento() {
+  velocidadeAtual = random(VELOCIDADE_MINIMA, VELOCIDADE_MAXIMA + 1);
+  int s = random(100);
+  movimentoAtual = (s < 50) ? 0 : (s < 75) ? 1 : 2;
+  if (movimentoAtual == 1 && ultimaCurva == 1) movimentoAtual = 2;
+  if (movimentoAtual == 2 && ultimaCurva == 2) movimentoAtual = 1;
+  if (movimentoAtual != 0) ultimaCurva = movimentoAtual;
+  duracaoMovimento = (movimentoAtual == 0)
+    ? random(DUR_MIN_MOV, DUR_MAX_MOV + 1)
+    : random(DUR_MIN_CURVA, DUR_MAX_CURVA + 1);
+  inicioMovimento = millis();
+}
+
+// ============================================================
+// SETUP E LOOP
+// ============================================================
+void setup() {
+  Serial.begin(115200);
+  randomSeed(micros());
+  pinMode(TRIG_PIN, OUTPUT); pinMode(ECHO_PIN, INPUT);
+  #if !MODO_SIMULACAO
+    pinMode(IN1,OUTPUT); pinMode(IN2,OUTPUT); pinMode(ENA,OUTPUT);
+    pinMode(IN3,OUTPUT); pinMode(IN4,OUTPUT); pinMode(ENB,OUTPUT);
+  #endif
+  #if MODO_SIMULACAO
+    pinMode(LED_FRENTE,OUTPUT); pinMode(LED_TRAS,OUTPUT);
+    pinMode(LED_ESQUERDA,OUTPUT); pinMode(LED_DIREITA,OUTPUT);
+  #endif
+  sensorServo.setPeriodHertz(50);
+  sensorServo.attach(SERVO_PIN, 500, 2400);
+  parar(); sensorServo.write(SERVO_CENTRO); delay(1000);
+  iniciarNovoMovimento();
+}
+
+void loop() {
+  float dist = medirDistancia();
+  if (dist <= DISTANCIA_OBSTACULO) {
+    evitarObstaculo();
+    iniciarNovoMovimento();
+    return;
+  }
+  if      (movimentoAtual == 0) andarFrente(velocidadeAtual);
+  else if (movimentoAtual == 1) virarEsquerda(velocidadeAtual);
+  else                          virarDireita(velocidadeAtual);
+  if (millis() - inicioMovimento >= duracaoMovimento)
+    iniciarNovoMovimento();
+  delay(50);
+}
+```
+
+### Passeio pelos blocos (o que observar em cada um)
+
+Você não precisa decorar nada disto — é um mapa para quando quiser mexer no código:
+
+- **`medirDistancia()`** manda um pulso pelo pino TRIG, ouve o eco voltar no pino ECHO e
+  transforma o *tempo* do eco em *centímetros*. É a "visão" do robô. Repare no filtro
+  `if (dur == 0 || dur < 60) return 400;` — ele descarta leituras impossíveis (ruído),
+  devolvendo "400 cm" (ou seja, "caminho livre").
+- **As funções de movimento** (`andarFrente`, `virarEsquerda`, etc.) são a "musculatura".
+  Cada uma tem duas versões dentro dela: uma acende LEDs (simulação), a outra aciona os
+  pinos do L298N (físico). A chave `MODO_SIMULACAO` escolhe qual vale.
+- **`evitarObstaculo()`** é a sequência de desvio inteira: parar, recuar, girar o servo
+  para olhar os dois lados, comparar as distâncias e virar para o lado mais livre.
+- **`iniciarNovoMovimento()`** é o que dá a "personalidade exploradora": de tempos em
+  tempos, sorteia uma nova direção e duração, evitando repetir sempre a mesma curva.
+- **`loop()`** amarra tudo: mede a distância, e se houver obstáculo perto chama
+  `evitarObstaculo()`; senão, continua o movimento atual. E recomeça.
+
+> **Para passar do Wokwi para o robô físico:** troque `#define MODO_SIMULACAO true` por
+> `#define MODO_SIMULACAO false`. Só isso. Todo o resto do código permanece idêntico.
+
+---
+
+## 1.6 Como entender a protoboard
+
+Se você nunca usou uma protoboard, ela parece um tabuleiro de furos sem sentido. Mas por
+baixo ela tem uma lógica simples de conexões — e entender essa lógica **antes** de montar
+evita quase todos os erros de ligação.
+
+![Como a protoboard funciona](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMyMCIgdmlld0JveD0iMCAwIDYyMCAzMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIzMjAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5Db21vIGEgcHJvdG9ib2FyZCBjb25lY3RhIGFzIGNvaXNhcyBwb3IgZGVudHJvPC90ZXh0PgoKICA8IS0tIHRyaWxobyArIC0tPgogIDxyZWN0IHg9IjYwIiB5PSI1MCIgd2lkdGg9IjUwMCIgaGVpZ2h0PSIzMCIgcng9IjYiIGZpbGw9IiNmYmU2ZTIiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSI1NzAiIHk9IjcwIiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjEyIiBmaWxsPSIjQjIzQTJFIj4rIChwb3NpdGl2bykg4oCUIGxpZ2FkbyBuYSBIT1JJWk9OVEFMPC90ZXh0PgoKICA8IS0tIHRyaWxobyAtIC0tPgogIDxyZWN0IHg9IjYwIiB5PSI4OCIgd2lkdGg9IjUwMCIgaGVpZ2h0PSIzMCIgcng9IjYiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSI1NzAiIHk9IjEwOCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzNCOEJENCI+4oiSIChuZWdhdGl2bykg4oCUIGxpZ2FkbyBuYSBIT1JJWk9OVEFMPC90ZXh0PgoKICA8IS0tIMOhcmVhIGNlbnRyYWwgLS0+CiAgPHJlY3QgeD0iNjAiIHk9IjEzNSIgd2lkdGg9IjUwMCIgaGVpZ2h0PSIxMjAiIHJ4PSI2IiBmaWxsPSIjZjlmOWY4IiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTU4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjODg4Ij7DoXJlYSBkZSBjb21wb25lbnRlczwvdGV4dD4KCiAgPCEtLSBjb2x1bmFzIHZlcnRpY2FpcyBkZXN0YWNhZGFzIC0tPgogIDxyZWN0IHg9IjkwIiB5PSIxNDgiIHdpZHRoPSIyMiIgaGVpZ2h0PSI5NCIgcng9IjQiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICA8dGV4dCB4PSIxMDEiIHk9IjI1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzBGNkU1NiI+Y29sIEE8L3RleHQ+CiAgPHJlY3QgeD0iMTMwIiB5PSIxNDgiIHdpZHRoPSIyMiIgaGVpZ2h0PSI5NCIgcng9IjQiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICA8dGV4dCB4PSIxNDEiIHk9IjI1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzBGNkU1NiI+Y29sIEI8L3RleHQ+CgogIDwhLS0gc3VsY28gLS0+CiAgPGxpbmUgeDE9IjYwIiB5MT0iMTk2IiB4Mj0iNTYwIiB5Mj0iMTk2IiBzdHJva2U9IiNhYWEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtZGFzaGFycmF5PSI1IDQiLz4KICA8dGV4dCB4PSI1NzAiIHk9IjIwMCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzg4OCI+c3VsY28gY2VudHJhbDwvdGV4dD4KCiAgPHJlY3QgeD0iOTAiIHk9IjIwMyIgd2lkdGg9IjIyIiBoZWlnaHQ9IjQwIiByeD0iNCIgZmlsbD0iI2Y0ZjJmYyIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuMyIvPgogIDxyZWN0IHg9IjEzMCIgeT0iMjAzIiB3aWR0aD0iMjIiIGhlaWdodD0iNDAiIHJ4PSI0IiBmaWxsPSIjZjRmMmZjIiBzdHJva2U9IiM1MzRBQjciIHN0cm9rZS13aWR0aD0iMS4zIi8+CgogIDwhLS0gbGVnZW5kYSAtLT4KICA8cmVjdCB4PSI2MCIgeT0iMjc4IiB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHJ4PSIzIiBmaWxsPSIjZmJlNmUyIiBzdHJva2U9IiNCMjNBMkUiIHN0cm9rZS13aWR0aD0iMS4yIi8+CiAgPHRleHQgeD0iODQiIHk9IjI5MSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+VHJpbGhvICsgZSDiiJI6IGNhZGEgbGluaGEgaW50ZWlyYSDDqSB1bSBwb250byBlbMOpdHJpY28gc8OzPC90ZXh0PgoKICA8cmVjdCB4PSI2MCIgeT0iMzAwIiB3aWR0aD0iMTgiIGhlaWdodD0iMTIiIHJ4PSIzIiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS4yIi8+CiAgPHRleHQgeD0iODQiIHk9IjMxMCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+Q29sdW5hczogbGlnYWRhcyBuYSB2ZXJ0aWNhbCAoZ3J1cG9zIGRlIDUpOyBvIHN1bGNvIHNlcGFyYSBjaW1hIGUgYmFpeG88L3RleHQ+Cjwvc3ZnPgo=)
+
+**Três regras que explicam tudo:**
+
+1. Os **trilhos** de cima e de baixo (as linhas marcadas `+` e `−`) são ligados na
+   **horizontal**: a linha inteira é um único ponto elétrico. É aqui que colocamos a
+   energia (VCC) e o terra (GND) para distribuir a todos os componentes.
+2. As **colunas** do meio são ligadas na **vertical**, em grupos de 5 furos. Cada
+   coluninha de 5 furos é um "nó" — tudo que você espeta ali fica conectado entre si.
+3. O **sulco central** (o corte no meio) separa a metade de cima da de baixo. Um furo de
+   cima **não** se conecta ao de baixo, mesmo alinhados.
+
+> **Teste seu entendimento.** Se você espeta dois fios na **mesma coluna de 5 furos**,
+> eles estão conectados? **Sim.** E se você espeta um fio no trilho `+` de cima e outro no
+> trilho `+` de baixo, sem nenhum fio ligando os dois? **Não** — os dois trilhos de cima e
+> de baixo são independentes até você uni-los com um fio.
+
+**Na prática:** ligamos um fio do `5V`/`3V3` do ESP32 no trilho `+` e um fio do `GND` no
+trilho `−`. A partir daí, cada componente pega energia e terra do trilho mais próximo, sem
+precisar amontoar vários fios num único pino do ESP32.
+
+---
+
+## 1.7 Montagem física: passo a passo
+
+> **Regra de segurança (leia antes de tudo).** Monte sempre **sem energia**: cabo USB
+> desconectado e pilhas fora do suporte. Só energize na hora de testar, seguindo a ordem
+> de energização do Passo 7. Eletrônica não perdoa pressa.
+
+Vamos montar na ordem que reduz risco: primeiro a mecânica, depois a energia, depois cada
+sensor, e o L298N por último. Cada passo tem um pequeno teste ou conferência.
+
+### Passo 1 — Montagem mecânica
+
+1. Monte os **motores TT** no chassi (parafuse ou encaixe conforme o kit).
+2. Encaixe as **rodas** nos eixos dos motores.
+3. Fixe a **roda boba** na parte de trás — ela é o terceiro apoio.
+4. Posicione o **suporte de pilhas** no chassi.
+5. Monte o **SG90 (servo)** na frente, no suporte do sensor.
+6. Encaixe o **HC-SR04** no braço do servo, virado **para a frente** do robô.
+
+> **Confira antes de seguir:** as duas rodas giram livremente com a mão? A frente do robô
+> (onde está o sensor) está claramente definida? O sensor aponta para frente, não para o
+> chão nem para o teto?
+
+### Passo 2 — Trilhos de energia na protoboard
+
+1. Fio **vermelho**: pino de energia do ESP32 → trilho `+` da protoboard.
+2. Fio **preto**: pino `GND` do ESP32 → trilho `−` da protoboard.
+
+> **Teste simples:** antes de ligar qualquer sensor, confirme só a distribuição. Um trilho
+> `+` e um trilho `−` prontos, sem nada mais ligado ainda. É a fundação do circuito.
+
+### Passo 3 — HC-SR04 (o sensor de distância)
+
+O sensor funciona como um morcego: **manda um som que você não escuta e cronometra o eco**.
+O ESP32 dispara o pulso pelo pino TRIG; o eco volta pelo pino ECHO; o código transforma o
+tempo do eco em distância.
+
+| Pino do sensor | Conectar em |
+|---|---|
+| VCC | Trilho + (vermelho) |
+| GND | Trilho − (preto) |
+| TRIG | GPIO32 do ESP32 |
+| ECHO | GPIO33 do ESP32 |
+
+> **Atenção — boa prática de segurança elétrica.** O pino ECHO do HC-SR04 devolve um sinal
+> de 5 V, mas os pinos do ESP32 são feitos para 3,3 V. No protótipo alimentado por USB o
+> risco é pequeno, mas no robô definitivo o ideal é usar um **divisor de tensão** (dois
+> resistores) no ECHO para baixar de 5 V para ~3,3 V.
+
+### Passo 4 — SG90 (o servo que gira o sensor)
+
+O servo é o "pescoço" do robô: ele gira o sensor para o robô olhar à esquerda, ao centro e
+à direita, medindo a distância em cada ângulo. Sem ele, o robô só enxergaria em frente.
+
+![O servo em três posições, girando o sensor](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDYyMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5PIHNlcnZvIGdpcmEgbyBzZW5zb3IgcGFyYSB2YXJyZXIgb3MgbGFkb3M8L3RleHQ+CgogIDwhLS0gRVNRVUVSREEgLS0+CiAgPGc+CiAgICA8dGV4dCB4PSIxMzAiIHk9IjYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCQTc1MTciPkVzcXVlcmRhICgzMMKwKTwvdGV4dD4KICAgIDwhLS0gYmFzZSBzZXJ2byAtLT4KICAgIDxyZWN0IHg9IjEwNSIgeT0iMjEwIiB3aWR0aD0iNTAiIGhlaWdodD0iMzQiIHJ4PSI1IiBmaWxsPSIjZjRmMmZjIiBzdHJva2U9IiM1MzRBQjciIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgICA8dGV4dCB4PSIxMzAiIHk9IjIzMSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzUzNEFCNyI+U0c5MDwvdGV4dD4KICAgIDwhLS0gZWl4byAtLT4KICAgIDxjaXJjbGUgY3g9IjEzMCIgY3k9IjIwNSIgcj0iNiIgZmlsbD0iIzUzNEFCNyIvPgogICAgPCEtLSBzZW5zb3IgYXBvbnRhbmRvIHAvIGVzcXVlcmRhIC0tPgogICAgPGcgdHJhbnNmb3JtPSJyb3RhdGUoLTQ1IDEzMCAyMDUpIj4KICAgICAgPHJlY3QgeD0iMTE4IiB5PSIxNTAiIHdpZHRoPSIyNCIgaGVpZ2h0PSI1MiIgcng9IjQiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICAgICAgPGNpcmNsZSBjeD0iMTI0IiBjeT0iMTYzIiByPSI0LjUiIGZpbGw9IiMwRjZFNTYiLz4KICAgICAgPGNpcmNsZSBjeD0iMTM2IiBjeT0iMTYzIiByPSI0LjUiIGZpbGw9IiMwRjZFNTYiLz4KICAgIDwvZz4KICAgIDwhLS0gY29uZSBkZSB2aXPDo28gLS0+CiAgICA8cGF0aCBkPSJNMTMwIDIwNSBMNjAgMTIwIEwxMjAgOTYgWiIgZmlsbD0iIzBGNkU1NiIgb3BhY2l0eT0iMC4xMyIvPgogIDwvZz4KCiAgPCEtLSBDRU5UUk8gLS0+CiAgPGc+CiAgICA8dGV4dCB4PSIzMTAiIHk9IjYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM2Mzk5MjIiPkNlbnRybyAoOTDCsCk8L3RleHQ+CiAgICA8cmVjdCB4PSIyODUiIHk9IjIxMCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjM0IiByeD0iNSIgZmlsbD0iI2Y0ZjJmYyIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogICAgPHRleHQgeD0iMzEwIiB5PSIyMzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM1MzRBQjciPlNHOTA8L3RleHQ+CiAgICA8Y2lyY2xlIGN4PSIzMTAiIGN5PSIyMDUiIHI9IjYiIGZpbGw9IiM1MzRBQjciLz4KICAgIDxnPgogICAgICA8cmVjdCB4PSIyOTgiIHk9IjE1MCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjUyIiByeD0iNCIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogICAgICA8Y2lyY2xlIGN4PSIzMDQiIGN5PSIxNjMiIHI9IjQuNSIgZmlsbD0iIzBGNkU1NiIvPgogICAgICA8Y2lyY2xlIGN4PSIzMTYiIGN5PSIxNjMiIHI9IjQuNSIgZmlsbD0iIzBGNkU1NiIvPgogICAgPC9nPgogICAgPHBhdGggZD0iTTMxMCAyMDUgTDI4MCAxMDAgTDM0MCAxMDAgWiIgZmlsbD0iIzBGNkU1NiIgb3BhY2l0eT0iMC4xMyIvPgogIDwvZz4KCiAgPCEtLSBESVJFSVRBIC0tPgogIDxnPgogICAgPHRleHQgeD0iNDkwIiB5PSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMi41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjM0I4QkQ0Ij5EaXJlaXRhICgxNTDCsCk8L3RleHQ+CiAgICA8cmVjdCB4PSI0NjUiIHk9IjIxMCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjM0IiByeD0iNSIgZmlsbD0iI2Y0ZjJmYyIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogICAgPHRleHQgeD0iNDkwIiB5PSIyMzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM1MzRBQjciPlNHOTA8L3RleHQ+CiAgICA8Y2lyY2xlIGN4PSI0OTAiIGN5PSIyMDUiIHI9IjYiIGZpbGw9IiM1MzRBQjciLz4KICAgIDxnIHRyYW5zZm9ybT0icm90YXRlKDQ1IDQ5MCAyMDUpIj4KICAgICAgPHJlY3QgeD0iNDc4IiB5PSIxNTAiIHdpZHRoPSIyNCIgaGVpZ2h0PSI1MiIgcng9IjQiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICAgICAgPGNpcmNsZSBjeD0iNDg0IiBjeT0iMTYzIiByPSI0LjUiIGZpbGw9IiMwRjZFNTYiLz4KICAgICAgPGNpcmNsZSBjeD0iNDk2IiBjeT0iMTYzIiByPSI0LjUiIGZpbGw9IiMwRjZFNTYiLz4KICAgIDwvZz4KICAgIDxwYXRoIGQ9Ik00OTAgMjA1IEw1MDAgOTYgTDU2MCAxMjAgWiIgZmlsbD0iIzBGNkU1NiIgb3BhY2l0eT0iMC4xMyIvPgogIDwvZz4KCiAgPHRleHQgeD0iMzEwIiB5PSIyNzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzc3NyI+TyBzZW5zb3IgKEhDLVNSMDQpIGZpY2EgcHJlc28gbm8gYnJhw6dvIGRvIHNlcnZvLiBHaXJhbmRvIG8gc2Vydm8sIG8gbWVzbW8gc2Vuc29yIG1lZGUgYSBkaXN0w6JuY2lhIG5vcyB0csOqcyDDom5ndWxvcy48L3RleHQ+Cjwvc3ZnPgo=)
+
+| Fio do servo | Conectar em |
+|---|---|
+| Marrom (GND) | Trilho − |
+| Vermelho (V+) | Trilho + |
+| Laranja (sinal) | GPIO13 do ESP32 |
+
+> **Se o robô olhar para o lado errado** (escolher a direção contrária à mais livre), os
+> ângulos de esquerda e direita do servo podem estar invertidos para o seu encaixe
+> mecânico. Basta trocar os valores `SERVO_ESQUERDA` e `SERVO_DIREITA` no código.
+
+### Passo 5 — L298N e motores
+
+Aqui mora uma ideia que confunde muita gente no começo:
+
+> **O ESP32 não move o motor diretamente.** O ESP32 é um cérebro de sinais fracos (3,3 V,
+> pouquíssima corrente) — longe do necessário para girar um motor. Ele apenas **dá as
+> ordens**; quem tem força para acionar os motores é o L298N, puxando energia direto das
+> pilhas.
+
+![O ESP32 comanda; o L298N faz força](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMzMCIgdmlld0JveD0iMCAwIDYyMCAzMzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJzYSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNi41IiBtYXJrZXJIZWlnaHQ9IjYuNSIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPgogICAgICA8cGF0aCBkPSJNMiAxTDggNUwyIDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogICAgPC9tYXJrZXI+CiAgICA8bWFya2VyIGlkPSJwYSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNi41IiBtYXJrZXJIZWlnaHQ9IjYuNSIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPgogICAgICA8cGF0aCBkPSJNMiAxTDggNUwyIDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogICAgPC9tYXJrZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMzMwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+TyBFU1AzMiBuw6NvIG1vdmUgbyBtb3RvciBkaXJldG8g4oCUIHF1ZW0gZmF6IGZvcsOnYSDDqSBvIEwyOThOPC90ZXh0PgoKICA8IS0tIEVTUDMyIC0tPgogIDxyZWN0IHg9IjQwIiB5PSIxMjAiIHdpZHRoPSIxNDAiIGhlaWdodD0iOTAiIHJ4PSIxMCIgZmlsbD0iI2U2ZjBmYSIgc3Ryb2tlPSIjM0I4QkQ0IiBzdHJva2Utd2lkdGg9IjEuOCIvPgogIDx0ZXh0IHg9IjExMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjM0I4QkQ0Ij5FU1AzMjwvdGV4dD4KICA8dGV4dCB4PSIxMTAiIHk9IjE3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjMzMzIj5tYW5kYSBvcmRlbnM8L3RleHQ+CiAgPHRleHQgeD0iMTEwIiB5PSIxODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzMzMyI+KHNpbmFpcyBmcmFjb3MsPC90ZXh0PgogIDx0ZXh0IHg9IjExMCIgeT0iMjAzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiMzMzMiPjMsMyBWKTwvdGV4dD4KCiAgPCEtLSBMMjk4TiAtLT4KICA8cmVjdCB4PSIyNTAiIHk9IjExMCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxMTAiIHJ4PSIxMCIgZmlsbD0iI2ZkZWVlMCIgc3Ryb2tlPSIjQkE3NTE3IiBzdHJva2Utd2lkdGg9IjEuOCIvPgogIDx0ZXh0IHg9IjMyNSIgeT0iMTQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQkE3NTE3Ij5MMjk4TjwvdGV4dD4KICA8dGV4dCB4PSIzMjUiIHk9IjE2MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjMzMzIj5yZWNlYmUgYXMgb3JkZW5zIGU8L3RleHQ+CiAgPHRleHQgeD0iMzI1IiB5PSIxNzciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzMzMyI+ZW50cmVnYSBhIGNvcnJlbnRlPC90ZXh0PgogIDx0ZXh0IHg9IjMyNSIgeT0iMTkyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiMzMzMiPmZvcnRlIGRvcyBtb3RvcmVzPC90ZXh0PgogIDx0ZXh0IHg9IjMyNSIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjkuNSIgZmlsbD0iIzc3NyI+KGEgInBvbnRlIEgiKTwvdGV4dD4KCiAgPCEtLSBNb3RvcmVzIC0tPgogIDxyZWN0IHg9IjQ3MCIgeT0iODAiIHdpZHRoPSIxMjAiIGhlaWdodD0iNTIiIHJ4PSI5IiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS42Ii8+CiAgPHRleHQgeD0iNTMwIiB5PSIxMDMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPk1vdG9yIGVzcS48L3RleHQ+CiAgPHRleHQgeD0iNTMwIiB5PSIxMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iOS41IiBmaWxsPSIjNTU1Ij5PVVQxIC8gT1VUMjwvdGV4dD4KCiAgPHJlY3QgeD0iNDcwIiB5PSIxOTAiIHdpZHRoPSIxMjAiIGhlaWdodD0iNTIiIHJ4PSI5IiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS42Ii8+CiAgPHRleHQgeD0iNTMwIiB5PSIyMTMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPk1vdG9yIGRpci48L3RleHQ+CiAgPHRleHQgeD0iNTMwIiB5PSIyMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iOS41IiBmaWxsPSIjNTU1Ij5PVVQzIC8gT1VUNDwvdGV4dD4KCiAgPCEtLSBzZXRhcyBzaW5haXMgLS0+CiAgPGxpbmUgeDE9IjE4MCIgeTE9IjE2NSIgeDI9IjI0OCIgeTI9IjE2NSIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuOCIgbWFya2VyLWVuZD0idXJsKCNzYSkiLz4KICA8dGV4dCB4PSIyMTQiIHk9IjE1NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzUzNEFCNyI+SU4xLi5FTkI8L3RleHQ+CgogIDwhLS0gc2V0YXMgcG90w6puY2lhIC0tPgogIDxsaW5lIHgxPSI0MDAiIHkxPSIxNTAiIHgyPSI0NjgiIHkyPSIxMTAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjgiIG1hcmtlci1lbmQ9InVybCgjc2EpIiBzdHlsZT0ic3Ryb2tlOiMwRjZFNTYiLz4KICA8bGluZSB4MT0iNDAwIiB5MT0iMTgwIiB4Mj0iNDY4IiB5Mj0iMjEyIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS44IiBtYXJrZXItZW5kPSJ1cmwoI3NhKSIgc3R5bGU9InN0cm9rZTojMEY2RTU2Ii8+CgogIDwhLS0gYWxpbWVudGHDp8OjbyBwaWxoYXMgLS0+CiAgPHJlY3QgeD0iMjUwIiB5PSIyNjIiIHdpZHRoPSIxNTAiIGhlaWdodD0iNDYiIHJ4PSI5IiBmaWxsPSIjZmJlNmUyIiBzdHJva2U9IiNCMjNBMkUiIHN0cm9rZS13aWR0aD0iMS42Ii8+CiAgPHRleHQgeD0iMzI1IiB5PSIyODMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCMjNBMkUiPlBpbGhhcyAofjYgVik8L3RleHQ+CiAgPHRleHQgeD0iMzI1IiB5PSIyOTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iOS41IiBmaWxsPSIjNTU1Ij5lbnRyYW0gbm8gcGlubyAxMlY8L3RleHQ+CiAgPGxpbmUgeDE9IjMyNSIgeTE9IjI2MiIgeDI9IjMyNSIgeTI9IjIyMiIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuOCIgbWFya2VyLWVuZD0idXJsKCNwYSkiLz4KICA8dGV4dCB4PSIzOTIiIHk9IjI0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI5LjUiIGZpbGw9IiNCMjNBMkUiPmZvcsOnYSBicnV0YTwvdGV4dD4KCiAgPHRleHQgeD0iMTQ1IiB5PSIyNTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzc3NyI+QSBpZGVpYS1jaGF2ZTo8L3RleHQ+CiAgPHRleHQgeD0iMTQ1IiB5PSIyNzEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzc3NyI+byBFU1AzMiDDqSBvIGPDqXJlYnJvIGZyYXF1aW5obzs8L3RleHQ+CiAgPHRleHQgeD0iMTQ1IiB5PSIyODciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzc3NyI+byBMMjk4TiDDqSBvIG3DunNjdWxvIHF1ZSBwdXhhPC90ZXh0PgogIDx0ZXh0IHg9IjE0NSIgeT0iMzAzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiM3NzciPmEgZW5lcmdpYSBkYXMgcGlsaGFzLjwvdGV4dD4KPC9zdmc+Cg==)
+
+| Pino do L298N | Conectar em |
+|---|---|
+| IN1 | GPIO22 do ESP32 |
+| IN2 | GPIO21 do ESP32 |
+| ENA | GPIO23 do ESP32 |
+| IN3 | GPIO19 do ESP32 |
+| IN4 | GPIO18 do ESP32 |
+| ENB | GPIO5 do ESP32 |
+| GND | Trilho − **e** negativo das pilhas |
+| 12V | Positivo das pilhas (~6 V) |
+| 5V | VIN do ESP32 |
+| OUT1/OUT2 | Fios do motor esquerdo |
+| OUT3/OUT4 | Fios do motor direito |
+
+> **Confirme:** o **jumper de 5V do L298N** está colocado? (o conectorzinho plástico perto
+> da alimentação). Sem ele, o regulador interno não liga e o ESP32 não recebe energia das
+> pilhas.
+
+### Mapa de pinos completo (sua folha de consulta)
+
+Sempre que ficar em dúvida sobre "onde vai este fio?", volte a esta figura. Ela é a
+referência única de todas as ligações entre o ESP32 e as peças.
+
+![Mapa de pinos definitivo](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjM0MCIgdmlld0JveD0iMCAwIDYyMCAzNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIzNDAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5NYXBhIGRlIHBpbm9zIGRlZmluaXRpdm8g4oCUIEVTUDMyIOKGkiBjb21wb25lbnRlczwvdGV4dD4KCiAgPCEtLSBjYWJlw6dhbGhvIC0tPgogIDxyZWN0IHg9IjMwIiB5PSI0NCIgd2lkdGg9IjU2MCIgaGVpZ2h0PSIzMiIgcng9IjYiIGZpbGw9IiM1MzRBQjciLz4KICA8dGV4dCB4PSIxOTAiIHk9IjY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIj5Db21wb25lbnRlIC8gZnVuw6fDo288L3RleHQ+CiAgPHRleHQgeD0iNDMwIiB5PSI2NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZiI+UGlubyBFU1AzMjwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iNDQiIHgyPSIzMTAiIHkyPSIzMzAiIHN0cm9rZT0iI2RkZCIgc3Ryb2tlLXdpZHRoPSIxIi8+CgogIDwhLS0gbGluaGFzIC0tPgogIDxyZWN0IHg9IjMwIiB5PSI3NiIgd2lkdGg9IjU2MCIgaGVpZ2h0PSIzMCIgcng9IjAiIGZpbGw9IiNlOGY0ZjAiLz4KICA8dGV4dCB4PSIxOTAiIHk9Ijk2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj5IQy1TUjA0IMK3IFRSSUcgKGRpc3BhcmEgbyBzb20pPC90ZXh0PgogIDx0ZXh0IHg9IjQzMCIgeT0iOTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPkdQSU8gMzI8L3RleHQ+CgogIDxyZWN0IHg9IjMwIiB5PSIxMDYiIHdpZHRoPSI1NjAiIGhlaWdodD0iMzAiIHJ4PSIwIiBmaWxsPSIjZmZmIi8+CiAgPHRleHQgeD0iMTkwIiB5PSIxMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPkhDLVNSMDQgwrcgRUNITyAocmVjZWJlIG8gZWNvKTwvdGV4dD4KICA8dGV4dCB4PSI0MzAiIHk9IjEyNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBGNkU1NiI+R1BJTyAzMzwvdGV4dD4KCiAgPHJlY3QgeD0iMzAiIHk9IjEzNiIgd2lkdGg9IjU2MCIgaGVpZ2h0PSIzMCIgcng9IjAiIGZpbGw9IiNmNGYyZmMiLz4KICA8dGV4dCB4PSIxOTAiIHk9IjE1NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+U2Vydm8gU0c5MCDCtyBQV00gKHNpbmFsIGRlIMOibmd1bG8pPC90ZXh0PgogIDx0ZXh0IHg9IjQzMCIgeT0iMTU2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNTM0QUI3Ij5HUElPIDEzPC90ZXh0PgoKICA8cmVjdCB4PSIzMCIgeT0iMTY2IiB3aWR0aD0iNTYwIiBoZWlnaHQ9IjMwIiByeD0iMCIgZmlsbD0iI2ZkZWVlMCIvPgogIDx0ZXh0IHg9IjE5MCIgeT0iMTg2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj5MMjk4TiDCtyBJTjEgKG1vdG9yIGVzcS4gc2VudGlkbyBBKTwvdGV4dD4KICA8dGV4dCB4PSI0MzAiIHk9IjE4NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0JBNzUxNyI+R1BJTyAyMjwvdGV4dD4KCiAgPHJlY3QgeD0iMzAiIHk9IjE5NiIgd2lkdGg9IjU2MCIgaGVpZ2h0PSIzMCIgcng9IjAiIGZpbGw9IiNmZmYiLz4KICA8dGV4dCB4PSIxOTAiIHk9IjIxNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+TDI5OE4gwrcgSU4yIChtb3RvciBlc3EuIHNlbnRpZG8gQik8L3RleHQ+CiAgPHRleHQgeD0iNDMwIiB5PSIyMTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCQTc1MTciPkdQSU8gMjE8L3RleHQ+CgogIDxyZWN0IHg9IjMwIiB5PSIyMjYiIHdpZHRoPSI1NjAiIGhlaWdodD0iMzAiIHJ4PSIwIiBmaWxsPSIjZmRlZWUwIi8+CiAgPHRleHQgeD0iMTkwIiB5PSIyNDYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPkwyOThOIMK3IEVOQSAodmVsb2NpZGFkZSBtb3RvciBlc3EuKTwvdGV4dD4KICA8dGV4dCB4PSI0MzAiIHk9IjI0NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0JBNzUxNyI+R1BJTyAyMzwvdGV4dD4KCiAgPHJlY3QgeD0iMzAiIHk9IjI1NiIgd2lkdGg9IjU2MCIgaGVpZ2h0PSIzMCIgcng9IjAiIGZpbGw9IiNmZmYiLz4KICA8dGV4dCB4PSIxOTAiIHk9IjI3NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+TDI5OE4gwrcgSU4zL0lONCAobW90b3IgZGlyLiBBL0IpPC90ZXh0PgogIDx0ZXh0IHg9IjQzMCIgeT0iMjc2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQkE3NTE3Ij5HUElPIDE5IC8gMTg8L3RleHQ+CgogIDxyZWN0IHg9IjMwIiB5PSIyODYiIHdpZHRoPSI1NjAiIGhlaWdodD0iMzAiIHJ4PSIwIiBmaWxsPSIjZmRlZWUwIi8+CiAgPHRleHQgeD0iMTkwIiB5PSIzMDYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPkwyOThOIMK3IEVOQiAodmVsb2NpZGFkZSBtb3RvciBkaXIuKTwvdGV4dD4KICA8dGV4dCB4PSI0MzAiIHk9IjMwNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0JBNzUxNyI+R1BJTyA1PC90ZXh0PgoKICA8bGluZSB4MT0iMzAiIHkxPSI3NiIgeDI9IjU5MCIgeTI9Ijc2IiBzdHJva2U9IiNkZGQiIHN0cm9rZS13aWR0aD0iMC44Ii8+CiAgPGxpbmUgeDE9IjMwIiB5MT0iMTA2IiB4Mj0iNTkwIiB5Mj0iMTA2IiBzdHJva2U9IiNkZGQiIHN0cm9rZS13aWR0aD0iMC44Ii8+CiAgPGxpbmUgeDE9IjMwIiB5MT0iMTM2IiB4Mj0iNTkwIiB5Mj0iMTM2IiBzdHJva2U9IiNkZGQiIHN0cm9rZS13aWR0aD0iMC44Ii8+CiAgPGxpbmUgeDE9IjMwIiB5MT0iMTY2IiB4Mj0iNTkwIiB5Mj0iMTY2IiBzdHJva2U9IiNkZGQiIHN0cm9rZS13aWR0aD0iMC44Ii8+CiAgPGxpbmUgeDE9IjMwIiB5MT0iMTk2IiB4Mj0iNTkwIiB5Mj0iMTk2IiBzdHJva2U9IiNkZGQiIHN0cm9rZS13aWR0aD0iMC44Ii8+CiAgPGxpbmUgeDE9IjMwIiB5MT0iMjI2IiB4Mj0iNTkwIiB5Mj0iMjI2IiBzdHJva2U9IiNkZGQiIHN0cm9rZS13aWR0aD0iMC44Ii8+CiAgPGxpbmUgeDE9IjMwIiB5MT0iMjU2IiB4Mj0iNTkwIiB5Mj0iMjU2IiBzdHJva2U9IiNkZGQiIHN0cm9rZS13aWR0aD0iMC44Ii8+CiAgPGxpbmUgeDE9IjMwIiB5MT0iMjg2IiB4Mj0iNTkwIiB5Mj0iMjg2IiBzdHJva2U9IiNkZGQiIHN0cm9rZS13aWR0aD0iMC44Ii8+CiAgPHJlY3QgeD0iMzAiIHk9IjQ0IiB3aWR0aD0iNTYwIiBoZWlnaHQ9IjI3MiIgcng9IjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2NjYyIgc3Ryb2tlLXdpZHRoPSIxIi8+Cjwvc3ZnPgo=)
+
+### Passo 6 — Checagem de segurança (antes de ligar)
+
+Antes de conectar qualquer energia, confirme item por item:
+
+- [ ] Fio **vermelho** das pilhas no pino **12V** do L298N?
+- [ ] Fio **preto** das pilhas no **GND** do L298N?
+- [ ] **GND do L298N** ligado ao trilho **−** da protoboard?
+- [ ] Pino **5V do L298N** ligado ao **VIN** do ESP32?
+- [ ] Jumper de 5V do L298N **colocado**?
+- [ ] Os jumpers de **ENA e ENB removidos** (se existiam)?
+- [ ] Todos os 6 fios de controle (IN1 a ENB) nos GPIOs certos?
+- [ ] Positivo e negativo das pilhas **não** estão se tocando?
+
+### Passo 7 — Ordem de energização
+
+A ordem importa: energizar na sequência errada pode enviar tensão para onde não deve.
+
+1. **Primeiro:** conecte o **USB** no ESP32 (para o computador gravar o código).
+2. Grave o código com `#define MODO_SIMULACAO false`.
+3. **Depois:** coloque as pilhas (ou ligue a chave do suporte).
+4. Mantenha o robô com as **rodas no ar** no primeiro teste — assim, se algo estiver
+   invertido, ele não sai correndo da mesa.
+
+> **O que esperar nos primeiros segundos:** as rodas devem começar a girar para frente. Ao
+> aproximar a mão do sensor, o robô deve parar e iniciar a sequência de desvio. Se algo
+> diferente acontecer, desligue as pilhas e vá para o Passo 8.
+
+### Passo 8 — Se algo não sair como esperado
+
+Diagnostique por **sintoma**, sempre do mais simples (energia) para o mais complexo (código):
+
+| Sintoma | Provável causa | O que conferir / fazer |
+|---|---|---|
+| Upload falha em "Connecting..." | ESP32 esperando modo de gravação | Segure o botão **BOOT** durante o "Connecting..." |
+| Motores não giram | Jumper ENA/ENB ainda colocado | Remova os dois jumpers |
+| ESP32 não liga com as pilhas | Jumper de 5V ausente | Confirme e coloque o jumper de 5V |
+| Um motor gira ao contrário | Fios daquele motor invertidos | Troque os dois fios do motor nos bornes OUT |
+| Sensor não lê distância | TRIG/ECHO trocados ou sem energia | Confira energia → GND → depois TRIG(32)/ECHO(33) |
+| Robô escolhe o lado errado | Ângulos do servo invertidos | Troque `SERVO_ESQUERDA` e `SERVO_DIREITA` |
+
+---
+
+## 1.8 Testando por partes (a regra de ouro do projeto)
+
+Esta é a filosofia central de todo o tutorial, então vale repetir: **nunca teste tudo de
+uma vez.** Aprove cada peça sozinha; só depois junte. Quando o conjunto falhar, você já vai
+saber que o problema está na *ligação* entre peças, não nas peças — porque cada uma já foi
+aprovada.
+
+![Construindo por blocos: cada peça aprovada antes de juntar](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjIyMCIgdmlld0JveD0iMCAwIDYyMCAyMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIyMjAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5BIHJlZ3JhIGRlIG91cm86IGNhZGEgcGXDp2Egw6kgYXByb3ZhZGEgc296aW5oYSBhbnRlcyBkZSBqdW50YXI8L3RleHQ+CgogIDwhLS0gc2Vuc29yIC0tPgogIDxyZWN0IHg9IjMwIiB5PSI3MCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSI2NiIgcng9IjkiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KICA8dGV4dCB4PSI4MCIgeT0iOTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPlNlbnNvcjwvdGV4dD4KICA8dGV4dCB4PSI4MCIgeT0iMTIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE4IiBmaWxsPSIjNjM5OTIyIj7inJM8L3RleHQ+CgogIDx0ZXh0IHg9IjE0OCIgeT0iMTEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjIwIiBmaWxsPSIjOTk5Ij4rPC90ZXh0PgoKICA8IS0tIHNlcnZvIC0tPgogIDxyZWN0IHg9IjE3MCIgeT0iNzAiIHdpZHRoPSIxMDAiIGhlaWdodD0iNjYiIHJ4PSI5IiBmaWxsPSIjZjRmMmZjIiBzdHJva2U9IiM1MzRBQjciIHN0cm9rZS13aWR0aD0iMS42Ii8+CiAgPHRleHQgeD0iMjIwIiB5PSI5OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzUzNEFCNyI+U2Vydm88L3RleHQ+CiAgPHRleHQgeD0iMjIwIiB5PSIxMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM2Mzk5MjIiPuKckzwvdGV4dD4KCiAgPHRleHQgeD0iMjg4IiB5PSIxMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiM5OTkiPis8L3RleHQ+CgogIDwhLS0gbW90b3JlcyAtLT4KICA8cmVjdCB4PSIzMTAiIHk9IjcwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjY2IiByeD0iOSIgZmlsbD0iI2ZkZWVlMCIgc3Ryb2tlPSIjQkE3NTE3IiBzdHJva2Utd2lkdGg9IjEuNiIvPgogIDx0ZXh0IHg9IjM2MCIgeT0iOTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCQTc1MTciPk1vdG9yZXM8L3RleHQ+CiAgPHRleHQgeD0iMzYwIiB5PSIxMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM2Mzk5MjIiPuKckzwvdGV4dD4KCiAgPHRleHQgeD0iNDI4IiB5PSIxMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiM5OTkiPj08L3RleHQ+CgogIDwhLS0gcm9iw7QgLS0+CiAgPHJlY3QgeD0iNDUwIiB5PSI2MiIgd2lkdGg9IjE0MCIgaGVpZ2h0PSI4MiIgcng9IjEwIiBmaWxsPSIjZTZmMGZhIiBzdHJva2U9IiMzQjhCRDQiIHN0cm9rZS13aWR0aD0iMS45Ii8+CiAgPHRleHQgeD0iNTIwIiB5PSI5MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzNCOEJENCI+Um9iw7QgY29tcGxldG88L3RleHQ+CiAgPHRleHQgeD0iNTIwIiB5PSIxMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiM2Mzk5MjIiPuKckzwvdGV4dD4KCiAgPHRleHQgeD0iMzEwIiB5PSIxODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM3NzciPlNlIGFsZ28gZmFsaGFyIG5vIGZpbSwgdm9jw6ogasOhIHNhYmUgcXVlIG7Do28gw6kgYSBwZcOnYSDigJQgw6kgc8OzIGEgbGlnYcOnw6NvIGVudHJlIGVsYXMuPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMjAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZpbGw9IiM5OTkiPlRlc3RhciBqdW50byBzZW0gdGVzdGFyIGFzIHBhcnRlcyDDqSBwcm9jdXJhciBhZ3VsaGEgbm8gcGFsaGVpcm8gbm8gZXNjdXJvLjwvdGV4dD4KPC9zdmc+Cg==)
+
+A ordem dos testes segue a mesma da montagem:
+
+**1. Teste do HC-SR04** (só USB, sem pilhas). Prova que o sensor mede distância.
+
+```cpp
+const int TRIG = 32, ECHO = 33;
+void setup() { Serial.begin(115200); pinMode(TRIG,OUTPUT); pinMode(ECHO,INPUT); }
+void loop() {
+  digitalWrite(TRIG,LOW); delayMicroseconds(2);
+  digitalWrite(TRIG,HIGH); delayMicroseconds(10); digitalWrite(TRIG,LOW);
+  long d = pulseIn(ECHO,HIGH,30000);
+  Serial.println(d ? String(d*0.0343/2.0) + " cm" : "sem eco");
+  delay(300);
+}
+```
+
+> **Resultado esperado:** abra o Monitor Serial (115200 baud). Ao aproximar e afastar a mão
+> do sensor, os números em cm devem mudar de acordo. ✅  **Se não mudar:** confira VCC, GND
+> e se TRIG/ECHO estão nos pinos 32/33.
+
+**2. Teste do servo** (só USB). Prova que o servo gira nas três posições.
+
+```cpp
+#include <ESP32Servo.h>
+Servo s;
+void setup() { s.setPeriodHertz(50); s.attach(13, 500, 2400); }
+void loop() { s.write(30); delay(1500); s.write(90); delay(1500); s.write(150); delay(1500); }
+```
+
+> **Resultado esperado:** o braço do servo deve parar em três ângulos, um após o outro
+> (esquerda, centro, direita). ✅  **Se ele tremer ou não completar o giro:** o servo pode
+> precisar de mais corrente do que o USB fornece — teste com as pilhas ligadas.
+
+**3. Teste dos motores** (USB + pilhas, **rodas no ar**). Prova que os motores giram no
+sentido certo.
+
+```cpp
+void setup() {
+  int pinos[] = {22,21,23,19,18,5};
+  for (int p : pinos) pinMode(p, OUTPUT);
+}
+void loop() {
+  Serial.println("frente");
+  digitalWrite(22,HIGH); digitalWrite(21,LOW);
+  digitalWrite(19,HIGH); digitalWrite(18,LOW);
+  analogWrite(23,200); analogWrite(5,200);
+  delay(2000);
+  analogWrite(23,0); analogWrite(5,0); delay(500);
+}
+```
+
+> **Resultado esperado:** os dois motores giram para frente e param, em ciclo. Confirme que
+> o motor do lado esquerdo é mesmo o esquerdo. ✅  **Se um girar ao contrário:** troque os
+> dois fios daquele motor nos bornes OUT.
+
+Só depois que os **três testes passarem** é que vale gravar o código completo de exploração
+e ver o robô inteiro funcionando.
+
+---
+
+## Encerramento da Parte 1
+
+Recapitulando o que você construiu — e, mais importante, **entendeu**:
+
+- ✅ Um robô que **roda no simulador Wokwi** (LEDs indicando a direção da decisão)
+- ✅ O **mesmo código** rodando no hardware real (motores + sensor + servo)
+- ✅ O robô **explora** o ambiente com movimento que varia sozinho
+- ✅ Ele **detecta e desvia** de obstáculos de forma autônoma
+- ✅ Você testou **cada peça isoladamente** antes de integrar — a regra de ouro
+- ✅ Você entende **por que** cada peça existe e o que ela faz no ciclo
+
+Você não montou um robô seguindo uma receita: você entendeu o **loop perceber → decidir →
+agir** que está por trás de praticamente toda a robótica.
+
+Na **Parte 2**, damos um passo atrás para entender uma ideia nova: o que é uma LLM (um
+modelo de linguagem) e por que um "cérebro" desses pode caber dentro de um microcontrolador.
+Na **Parte 3**, construímos esse cérebro do zero.
+
+# Parte 2 — A Grande Ideia: o que é uma LLM
+
+> **Onde estamos na jornada.** Você já montou o corpo do robô (Parte 1). Antes de
+> construir o cérebro dele (Parte 3), vamos entender — sem nenhum jargão — o que é uma
+> "IA de linguagem", como ela funciona por dentro e por que uma versão minúscula dela
+> pode morar num robozinho. **Nenhum código aqui: só ideias.** Esta é a ponte que liga
+> o corpo que anda ao cérebro que fala.
+
+"Inteligência Artificial" virou uma palavra assustadora. Parece coisa de gênio, de
+ficção científica, de algo que ninguém comum entende. A boa notícia desta parte é que,
+por baixo do capô, a ideia central é **simples e elegante** — e você vai entendê-la em
+poucos minutos.
+
+---
+
+## 2.1 O que significa "LLM"
+
+**LLM** vem do inglês *Large Language Model* — em português, "Grande Modelo de
+Linguagem". Em vez de decorar a sigla, vamos entender cada palavra pelo que ela faz:
+
+- **Modelo** — um programa que **aprende padrões a partir de exemplos**, em vez de
+  seguir regras que alguém escreveu à mão. Pense num aprendiz de cozinha que prova
+  centenas de pratos e vai pegando o jeito, em vez de decorar um livro de receitas. Ele
+  não sabe explicar a regra; ele **sente** o padrão.
+- **Linguagem** — o que esse aprendiz observa é **texto**: como as letras e as palavras
+  se seguem umas às outras. Depois de ver muito texto, ele percebe que depois de "bom
+  dia" costuma vir uma vírgula, que "chuva" e "guarda-chuva" andam juntas, e assim por
+  diante.
+- **Grande (Large)** — normalmente esses modelos são enormes, com bilhões de padrões
+  guardados. O nosso vai ser **pequeno de propósito**, para caber num robô. A ideia é
+  idêntica; muda só o tamanho.
+
+Juntando: uma LLM é **um programa que aprendeu padrões de texto observando muitos
+exemplos**. O ChatGPT é uma LLM gigante. O cérebro do nosso robô será uma LLM minúscula.
+Mesma família, tamanhos diferentes.
+
+### Uma coisa importante antes de seguir: o modelo só entende números
+
+Computadores não manipulam letras — manipulam números. Então, para uma LLM trabalhar
+com texto, acontece uma tradução nas duas pontas: o texto vira números na entrada, e os
+números viram texto de volta na saída.
+
+![Do texto aos números e de volta ao texto](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjIyMCIgdmlld0JveD0iMCAwIDYyMCAyMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJhMSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNiIgbWFya2VySGVpZ2h0PSI2IiBvcmllbnQ9ImF1dG8tc3RhcnQtcmV2ZXJzZSI+CiAgICAgIDxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIyMjAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5Qb3IgZGVudHJvOiBvIG1vZGVsbyBzw7MgdHJhYmFsaGEgY29tIG7Dum1lcm9zPC90ZXh0PgoKICA8cmVjdCB4PSIyMCIgeT0iNzAiIHdpZHRoPSIxMDUiIGhlaWdodD0iNjAiIHJ4PSI5IiBmaWxsPSIjZTZmMGZhIiBzdHJva2U9IiMzQjhCRDQiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iNzIiIHk9Ijk1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjM0I4QkQ0Ij50ZXh0bzwvdGV4dD4KICA8dGV4dCB4PSI3MiIgeT0iMTE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjNTU1Ij4iTyBnYXRvIjwvdGV4dD4KCiAgPHJlY3QgeD0iMTU1IiB5PSI3MCIgd2lkdGg9IjEwNSIgaGVpZ2h0PSI2MCIgcng9IjkiIGZpbGw9IiNmZGVlZTAiIHN0cm9rZT0iI0JBNzUxNyIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSIyMDciIHk9IjkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCQTc1MTciPnBlZGFjaW5ob3M8L3RleHQ+CiAgPHRleHQgeD0iMjA3IiB5PSIxMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzU1NSI+T8K3Z8K3YcK3dMK3bzwvdGV4dD4KICA8dGV4dCB4PSIyMDciIHk9IjEyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI5IiBmaWxsPSIjOTk5Ij4oY2FyYWN0ZXJlcyk8L3RleHQ+CgogIDxyZWN0IHg9IjI5MCIgeT0iNzAiIHdpZHRoPSIxMDUiIGhlaWdodD0iNjAiIHJ4PSI5IiBmaWxsPSIjZjRmMmZjIiBzdHJva2U9IiM1MzRBQjciIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iMzQyIiB5PSI5NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzUzNEFCNyI+bsO6bWVyb3M8L3RleHQ+CiAgPHRleHQgeD0iMzQyIiB5PSIxMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzU1NSI+MTTCtzfCtzLCtzXCtzg8L3RleHQ+CgogIDxyZWN0IHg9IjQyNSIgeT0iNjIiIHdpZHRoPSI5NSIgaGVpZ2h0PSI3NiIgcng9IjkiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjgiLz4KICA8dGV4dCB4PSI0NzIiIHk9IjkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMEY2RTU2Ij5tb2RlbG88L3RleHQ+CiAgPHRleHQgeD0iNDcyIiB5PSIxMDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iOS41IiBmaWxsPSIjNTU1Ij5wcmV2w6ogbzwvdGV4dD4KICA8dGV4dCB4PSI0NzIiIHk9IjEyMSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI5LjUiIGZpbGw9IiM1NTUiPnByw7N4aW1vPC90ZXh0PgoKICA8cmVjdCB4PSI1NTAiIHk9IjcwIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHJ4PSI5IiBmaWxsPSIjZTZmMGZhIiBzdHJva2U9IiMzQjhCRDQiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iNTgwIiB5PSI5NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzNCOEJENCI+dGV4dG88L3RleHQ+CiAgPHRleHQgeD0iNTgwIiB5PSIxMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzU1NSI+InN1Yml1IjwvdGV4dD4KCiAgPGxpbmUgeDE9IjEyNSIgeTE9IjEwMCIgeDI9IjE1MyIgeTI9IjEwMCIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNhMSkiLz4KICA8bGluZSB4MT0iMjYwIiB5MT0iMTAwIiB4Mj0iMjg4IiB5Mj0iMTAwIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2ExKSIvPgogIDxsaW5lIHgxPSIzOTUiIHkxPSIxMDAiIHgyPSI0MjMiIHkyPSIxMDAiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjYTEpIi8+CiAgPGxpbmUgeDE9IjUyMCIgeTE9IjEwMCIgeDI9IjU0OCIgeTI9IjEwMCIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNhMSkiLz4KCiAgPHRleHQgeD0iMzEwIiB5PSIxNzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzc3NyI+TyBtb2RlbG8gbsOjbyBlbnRlbmRlIGxldHJhcy4gVHJhZHV6aW1vcyB0ZXh0byBlbSBuw7ptZXJvcyBuYSBlbnRyYWRhIGUgbsO6bWVyb3MgZGUgdm9sdGEgZW0gdGV4dG8gbmEgc2HDrWRhLjwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjE5NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzBGNkU1NiI+RXNzYSB0cmFkdcOnw6NvIChsZXRyYSDihpQgbsO6bWVybykgw6kgbyAidG9rZW5pemVyIiDigJQgYSBwcmltZWlyYSBwZcOnYSBxdWUgdm9jw6ogdmFpIGNvbnN0cnVpciBuYSBQYXJ0ZSAzLjwvdGV4dD4KPC9zdmc+Cg==)
+
+Guarde esta imagem: essa tradução "letra ↔ número" tem um nome — **tokenizer** — e será
+a **primeira peça** que você vai construir na Parte 3. Tudo o mais que a LLM faz acontece
+no mundo dos números, no meio desse caminho.
+
+---
+
+## 2.2 A única coisa que uma LLM faz
+
+Aqui está o segredo que desmistifica tudo. Uma LLM, por mais impressionante que pareça,
+faz **uma única coisa**:
+
+> **Ela prevê o próximo pedacinho de texto.**
+
+Você dá um começo, e ela adivinha o que vem a seguir:
+
+![Prever o próximo pedacinho](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjI4MCIgdmlld0JveD0iMCAwIDYyMCAyODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0icDEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMjgwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+QSDDum5pY2EgY29pc2EgcXVlIHVtYSBMTE0gZmF6OiBwcmV2ZXIgbyBwcsOzeGltbyBwZWRhY2luaG88L3RleHQ+CgogIDxyZWN0IHg9IjYwIiB5PSI5MCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI2MCIgcng9IjEwIiBmaWxsPSIjZTZmMGZhIiBzdHJva2U9IiMzQjhCRDQiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iMjEwIiB5PSIxMTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMzMzMiPiJPIGdhdG8gc3ViaXUgbm8uLi4iPC90ZXh0PgogIDx0ZXh0IHg9IjIxMCIgeT0iMTM1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjNzc3Ij5vIGNvbWXDp28gcXVlIHZvY8OqIGRldTwvdGV4dD4KCiAgPGxpbmUgeDE9IjM2MiIgeTE9IjEyMCIgeDI9IjQxOCIgeTI9IjEyMCIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNwMSkiLz4KICA8dGV4dCB4PSIzOTAiIHk9IjEwOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzc3NyI+cHJldsOqPC90ZXh0PgoKICA8cmVjdCB4PSI0MjAiIHk9IjkwIiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSI0OTUiIHk9IjExNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBGNkU1NiI+InRlbGhhZG8iPC90ZXh0PgogIDx0ZXh0IHg9IjQ5NSIgeT0iMTM1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjNzc3Ij5vIHF1ZSB2ZW0gYSBzZWd1aXI8L3RleHQ+CgogIDx0ZXh0IHg9IjMxMCIgeT0iMjAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNTU1Ij5SZXBldGluZG8gZXNzYSBwcmV2aXPDo28sIHVtIHBlZGFjaW5obyBwb3IgdmV6LCBlbGEgZXNjcmV2ZSBmcmFzZXMgaW50ZWlyYXMuPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMjI4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzc3Ij7DiSBzw7MgaXNzby4gVG9kbyBvIHJlc3RvIGRhIHRlY25vbG9naWEgZXhpc3RlIHBhcmEgZmF6ZXIgZXNzYSBwcmV2aXPDo28gYmVtIGZlaXRhLjwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjI1NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzUzNEFCNyI+Tm8gbm9zc28gcm9iw7QsIG8gInBlZGFjaW5obyIgw6kgdW0gY2FyYWN0ZXJlICh1bWEgbGV0cmEgcG9yIHZleikuPC90ZXh0Pgo8L3N2Zz4K)
+
+Como ela faz isso? Para cada próximo pedacinho possível, o modelo dá uma **nota** — quão
+provável é que aquele venha agora. Veja com uma frase do mundo do nosso robô:
+
+![O que vem a seguir? O modelo dá uma nota a cada candidato](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDYyMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJiMSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNiIgbWFya2VySGVpZ2h0PSI2IiBvcmllbnQ9ImF1dG8tc3RhcnQtcmV2ZXJzZSI+CiAgICAgIDxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj4iTyBxdWUgdmVtIGEgc2VndWlyPyIg4oCUIGEgw7puaWNhIHBlcmd1bnRhIHF1ZSBvIG1vZGVsbyByZXNwb25kZTwvdGV4dD4KCiAgPCEtLSBlbnRyYWRhIC0tPgogIDxyZWN0IHg9IjQwIiB5PSIxMjAiIHdpZHRoPSIxNTAiIGhlaWdodD0iNTYiIHJ4PSI5IiBmaWxsPSIjZTZmMGZhIiBzdHJva2U9IiMzQjhCRDQiIHN0cm9rZS13aWR0aD0iMS42Ii8+CiAgPHRleHQgeD0iMTE1IiB5PSIxNDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZpbGw9IiMzMzMiPlRoZSB3YWxsIGlzPC90ZXh0PgogIDx0ZXh0IHg9IjExNSIgeT0iMTY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNzc3Ij5vIHRleHRvIGF0w6kgYWdvcmE8L3RleHQ+CgogIDxsaW5lIHgxPSIxOTAiIHkxPSIxNDgiIHgyPSIyMzgiIHkyPSIxNDgiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjYiIG1hcmtlci1lbmQ9InVybCgjYjEpIi8+CgogIDwhLS0gY2FuZGlkYXRvcyBjb20gYmFycmFzIC0tPgogIDx0ZXh0IHg9IjMzMCIgeT0iNjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzc3NyI+byBtb2RlbG8gZMOhIHVtYSBub3RhIGEgY2FkYSBwcsOzeGltbyBjYXJhY3RlcmUgcG9zc8OtdmVsOjwvdGV4dD4KCiAgPGcgZm9udC1zaXplPSIxMiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+CiAgICA8dGV4dCB4PSIyNTAiIHk9Ijg2IiBmaWxsPSIjMzMzIj4nICc8L3RleHQ+CiAgICA8cmVjdCB4PSIyNzgiIHk9Ijc2IiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE0IiByeD0iMyIgZmlsbD0iIzBGNkU1NiIvPgogICAgPHRleHQgeD0iNDY2IiB5PSI4NyIgZm9udC1zaXplPSIxMC41IiBmb250LWZhbWlseT0iU2Vnb2UgVUkiIGZpbGw9IiMwRjZFNTYiPm11aXRvIHByb3bDoXZlbCAoZXNwYcOnbyk8L3RleHQ+CgogICAgPHRleHQgeD0iMjUwIiB5PSIxMTIiIGZpbGw9IiMzMzMiPid0JzwvdGV4dD4KICAgIDxyZWN0IHg9IjI3OCIgeT0iMTAyIiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjE0IiByeD0iMyIgZmlsbD0iIzNCOEJENCIvPgogICAgPHRleHQgeD0iNDA2IiB5PSIxMTMiIGZvbnQtc2l6ZT0iMTAuNSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJIiBmaWxsPSIjM0I4QkQ0Ij5wcm92w6F2ZWwgKCIuLi5pcyB0aGVyZSIpPC90ZXh0PgoKICAgIDx0ZXh0IHg9IjI1MCIgeT0iMTM4IiBmaWxsPSIjMzMzIj4nLic8L3RleHQ+CiAgICA8cmVjdCB4PSIyNzgiIHk9IjEyOCIgd2lkdGg9IjcwIiBoZWlnaHQ9IjE0IiByeD0iMyIgZmlsbD0iI0JBNzUxNyIvPgogICAgPHRleHQgeD0iMzU2IiB5PSIxMzkiIGZvbnQtc2l6ZT0iMTAuNSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJIiBmaWxsPSIjQkE3NTE3Ij5wb3Nzw612ZWwgKGZpbSBkZSBmcmFzZSk8L3RleHQ+CgogICAgPHRleHQgeD0iMjUwIiB5PSIxNjQiIGZpbGw9IiMzMzMiPid6JzwvdGV4dD4KICAgIDxyZWN0IHg9IjI3OCIgeT0iMTU0IiB3aWR0aD0iMTIiIGhlaWdodD0iMTQiIHJ4PSIzIiBmaWxsPSIjQjIzQTJFIi8+CiAgICA8dGV4dCB4PSIyOTgiIHk9IjE2NSIgZm9udC1zaXplPSIxMC41IiBmb250LWZhbWlseT0iU2Vnb2UgVUkiIGZpbGw9IiNCMjNBMkUiPnF1YXNlIGltcG9zc8OtdmVsPC90ZXh0PgogIDwvZz4KCiAgPGxpbmUgeDE9IjMzMCIgeTE9IjE4MCIgeDI9IjMzMCIgeTI9IjIxMiIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNiIgbWFya2VyLWVuZD0idXJsKCNiMSkiLz4KICA8dGV4dCB4PSIzOTgiIHk9IjIwMCIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjNzc3Ij5zb3J0ZWlhIHVtIGRvcyBtYWlzIHByb3bDoXZlaXM8L3RleHQ+CgogIDwhLS0gcmVzdWx0YWRvIC0tPgogIDxyZWN0IHg9IjIzMCIgeT0iMjE2IiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjQ2IiByeD0iOSIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuOCIvPgogIDx0ZXh0IHg9IjMzMCIgeT0iMjQ0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmaWxsPSIjMEY2RTU2Ij5UaGUgd2FsbCBpc188L3RleHQ+CgogIDx0ZXh0IHg9IjMxMCIgeT0iMjg2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjNzc3Ij5KdW50YSBvIGNhcmFjdGVyZSBlc2NvbGhpZG8gYW8gdGV4dG8gZSByZXBldGUuIFVtIGNhcmFjdGVyZSBwb3IgdmV6LCDDqSBhc3NpbSBxdWUgZnJhc2VzIGludGVpcmFzIG5hc2NlbS48L3RleHQ+Cjwvc3ZnPgo=)
+
+Depois de "The wall is", o modelo acha um espaço em branco muito provável, um ponto final
+possível, e a letra "z" quase impossível. Ele então **sorteia entre os mais prováveis**,
+junta o escolhido ao texto, e recomeça a pergunta — agora com um caractere a mais. Um
+pedacinho de cada vez, é assim que frases inteiras nascem.
+
+> **Por que "sortear" e não pegar sempre o mais provável?** Se pegasse sempre o campeão,
+> o robô diria exatamente a mesma frase toda vez. O sorteio dá **variedade** — a
+> personalidade do robô. Você vai controlar isso na Parte 3 com dois ajustes chamados
+> *temperatura* e *top-k*.
+
+> **Uma comparação do dia a dia:** é como o **corretor do seu celular** sugerindo a
+> próxima palavra enquanto você digita. A LLM é uma versão muito mais poderosa da mesma
+> ideia — prever o que vem a seguir.
+
+---
+
+## 2.3 Como ela "aprende" isso?
+
+A LLM não nasce sabendo prever. Ela **aprende** num processo chamado **treino**, que
+funciona por tentativa e erro — parecido com um humano treinando um esporte. O treino tem
+sempre as mesmas quatro etapas, girando em círculo:
+
+![O ciclo de treino: prever, comparar, ajustar, repetir](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDYyMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJjMSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNi41IiBtYXJrZXJIZWlnaHQ9IjYuNSIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPgogICAgICA8cGF0aCBkPSJNMiAxTDggNUwyIDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjciIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogICAgPC9tYXJrZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+Q29tbyBvIG1vZGVsbyBhcHJlbmRlOiB0ZW50YXRpdmEgZSBlcnJvLCBtaWxow7VlcyBkZSB2ZXplczwvdGV4dD4KCiAgPCEtLSAxIGV4ZW1wbG8gLS0+CiAgPHJlY3QgeD0iNjAiIHk9IjcwIiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjU0IiByeD0iOSIgZmlsbD0iI2U2ZjBmYSIgc3Ryb2tlPSIjM0I4QkQ0IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjEzNSIgeT0iOTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzNCOEJENCI+MS4gVsOqIHVtIGV4ZW1wbG88L3RleHQ+CiAgPHRleHQgeD0iMTM1IiB5PSIxMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM1NTUiPiJPIGdhdG8gc3ViaXUgbm8gX19fIjwvdGV4dD4KCiAgPCEtLSAyIHRlbnRhIC0tPgogIDxyZWN0IHg9IjQxMCIgeT0iNzAiIHdpZHRoPSIxNTAiIGhlaWdodD0iNTQiIHJ4PSI5IiBmaWxsPSIjZmRlZWUwIiBzdHJva2U9IiNCQTc1MTciIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iNDg1IiB5PSI5MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMS41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQkE3NTE3Ij4yLiBUZW50YSBwcmV2ZXI8L3RleHQ+CiAgPHRleHQgeD0iNDg1IiB5PSIxMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM1NTUiPmNodXRhICJiYW5hbmEiPC90ZXh0PgoKICA8IS0tIDMgY29tcGFyYSAtLT4KICA8cmVjdCB4PSI0MTAiIHk9IjE4MCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSI2MCIgcng9IjkiIGZpbGw9IiNmYmU2ZTIiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSI0ODUiIHk9IjIwMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMS41IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQjIzQTJFIj4zLiBDb21wYXJhIGUgZXJyYTwvdGV4dD4KICA8dGV4dCB4PSI0ODUiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzU1NSI+Y2VydG8gZXJhICJ0ZWxoYWRvIjwvdGV4dD4KICA8dGV4dCB4PSI0ODUiIHk9IjIzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI5LjUiIGZpbGw9IiM5OTkiPm8gImVycm8iIMOpIGdyYW5kZTwvdGV4dD4KCiAgPCEtLSA0IGFqdXN0YSAtLT4KICA8cmVjdCB4PSI2MCIgeT0iMTgwIiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjYwIiByeD0iOSIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNiIvPgogIDx0ZXh0IHg9IjEzNSIgeT0iMjAyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPjQuIEFqdXN0YSBvcyBib3TDtWVzPC90ZXh0PgogIDx0ZXh0IHg9IjEzNSIgeT0iMjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNTU1Ij4ob3MgcGFyw6JtZXRyb3MpIHVtPC90ZXh0PgogIDx0ZXh0IHg9IjEzNSIgeT0iMjMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNTU1Ij50aXF1aW5obywgcC8gZXJyYXIgbWVub3M8L3RleHQ+CgogIDwhLS0gc2V0YXMgZG8gY2ljbG8gLS0+CiAgPGxpbmUgeDE9IjIxMCIgeTE9Ijk3IiB4Mj0iNDA4IiB5Mj0iOTciIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjciIG1hcmtlci1lbmQ9InVybCgjYzEpIi8+CiAgPGxpbmUgeDE9IjQ4NSIgeTE9IjEyNCIgeDI9IjQ4NSIgeTI9IjE3OCIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuNyIgbWFya2VyLWVuZD0idXJsKCNjMSkiLz4KICA8bGluZSB4MT0iNDEwIiB5MT0iMjEwIiB4Mj0iMjEyIiB5Mj0iMjEwIiBzdHJva2U9IiM1MzRBQjciIHN0cm9rZS13aWR0aD0iMS43IiBtYXJrZXItZW5kPSJ1cmwoI2MxKSIvPgogIDxwYXRoIGQ9Ik0xMzUgMTgwIEwxMzUgMTUwIEwxMzUgMTI2IiBmaWxsPSJub25lIiBzdHJva2U9IiM1MzRBQjciIHN0cm9rZS13aWR0aD0iMS43IiBtYXJrZXItZW5kPSJ1cmwoI2MxKSIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iMTU2IiBmb250LXNpemU9IjkuNSIgZmlsbD0iIzUzNEFCNyI+cmVwZXRlPC90ZXh0PgoKICA8dGV4dCB4PSIzMTAiIHk9IjI3MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMS41IiBmaWxsPSIjNzc3Ij5DYWRhIHZvbHRhIGRlaXhhIG9zIGNodXRlcyB1bSBwb3VjbyBtZWxob3Jlcy4gRGVwb2lzIGRlIG1pbGjDtWVzIGRlIHZvbHRhcywgbyBtb2RlbG8gcHJldsOqIGNvbSBuYXR1cmFsaWRhZGUuPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMjkzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMEY2RTU2Ij5Fc3NlICJlcnJvIHF1ZSBkaW1pbnVpIiDDqSBvIGxvc3Mg4oCUIHZvY8OqIHZhaSB2w6otbG8gY2FpciBjb20gb3MgcHLDs3ByaW9zIG9saG9zIG5hIFBhcnRlIDMuPC90ZXh0Pgo8L3N2Zz4K)
+
+1. **Vê um exemplo** de texto real (com a resposta certa escondida).
+2. **Tenta prever** o pedacinho que falta — no começo, chuta quase aleatoriamente.
+3. **Compara** o chute com a resposta certa e mede o quanto errou. Esse "tamanho do erro"
+   tem um nome: **loss**.
+4. **Ajusta** seus botões internos (os **parâmetros**) um tiquinho, na direção que
+   diminui o erro. E volta ao passo 1.
+
+No começo ela erra quase tudo. Cada volta deixa os chutes um pouco melhores. Repetindo
+isso **milhões de vezes** com muitos textos, os chutes vão ficando tão bons que ela prevê
+com naturalidade.
+
+No fim do treino, o "conhecimento" da LLM fica guardado nesses **parâmetros** ajustados.
+Cada parâmetro é como um botãozinho que o treino girou até a posição certa. Quanto mais
+botões, mais capaz (e mais pesado) o modelo.
+
+> Você vai fazer **exatamente** esse ciclo na Parte 3: mostrar exemplos ao modelo, ver o
+> número do erro (o loss) diminuir a cada passo, e no fim ter um modelo que prevê texto no
+> estilo sarcástico do seu robô.
+
+---
+
+## 2.4 Por que uma LLM cabe num robô?
+
+Aqui vem a pergunta natural: se o ChatGPT precisa de computadores gigantes, como um modelo
+desses cabe num chip de poucos dólares?
+
+A resposta está no **tamanho**. Os modelos variam enormemente na quantidade de parâmetros
+(aqueles "botõezinhos"):
+
+![Comparação de tamanho entre modelos](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMyMCIgdmlld0JveD0iMCAwIDYyMCAzMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIzMjAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5UYW1hbmhvIGRvcyBtb2RlbG9zIChuw7ptZXJvIGRlICJuZXVyw7RuaW9zIGFqdXN0w6F2ZWlzIik8L3RleHQ+CgogIDwhLS0gbmFuby1ncnVtcCAtLT4KICA8dGV4dCB4PSIxNTAiIHk9Ijc2IiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj5ub3NzbyByb2LDtDwvdGV4dD4KICA8cmVjdCB4PSIxNjAiIHk9IjY0IiB3aWR0aD0iNiIgaGVpZ2h0PSIyMCIgcng9IjIiIGZpbGw9IiMwRjZFNTYiLz4KICA8dGV4dCB4PSIxNzYiIHk9Ijc5IiBmb250LXNpemU9IjExIiBmaWxsPSIjMEY2RTU2Ij5+MjExIG1pbCBwYXLDom1ldHJvcyAoY2FiZSBubyBFU1AzMik8L3RleHQ+CgogIDwhLS0gVGlueVN0b3JpZXMgLS0+CiAgPHRleHQgeD0iMTUwIiB5PSIxMjYiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPlRpbnlTdG9yaWVzPC90ZXh0PgogIDxyZWN0IHg9IjE2MCIgeT0iMTE0IiB3aWR0aD0iNDAiIGhlaWdodD0iMjAiIHJ4PSIyIiBmaWxsPSIjM0I4QkQ0Ii8+CiAgPHRleHQgeD0iMjEwIiB5PSIxMjkiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzQjhCRDQiPn4yOSBtaWxow7VlczwvdGV4dD4KCiAgPCEtLSBHUFQtMiAtLT4KICA8dGV4dCB4PSIxNTAiIHk9IjE3NiIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+R1BULTIgKG1lbm9yKTwvdGV4dD4KICA8cmVjdCB4PSIxNjAiIHk9IjE2NCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSIyMCIgcng9IjIiIGZpbGw9IiM1MzRBQjciLz4KICA8dGV4dCB4PSIyOTAiIHk9IjE3OSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzUzNEFCNyI+MTI0IG1pbGjDtWVzPC90ZXh0PgoKICA8IS0tIEdQVCBncmFuZGUgLS0+CiAgPHRleHQgeD0iMTUwIiB5PSIyMjYiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPkxMTSBkZSBudXZlbTwvdGV4dD4KICA8cmVjdCB4PSIxNjAiIHk9IjIxNCIgd2lkdGg9IjQyMCIgaGVpZ2h0PSIyMCIgcng9IjIiIGZpbGw9IiNCMjNBMkUiLz4KICA8dGV4dCB4PSIzNTAiIHk9IjIyOSIgZm9udC1zaXplPSIxMSIgZmlsbD0iI2ZmZiIgZm9udC13ZWlnaHQ9IjcwMCI+Y2VudGVuYXMgZGUgYmlsaMO1ZXM8L3RleHQ+CgogIDx0ZXh0IHg9IjMxMCIgeT0iMjc4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNTU1Ij5RdWFudG8gbWFpb3IsIG1haXMgY2FwYXog4oCUIGUgbWFpcyBwZXNhZG8uIE1vZGVsb3MgZGUgbnV2ZW0gcHJlY2lzYW0gZGUgZGF0YSBjZW50ZXJzLjwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjMwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzBGNkU1NiI+TyBub3NzbyDDqSBtaW7DunNjdWxvIGRlIHByb3DDs3NpdG86IHByZWNpc2EgY2FiZXIgZSByb2RhciBudW0gY2hpcCBkZSBwb3Vjb3MgZMOzbGFyZXMuPC90ZXh0Pgo8L3N2Zz4K)
+
+Uma LLM de nuvem tem **centenas de bilhões** de parâmetros — por isso precisa de data
+centers. O cérebro do nosso robô vai ter só **~215 mil**. É milhões de vezes menor.
+
+E menos parâmetros tem uma consequência direta e prática, que é justamente o que permite o
+embarque:
+
+> **menos parâmetros → menos números para guardar → arquivo pequeno → cabe na memória do
+> chip.** O modelo do robô ocupa menos de 1 MB. Um modelo de nuvem ocupa centenas de
+> gigabytes.
+
+**O truque** é entender que um modelo pequeno não sabe conversar sobre qualquer assunto —
+mas ele **não precisa**. O nosso robô só precisa saber uma coisa: gerar frases sarcásticas
+curtas para umas poucas situações. Para essa tarefa limitada, um modelo minúsculo basta.
+
+> **A lição de engenharia:** você não precisa de um modelo gigante para um problema
+> pequeno. Escolher o tamanho certo para a tarefa é uma decisão inteligente, não uma
+> limitação. Um caminhão não é "melhor" que uma bicicleta para ir à padaria da esquina.
+
+---
+
+## 2.5 Como isso se conecta ao nosso robô
+
+Agora juntamos as duas metades do projeto:
+
+- O **corpo** (Parte 1) percebe o mundo: anda, detecta obstáculos, fica preso.
+- O **cérebro** (a LLM, Parte 3) recebe a situação atual e **gera uma frase** com
+  personalidade.
+
+A ponte entre os dois são os **marcadores** — etiquetas curtas que resumem a situação:
+`<obstacle>` (bateu em algo), `<stuck>` (ficou preso), `<clear>` (o caminho abriu). O corpo
+manda o marcador; o cérebro completa com uma reclamação sarcástica.
+
+![A ponte: situação → marcador → cérebro → frase](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjI0MCIgdmlld0JveD0iMCAwIDYyMCAyNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJkMSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNi41IiBtYXJrZXJIZWlnaHQ9IjYuNSIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPgogICAgICA8cGF0aCBkPSJNMiAxTDggNUwyIDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjciIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogICAgPC9tYXJrZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMjQwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+QSBwb250ZSBlbnRyZSBvIGNvcnBvIGUgbyBjw6lyZWJybzwvdGV4dD4KCiAgPCEtLSBzaXR1YcOnw6NvIC0tPgogIDxyZWN0IHg9IjIwIiB5PSI4MCIgd2lkdGg9IjEzMCIgaGVpZ2h0PSI3MiIgcng9IjEwIiBmaWxsPSIjZTZmMGZhIiBzdHJva2U9IiMzQjhCRDQiIHN0cm9rZS13aWR0aD0iMS42Ii8+CiAgPHRleHQgeD0iODUiIHk9IjEwNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzNCOEJENCI+U2l0dWHDp8OjbyByZWFsPC90ZXh0PgogIDx0ZXh0IHg9Ijg1IiB5PSIxMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzU1NSI+byBzZW5zb3IgZGV0ZWN0YTwvdGV4dD4KICA8dGV4dCB4PSI4NSIgeT0iMTQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiM1NTUiPnVtYSBwYXJlZGU8L3RleHQ+CiAgPHRleHQgeD0iODUiIHk9IjE3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI5LjUiIGZpbGw9IiM5OTkiPkNPUlBPIChQYXJ0ZSAxKTwvdGV4dD4KCiAgPCEtLSBtYXJjYWRvciAtLT4KICA8cmVjdCB4PSIyMDAiIHk9IjgwIiB3aWR0aD0iMTMwIiBoZWlnaHQ9IjcyIiByeD0iMTAiIGZpbGw9IiNmZGVlZTAiIHN0cm9rZT0iI0JBNzUxNyIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KICA8dGV4dCB4PSIyNjUiIHk9IjEwNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0JBNzUxNyI+TWFyY2Fkb3I8L3RleHQ+CiAgPHRleHQgeD0iMjY1IiB5PSIxMjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZpbGw9IiMzMzMiPiZsdDtvYnN0YWNsZSZndDs8L3RleHQ+CiAgPHRleHQgeD0iMjY1IiB5PSIxNzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iOS41IiBmaWxsPSIjOTk5Ij5hIGV0aXF1ZXRhIGVudmlhZGE8L3RleHQ+CgogIDwhLS0gY8OpcmVicm8gLS0+CiAgPHJlY3QgeD0iMzgwIiB5PSI3MiIgd2lkdGg9IjEzMCIgaGVpZ2h0PSI4OCIgcng9IjEwIiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS44Ii8+CiAgPHRleHQgeD0iNDQ1IiB5PSI5OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBGNkU1NiI+Q8OpcmVicm8gKExMTSk8L3RleHQ+CiAgPHRleHQgeD0iNDQ1IiB5PSIxMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzU1NSI+Y29tcGxldGEgbyB0ZXh0byw8L3RleHQ+CiAgPHRleHQgeD0iNDQ1IiB5PSIxMzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzU1NSI+dW0gY2FyYWN0ZXJlPC90ZXh0PgogIDx0ZXh0IHg9IjQ0NSIgeT0iMTQ4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiM1NTUiPnBvciB2ZXo8L3RleHQ+CiAgPHRleHQgeD0iNDQ1IiB5PSIxNzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iOS41IiBmaWxsPSIjOTk5Ij5QYXJ0ZSAzPC90ZXh0PgoKICA8IS0tIGZyYXNlIC0tPgogIDxyZWN0IHg9IjM4MCIgeT0iMTg1IiB3aWR0aD0iMjIwIiBoZWlnaHQ9IjQyIiByeD0iOSIgZmlsbD0iI2Y0ZjJmYyIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjQ5MCIgeT0iMjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmaWxsPSIjMzMzIj4iT2ggbG9vaywgYSB3YWxsLiBUdXJuaW5nLiI8L3RleHQ+CgogIDxsaW5lIHgxPSIxNTAiIHkxPSIxMTYiIHgyPSIxOTgiIHkyPSIxMTYiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjciIG1hcmtlci1lbmQ9InVybCgjZDEpIi8+CiAgPGxpbmUgeDE9IjMzMCIgeTE9IjExNiIgeDI9IjM3OCIgeTI9IjExNiIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNyIgbWFya2VyLWVuZD0idXJsKCNkMSkiLz4KICA8bGluZSB4MT0iNDQ1IiB5MT0iMTYwIiB4Mj0iNDQ1IiB5Mj0iMTgzIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS43IiBtYXJrZXItZW5kPSJ1cmwoI2QxKSIvPgoKICA8dGV4dCB4PSIzMTAiIHk9IjE4NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIwIiBmaWxsPSIjZmZmIj4gPC90ZXh0PgogIDx0ZXh0IHg9IjE1MCIgeT0iNjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzc3NyI+IDwvdGV4dD4KCiAgPHRleHQgeD0iMzEwIiB5PSIyMzUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMCIgZmlsbD0iI2ZmZiI+IDwvdGV4dD4KPC9zdmc+Cg==)
+
+```text
+corpo:    "<obstacle>"
+cérebro:  "<obstacle> Oh look, a wall. Groundbreaking. Turning."
+```
+
+Repare que isso é **exatamente** a previsão do próximo pedacinho que vimos na Seção 2.2 —
+só que o "começo" é um marcador de situação, e a LLM completa com a frase, um caractere por
+vez.
+
+---
+
+## 2.6 Alguns termos que você vai encontrar
+
+Para você não se assustar com o vocabulário na Parte 3, aqui vão os principais, em
+linguagem simples. **Não precisa decorar nada agora** — todos serão explicados a fundo, com
+analogia, exemplo e diagrama, quando aparecerem.
+
+| Termo | O que significa, em uma frase | Onde você já viu nesta parte |
+|---|---|---|
+| **Token** | Um pedacinho de texto. No nosso caso, um caractere. | o "pedacinho" da Seção 2.2 |
+| **Vocabulário** | A lista de todos os pedacinhos que o modelo conhece. | — |
+| **Tokenizer** | A tradução letra ↔ número. | a imagem da Seção 2.1 |
+| **Parâmetros** | Os números ajustáveis que guardam o "conhecimento". | os "botõezinhos" da Seção 2.3 |
+| **Treino** | O ciclo de ajustar os parâmetros mostrando exemplos. | a Seção 2.3 |
+| **Loss (erro)** | O quanto o modelo errou numa previsão. | o passo 3 do ciclo de treino |
+| **Embedding** | Transformar um pedacinho de texto num conjunto de números. | — |
+| **Atenção** | O mecanismo que faz cada pedacinho "olhar" para os outros. | — |
+| **Inferência** | Usar o modelo já treinado para gerar texto (o contrário de treinar). | — |
+
+---
+
+## Encerramento da Parte 2
+
+Agora você entende a grande ideia por trás das IAs de linguagem:
+
+- ✅ Uma **LLM** é um programa que aprendeu padrões de texto observando exemplos
+- ✅ Por dentro, ela só trabalha com **números** — o tokenizer traduz nas duas pontas
+- ✅ A única coisa que ela faz é **prever o próximo pedacinho** — repetido, vira frases
+- ✅ Ela **aprende** por tentativa e erro, ajustando parâmetros e diminuindo o erro (loss)
+- ✅ Modelos pequenos servem para tarefas pequenas — por isso cabem num robô
+- ✅ No nosso projeto, o corpo manda o marcador da situação e o cérebro completa a frase
+
+Você desmistificou a parte mais "assustadora" do projeto sem escrever uma linha de código.
+Na **Parte 3**, vamos transformar cada uma dessas ideias em realidade — construindo, peça
+por peça, o cérebro do robô, do tokenizer até a geração da frase.
+
+# Parte 3 — O Cérebro: construindo uma LLM do zero
+
+> **Onde estamos na jornada.** Na Parte 1 você montou o *corpo* do robô (motores,
+> sensor, servo). Agora vamos construir o *cérebro*: um pequeno modelo de
+> linguagem — uma "LLM" — que dá voz ao robô. E vamos construí-lo **do zero**,
+> entendendo cada peça. Sem caixas-pretas.
+
+Talvez você já tenha ouvido falar de "IA" e de modelos como o ChatGPT e pensado:
+*"isso é mágica que só gênios entendem"*. A verdade é mais bonita: por baixo,
+esses modelos são feitos de peças simples que se encaixam. Nesta parte, você vai
+montar essas peças com as próprias mãos — numa versão minúscula, mas **de verdade**.
+
+No fim, você terá um robô com personalidade: sarcástico, preguiçoso e engraçado.
+E, mais importante, você vai **entender** por que ele funciona.
+
+## O mapa desta parte
+
+Construir o cérebro tem cinco grandes etapas. Aqui está o caminho inteiro:
+
+![Pipeline de construção do cérebro](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjQ0MCIgdmlld0JveD0iMCAwIDYyMCA0NDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJhcnciIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPgogICAgICA8cGF0aCBkPSJNMiAxTDggNUwyIDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogICAgPC9tYXJrZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iNDQwIiBmaWxsPSIjZmZmZmZmIi8+CgogIDxyZWN0IHg9IjEyMCIgeT0iMjQiIHdpZHRoPSIzODAiIGhlaWdodD0iNTIiIHJ4PSIxMCIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iNDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPjEuIFRva2VuaXplcjwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjY0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj50cmFuc2Zvcm1hciB0ZXh0byBlbSBuw7ptZXJvczwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iNzYiIHgyPSIzMTAiIHkyPSI5NiIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNhcncpIi8+CgogIDxyZWN0IHg9IjEyMCIgeT0iOTgiIHdpZHRoPSIzODAiIGhlaWdodD0iNTIiIHJ4PSIxMCIgZmlsbD0iI2VlZWNmYiIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTE5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNTM0QUI3Ij4yLiBNb2RlbG8gKG1pbmktR1BUKTwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjEzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzMzMyI+ZW1iZWRkaW5ncyArIGF0ZW7Dp8OjbyArIEZGTjwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iMTUwIiB4Mj0iMzEwIiB5Mj0iMTcwIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2FydykiLz4KCiAgPHJlY3QgeD0iMTIwIiB5PSIxNzIiIHdpZHRoPSIzODAiIGhlaWdodD0iNTIiIHJ4PSIxMCIgZmlsbD0iI2VlZWNmYiIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTkzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNTM0QUI3Ij4zLiBUcmVpbm88L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSIyMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMzMzMiPm8gbW9kZWxvIGFwcmVuZGUsIG5hIEdQVTwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iMjI0IiB4Mj0iMzEwIiB5Mj0iMjQ0IiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2FydykiLz4KCiAgPHJlY3QgeD0iMTIwIiB5PSIyNDYiIHdpZHRoPSIzODAiIGhlaWdodD0iNTIiIHJ4PSIxMCIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMjY3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMEY2RTU2Ij40LiBHZXJhciB0ZXh0bzwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjI4NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzMzMyI+dmVyIG8gcm9iw7QgImZhbGFyIiBubyBQQzwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iMjk4IiB4Mj0iMzEwIiB5Mj0iMzE4IiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2FydykiLz4KCiAgPHJlY3QgeD0iMTIwIiB5PSIzMjAiIHdpZHRoPSIzODAiIGhlaWdodD0iNTIiIHJ4PSIxMCIgZmlsbD0iI2ZkZWVlMCIgc3Ryb2tlPSIjQkE3NTE3IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMzQxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQkE3NTE3Ij41LiBFeHBvcnRhciBlIGVtYmFyY2FyPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMzYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj5sZXZhciBvIGPDqXJlYnJvIHBhcmEgbyBFU1AzMi1TMzwvdGV4dD4KCiAgPHRleHQgeD0iMzEwIiB5PSI0MDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM3NzciPkNhZGEgZXRhcGEgw6kgdGVzdGFkYSBzb3ppbmhhIGFudGVzIGRlIHNlZ3VpciBwYXJhIGEgcHLDs3hpbWEuPC90ZXh0Pgo8L3N2Zz4K)
+
+![A cadeia da Parte 3](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDYyMCAxODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJtcCIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNiIgbWFya2VySGVpZ2h0PSI2IiBvcmllbnQ9ImF1dG8tc3RhcnQtcmV2ZXJzZSI+CiAgICAgIDxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIxODAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5BIGNhZGVpYSBkYSBQYXJ0ZSAzOiBjYWRhIGVsbyDDqSB1bWEgc2XDp8OjbzwvdGV4dD4KCiAgPGcgZm9udC1zaXplPSIxMC41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4KICAgIDxyZWN0IHg9IjE2IiB5PSI1MiIgd2lkdGg9Ijg2IiBoZWlnaHQ9IjM0IiByeD0iNyIgZmlsbD0iI2U2ZjBmYSIgc3Ryb2tlPSIjM0I4QkQ0IiBzdHJva2Utd2lkdGg9IjEuMyIvPgogICAgPHRleHQgeD0iNTkiIHk9IjY4IiBmaWxsPSIjM0I4QkQ0IiBmb250LXdlaWdodD0iNzAwIj5kYXRhc2V0PC90ZXh0PgogICAgPHRleHQgeD0iNTkiIHk9IjgwIiBmaWxsPSIjNzc3IiBmb250LXNpemU9IjkiPjMuMzwvdGV4dD4KCiAgICA8cmVjdCB4PSIxMjIiIHk9IjUyIiB3aWR0aD0iODYiIGhlaWdodD0iMzQiIHJ4PSI3IiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgICA8dGV4dCB4PSIxNjUiIHk9IjY4IiBmaWxsPSIjMEY2RTU2IiBmb250LXdlaWdodD0iNzAwIj50b2tlbml6ZXI8L3RleHQ+CiAgICA8dGV4dCB4PSIxNjUiIHk9IjgwIiBmaWxsPSIjNzc3IiBmb250LXNpemU9IjkiPjMuNDwvdGV4dD4KCiAgICA8cmVjdCB4PSIyMjgiIHk9IjUyIiB3aWR0aD0iODYiIGhlaWdodD0iMzQiIHJ4PSI3IiBmaWxsPSIjZjRmMmZjIiBzdHJva2U9IiM1MzRBQjciIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgICA8dGV4dCB4PSIyNzEiIHk9IjY4IiBmaWxsPSIjNTM0QUI3IiBmb250LXdlaWdodD0iNzAwIj5lbWJlZGRpbmdzPC90ZXh0PgogICAgPHRleHQgeD0iMjcxIiB5PSI4MCIgZmlsbD0iIzc3NyIgZm9udC1zaXplPSI5Ij4zLjU8L3RleHQ+CgogICAgPHJlY3QgeD0iMzM0IiB5PSI1MiIgd2lkdGg9Ijg2IiBoZWlnaHQ9IjM0IiByeD0iNyIgZmlsbD0iI2ZiZTZlMiIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuMyIvPgogICAgPHRleHQgeD0iMzc3IiB5PSI2OCIgZmlsbD0iI0IyM0EyRSIgZm9udC13ZWlnaHQ9IjcwMCI+YXRlbsOnw6NvPC90ZXh0PgogICAgPHRleHQgeD0iMzc3IiB5PSI4MCIgZmlsbD0iIzc3NyIgZm9udC1zaXplPSI5Ij4zLjbigJMzLjg8L3RleHQ+CgogICAgPHJlY3QgeD0iNDQwIiB5PSI1MiIgd2lkdGg9Ijc2IiBoZWlnaHQ9IjM0IiByeD0iNyIgZmlsbD0iI2ZkZWVlMCIgc3Ryb2tlPSIjQkE3NTE3IiBzdHJva2Utd2lkdGg9IjEuMyIvPgogICAgPHRleHQgeD0iNDc4IiB5PSI2OCIgZmlsbD0iI0JBNzUxNyIgZm9udC13ZWlnaHQ9IjcwMCI+RkZOICsgY29sYTwvdGV4dD4KICAgIDx0ZXh0IHg9IjQ3OCIgeT0iODAiIGZpbGw9IiM3NzciIGZvbnQtc2l6ZT0iOSI+My454oCTMy4xMDwvdGV4dD4KCiAgICA8cmVjdCB4PSI1MzYiIHk9IjUyIiB3aWR0aD0iNzAiIGhlaWdodD0iMzQiIHJ4PSI3IiBmaWxsPSIjZWFmNWUwIiBzdHJva2U9IiM2Mzk5MjIiIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgICA8dGV4dCB4PSI1NzEiIHk9IjY4IiBmaWxsPSIjNjM5OTIyIiBmb250LXdlaWdodD0iNzAwIj5tb2RlbG88L3RleHQ+CiAgICA8dGV4dCB4PSI1NzEiIHk9IjgwIiBmaWxsPSIjNzc3IiBmb250LXNpemU9IjkiPjMuMTE8L3RleHQ+CiAgPC9nPgoKICA8bGluZSB4MT0iMTAyIiB5MT0iNjkiIHgyPSIxMjAiIHkyPSI2OSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNCIgbWFya2VyLWVuZD0idXJsKCNtcCkiLz4KICA8bGluZSB4MT0iMjA4IiB5MT0iNjkiIHgyPSIyMjYiIHkyPSI2OSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNCIgbWFya2VyLWVuZD0idXJsKCNtcCkiLz4KICA8bGluZSB4MT0iMzE0IiB5MT0iNjkiIHgyPSIzMzIiIHkyPSI2OSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNCIgbWFya2VyLWVuZD0idXJsKCNtcCkiLz4KICA8bGluZSB4MT0iNDIwIiB5MT0iNjkiIHgyPSI0MzgiIHkyPSI2OSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNCIgbWFya2VyLWVuZD0idXJsKCNtcCkiLz4KICA8bGluZSB4MT0iNTE2IiB5MT0iNjkiIHgyPSI1MzQiIHkyPSI2OSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNCIgbWFya2VyLWVuZD0idXJsKCNtcCkiLz4KCiAgPCEtLSBzZWd1bmRhIGxpbmhhIC0tPgogIDxnIGZvbnQtc2l6ZT0iMTAuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+CiAgICA8cmVjdCB4PSIyMjgiIHk9IjExNiIgd2lkdGg9Ijc2IiBoZWlnaHQ9IjM0IiByeD0iNyIgZmlsbD0iI2Y0ZjJmYyIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuMyIvPgogICAgPHRleHQgeD0iMjY2IiB5PSIxMzIiIGZpbGw9IiM1MzRBQjciIGZvbnQtd2VpZ2h0PSI3MDAiPnRyZWlubzwvdGV4dD4KICAgIDx0ZXh0IHg9IjI2NiIgeT0iMTQ0IiBmaWxsPSIjNzc3IiBmb250LXNpemU9IjkiPjMuMTI8L3RleHQ+CgogICAgPHJlY3QgeD0iMzM0IiB5PSIxMTYiIHdpZHRoPSI3NiIgaGVpZ2h0PSIzNCIgcng9IjciIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICAgIDx0ZXh0IHg9IjM3MiIgeT0iMTMyIiBmaWxsPSIjMEY2RTU2IiBmb250LXdlaWdodD0iNzAwIj5nZXJhw6fDo288L3RleHQ+CiAgICA8dGV4dCB4PSIzNzIiIHk9IjE0NCIgZmlsbD0iIzc3NyIgZm9udC1zaXplPSI5Ij4zLjEzPC90ZXh0PgogIDwvZz4KICA8cGF0aCBkPSJNNTcxIDg2IEw1NzEgMTAwIEwyNjYgMTAwIEwyNjYgMTE0IiBmaWxsPSJub25lIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS40IiBtYXJrZXItZW5kPSJ1cmwoI21wKSIvPgogIDxsaW5lIHgxPSIzMDQiIHkxPSIxMzMiIHgyPSIzMzIiIHkyPSIxMzMiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjQiIG1hcmtlci1lbmQ9InVybCgjbXApIi8+CgogIDx0ZXh0IHg9IjQ5MCIgeT0iMTM2IiBmb250LXNpemU9IjExIiBmaWxsPSIjNjM5OTIyIiBmb250LXdlaWdodD0iNzAwIj7ihpIgbyByb2LDtCBmYWxhISDwn46JPC90ZXh0Pgo8L3N2Zz4K)
+
+Use esta cadeia como um "você está aqui": cada elo é uma seção desta parte, e cada um só existe para alimentar o próximo.
+
+Vamos seguir esse mapa na ordem, e — como fizemos com o robô — **testar cada peça
+sozinha** antes de juntar. Essa é a regra de ouro que transforma "nada funciona,
+por quê?" em "só esta peça falhou, vou consertar".
+
+> **Uma promessa sobre a didática.** Cada conceito novo vai aparecer sempre no
+> mesmo formato: (1) uma **ideia em uma frase**, (2) uma **analogia** do dia a dia,
+> (3) um **exemplo concreto com números pequenos**, (4) um **diagrama**, (5) o
+> **código** comentado, e (6) uma **frase-resumo** que você pode repetir para
+> alguém da área. Se em algum ponto travar, releia a analogia — ela é a âncora.
+
+---
+
+## 3.1 A grande ideia, em um minuto
+
+Antes das peças, a ideia central. Um modelo de linguagem faz **uma única coisa**:
+
+> **Ele prevê o próximo pedacinho de texto.**
+
+Só isso. Você dá um começo ("O gato subiu no...") e ele prevê o que vem a seguir
+("telhado"). Repetindo essa previsão muitas vezes, um pedacinho de cada vez, ele
+escreve frases inteiras.
+
+No nosso caso, o "pedacinho" será **um caractere** (uma letra, um espaço, um
+sinal de pontuação). O robô vê uma situação (por exemplo, bateu num obstáculo) e
+o cérebro escreve, caractere por caractere, uma reclamação sarcástica.
+
+Antes de mergulhar nas peças, veja a máquina inteira de uma vez. Não precisa entender
+os detalhes agora — só perceber o caminho que um marcador percorre até virar uma frase:
+
+![Panorama: do marcador ao próximo caractere](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDYyMCAxNTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJwbiIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNiIgbWFya2VySGVpZ2h0PSI2IiBvcmllbnQ9ImF1dG8tc3RhcnQtcmV2ZXJzZSI+CiAgICAgIDxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5BIG3DoXF1aW5hIGludGVpcmEsIGRlIHJlbGFuY2U6IHJlY2ViZSBjYXJhY3RlcmVzLCBwcmV2w6ogbyBwcsOzeGltbzwvdGV4dD4KCiAgPGcgZm9udC1zaXplPSIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+CiAgICA8cmVjdCB4PSIxNCIgeT0iNTgiIHdpZHRoPSI3NCIgaGVpZ2h0PSI0MCIgcng9IjciIGZpbGw9IiNmZGVlZTAiIHN0cm9rZT0iI0JBNzUxNyIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICAgIDx0ZXh0IHg9IjUxIiB5PSI3NiIgZmlsbD0iI0JBNzUxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZm9udC1zaXplPSIxMSI+Jmx0O29ic3RhY2xlJmd0OzwvdGV4dD4KICAgIDx0ZXh0IHg9IjUxIiB5PSI5MCIgZmlsbD0iIzc3NyI+ZW50cmFkYTwvdGV4dD4KCiAgICA8cmVjdCB4PSIxMDgiIHk9IjU4IiB3aWR0aD0iNzAiIGhlaWdodD0iNDAiIHJ4PSI3IiBmaWxsPSIjZTZmMGZhIiBzdHJva2U9IiMzQjhCRDQiIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgICA8dGV4dCB4PSIxNDMiIHk9Ijc2IiBmaWxsPSIjM0I4QkQ0IiBmb250LXdlaWdodD0iNzAwIj5uw7ptZXJvczwvdGV4dD4KICAgIDx0ZXh0IHg9IjE0MyIgeT0iOTAiIGZpbGw9IiM3NzciPnRva2VuaXplcjwvdGV4dD4KCiAgICA8cmVjdCB4PSIxOTgiIHk9IjU4IiB3aWR0aD0iNzAiIGhlaWdodD0iNDAiIHJ4PSI3IiBmaWxsPSIjZjRmMmZjIiBzdHJva2U9IiM1MzRBQjciIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgICA8dGV4dCB4PSIyMzMiIHk9Ijc2IiBmaWxsPSIjNTM0QUI3IiBmb250LXdlaWdodD0iNzAwIj52ZXRvcmVzPC90ZXh0PgogICAgPHRleHQgeD0iMjMzIiB5PSI5MCIgZmlsbD0iIzc3NyI+ZW1iZWRkaW5nczwvdGV4dD4KCiAgICA8cmVjdCB4PSIyODgiIHk9IjU4IiB3aWR0aD0iNzAiIGhlaWdodD0iNDAiIHJ4PSI3IiBmaWxsPSIjZmJlNmUyIiBzdHJva2U9IiNCMjNBMkUiIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgICA8dGV4dCB4PSIzMjMiIHk9Ijc2IiBmaWxsPSIjQjIzQTJFIiBmb250LXdlaWdodD0iNzAwIj5hdGVuw6fDo288L3RleHQ+CiAgICA8dGV4dCB4PSIzMjMiIHk9IjkwIiBmaWxsPSIjNzc3Ij4rIEZGTiDDl048L3RleHQ+CgogICAgPHJlY3QgeD0iMzc4IiB5PSI1OCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjQwIiByeD0iNyIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuMyIvPgogICAgPHRleHQgeD0iNDE4IiB5PSI3NiIgZmlsbD0iIzBGNkU1NiIgZm9udC13ZWlnaHQ9IjcwMCI+cHJvYmFiaWxpZC48L3RleHQ+CiAgICA8dGV4dCB4PSI0MTgiIHk9IjkwIiBmaWxsPSIjNzc3Ij5kb3MgNTkgY2hhcnM8L3RleHQ+CgogICAgPHJlY3QgeD0iNDc4IiB5PSI1OCIgd2lkdGg9IjcyIiBoZWlnaHQ9IjQwIiByeD0iNyIgZmlsbD0iI2VhZjVlMCIgc3Ryb2tlPSIjNjM5OTIyIiBzdHJva2Utd2lkdGg9IjEuMyIvPgogICAgPHRleHQgeD0iNTE0IiB5PSI3NiIgZmlsbD0iIzYzOTkyMiIgZm9udC13ZWlnaHQ9IjcwMCI+MSBjYXJhY3RlcmU8L3RleHQ+CiAgICA8dGV4dCB4PSI1MTQiIHk9IjkwIiBmaWxsPSIjNzc3Ij5zb3J0ZWFkbzwvdGV4dD4KICA8L2c+CgogIDxsaW5lIHgxPSI4OCIgeTE9Ijc4IiB4Mj0iMTA2IiB5Mj0iNzgiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjQiIG1hcmtlci1lbmQ9InVybCgjcG4pIi8+CiAgPGxpbmUgeDE9IjE3OCIgeTE9Ijc4IiB4Mj0iMTk2IiB5Mj0iNzgiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjQiIG1hcmtlci1lbmQ9InVybCgjcG4pIi8+CiAgPGxpbmUgeDE9IjI2OCIgeTE9Ijc4IiB4Mj0iMjg2IiB5Mj0iNzgiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjQiIG1hcmtlci1lbmQ9InVybCgjcG4pIi8+CiAgPGxpbmUgeDE9IjM1OCIgeTE9Ijc4IiB4Mj0iMzc2IiB5Mj0iNzgiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjQiIG1hcmtlci1lbmQ9InVybCgjcG4pIi8+CiAgPGxpbmUgeDE9IjQ1OCIgeTE9Ijc4IiB4Mj0iNDc2IiB5Mj0iNzgiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjQiIG1hcmtlci1lbmQ9InVybCgjcG4pIi8+CgogIDxwYXRoIGQ9Ik01MTQgOTggTDUxNCAxMjIgTDUxIDEyMiBMNTEgMTAwIiBmaWxsPSJub25lIiBzdHJva2U9IiNCMjNBMkUiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI3BuKSIgc3Ryb2tlLWRhc2hhcnJheT0iNCAzIi8+CiAgPHRleHQgeD0iMjkwIiB5PSIxMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iI0IyM0EyRSI+YW5leGEgbyBjYXJhY3RlcmUgw6AgZW50cmFkYSBlIHJlcGV0ZSDigJQgYXNzaW0gYSBmcmFzZSBjcmVzY2UsIHVtYSBsZXRyYSBwb3IgdmV6PC90ZXh0Pgo8L3N2Zz4K)
+
+Guarde essa frase: **prever o próximo caractere**. Todo o resto existe para fazer
+isso bem feito.
+
+---
+
+## 3.2 Preparando o terreno (o ambiente)
+
+Para construir o cérebro, precisamos de três ferramentas no computador. Pense
+nelas como a bancada e as ferramentas antes de começar uma marcenaria.
+
+1. **Python** — a linguagem de programação em que vamos escrever. É uma das mais
+   usadas em IA, justamente por ser legível e acessível.
+2. **uv** — um "organizador de projeto". Ele cria um espaço isolado para o nosso
+   projeto e instala as bibliotecas certas, sem bagunçar o resto do computador.
+3. **PyTorch** — a biblioteca que faz as contas de IA. É ela que sabe usar a
+   **placa de vídeo (GPU)** para treinar rápido.
+
+> **O que é a GPU e por que ela importa?** A placa de vídeo tem milhares de
+> "operários" que fazem contas de matemática ao mesmo tempo. Treinar um modelo é
+> fazer *muitas* contas, então a GPU acelera tudo enormemente. Se você não tiver
+> uma GPU, o projeto ainda funciona — só treina mais devagar, no processador comum.
+
+### Os comandos
+
+Depois de instalar o Python e o `uv` (os instaladores oficiais de cada um guiam o
+processo no seu sistema), abra o **terminal** — a janelinha onde você digita
+comandos — e crie o projeto:
+
+```bash
+# cria a pasta do projeto e entra nela
+mkdir nano-grump
+cd nano-grump
+
+# inicia um projeto uv (cria o arquivo de configuração)
+uv init --bare
+
+# cria uma subpasta para os dados
+mkdir data
+```
+
+Agora instale o PyTorch. Se você tem uma GPU NVIDIA, o `uv` consegue detectar e
+baixar a versão certa:
+
+```bash
+uv add torch numpy
+```
+
+Para confirmar que está tudo certo, rode este teste rápido:
+
+```bash
+uv run python -c "import torch; print('GPU disponível?', torch.cuda.is_available())"
+```
+
+Se aparecer `GPU disponível? True`, o PyTorch enxergou sua placa. Se aparecer
+`False`, sem problema — ele vai usar o processador comum (mais devagar, mas
+funciona).
+
+> **Dica de bolso:** o comando `uv run` roda o Python "de dentro" do projeto, onde
+> as bibliotecas estão instaladas. Use sempre `uv run python ...` para executar os
+> scripts deste tutorial.
+
+---
+
+## 3.3 O dataset: dando personalidade ao robô
+
+Um modelo aprende a partir de **exemplos**. O conjunto de exemplos chama-se
+**dataset** (base de dados). Se você mostrar a ele milhares de receitas, ele
+aprende a escrever receitas. Se mostrar frases sarcásticas de robô, ele aprende
+a ser um robô sarcástico.
+
+Então o dataset é onde **a personalidade nasce**. Vamos dar ao nosso robô um
+humor sarcástico, preguiçoso e engraçado — e ele vai "falar" em inglês (uma
+escolha técnica: em inglês as palavras se quebram em menos pedaços, o que facilita
+para um modelo minúsculo).
+
+### As situações do robô (os marcadores)
+
+O robô percebe um punhado de situações com seus sensores. Para cada uma, damos um
+**marcador** — uma etiqueta entre `< >`:
+
+| Marcador | Situação |
+|---|---|
+| `<start>` | acabou de ligar |
+| `<explore>` | andando livre, sem obstáculo |
+| `<obstacle>` | detectou algo à frente |
+| `<turn_left>` | virou à esquerda |
+| `<turn_right>` | virou à direita |
+| `<backup>` | recuando |
+| `<stuck>` | preso, bateu no mesmo canto |
+| `<clear>` | o caminho abriu de novo |
+
+### O formato do dataset
+
+Cada linha do dataset é um par **marcador + frase**, assim:
+
+```text
+<obstacle> Oh look, a wall. Groundbreaking discovery. Turning.
+<obstacle> Great. Something to avoid. As if I wanted to move anyway.
+<explore> Rolling along. Look at me, doing the bare minimum.
+<stuck> Oh wonderful, I'm stuck. This is fine. Everything's fine.
+```
+
+Damos **muitas frases diferentes para o mesmo marcador** (umas 11 a 12 de cada).
+Por quê? Para o robô não virar um papagaio que repete sempre a mesma coisa. Com
+variedade, cada situação pode gerar uma reclamação diferente — e aí ele parece
+vivo.
+
+> **Faça você mesmo.** Crie um arquivo de texto chamado `robot_voice.txt` dentro
+> da pasta `data`, e escreva suas frases, uma por linha, no formato acima. Capriche
+> no sarcasmo! Quanto mais frases (e mais variadas), melhor o robô vai falar. Um
+> bom ponto de partida são ~90 frases; mais para a frente veremos como expandir.
+
+---
+
+## 3.4 O tokenizer: de texto para números
+
+Aqui construímos a **primeira peça** do cérebro.
+
+**A ideia em uma frase:** o tokenizer troca cada caractere por um número — porque
+o modelo só entende números, não letras.
+
+**A analogia:** imagine um dicionário de mão dupla. De um lado, ele diz que `'a'`
+é o número 33. Do outro, que o número 33 é o `'a'`. Com esse dicionário, você
+traduz texto para números (para o modelo trabalhar) e números de volta para texto
+(para você ler a resposta).
+
+**Por que caractere, e não palavra?** Porque assim o "alfabeto" do modelo fica
+minúsculo: só as letras, espaço e pontuação que aparecem no dataset — no nosso
+caso, **59 símbolos**. Um vocabulário pequeno é perfeito para um modelo que vai
+caber num microcontrolador.
+
+![O tokenizer troca caractere por número](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDYyMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJhcncyIiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjgiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI2IiBtYXJrZXJIZWlnaHQ9IjYiIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTIgMUw4IDVMMiA5IiBmaWxsPSJub25lIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICAgIDwvbWFya2VyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2ZmZmZmZiIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzMiPk8gdG9rZW5pemVyIHRyb2NhIGNhZGEgY2FyYWN0ZXJlIHBvciB1bSBuw7ptZXJvPC90ZXh0PgoKICA8IS0tIGNhcmFjdGVyZSAtLT4KICA8cmVjdCB4PSI2MCIgeT0iMTIwIiB3aWR0aD0iMTEwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSIxMTUiIHk9IjE0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzMzMyI+byBjYXJhY3RlcmU8L3RleHQ+CiAgPHRleHQgeD0iMTE1IiB5PSIxNjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzQjhCRDQiPidhJzwvdGV4dD4KCiAgPGxpbmUgeDE9IjE3MiIgeTE9IjE1MCIgeDI9IjIyOCIgeTI9IjE1MCIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNhcncyKSIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMTM4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzc3Ij5jb25zdWx0YTwvdGV4dD4KCiAgPCEtLSB0YWJlbGEgLS0+CiAgPHJlY3QgeD0iMjM1IiB5PSI3MCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIxNjAiIHJ4PSIxMCIgZmlsbD0iI2Y0ZjJmYyIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjMzNSIgeT0iOTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM1MzRBQjciPnRhYmVsYSAodm9jYWJ1bMOhcmlvKTwvdGV4dD4KICA8dGV4dCB4PSIyNTUiIHk9IjEyMiIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzMzMyI+JyAnIOKGkiAxPC90ZXh0PgogIDx0ZXh0IHg9IjI1NSIgeT0iMTQ2IiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj4nJmx0Oycg4oaSIDc8L3RleHQ+CiAgPHJlY3QgeD0iMjQ4IiB5PSIxNTYiIHdpZHRoPSIxNzQiIGhlaWdodD0iMjQiIHJ4PSI1IiBmaWxsPSIjZmJlNmUyIiBzdHJva2U9IiNCMjNBMkUiIHN0cm9rZS13aWR0aD0iMS4yIi8+CiAgPHRleHQgeD0iMjU1IiB5PSIxNzMiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCMjNBMkUiPidhJyDihpIgMzM8L3RleHQ+CiAgPHRleHQgeD0iMjU1IiB5PSIyMDAiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiMzMzMiPidiJyDihpIgMzQ8L3RleHQ+CiAgPHRleHQgeD0iMzM1IiB5PSIyMjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM3NzciPi4uLiA1OSBjYXJhY3RlcmVzPC90ZXh0PgoKICA8bGluZSB4MT0iNDM3IiB5MT0iMTY4IiB4Mj0iNDkzIiB5Mj0iMTY4IiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2FydzIpIi8+CgogIDwhLS0gbsO6bWVybyAtLT4KICA8cmVjdCB4PSI1MDAiIHk9IjEzOCIgd2lkdGg9IjkwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSI1NDUiIHk9IjE2MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzMzMyI+bsO6bWVybzwvdGV4dD4KICA8dGV4dCB4PSI1NDUiIHk9IjE4NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBGNkU1NiI+MzM8L3RleHQ+CgogIDx0ZXh0IHg9IjMxMCIgeT0iMjcwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzc3Ij5FIG8gY2FtaW5obyBkZSB2b2x0YSAoMzMg4oaSICdhJykgcmVjb25zdHLDs2kgbyB0ZXh0by4gw4kgY29tbyB1bSBkaWNpb27DoXJpbyBkZSBtw6NvIGR1cGxhLjwvdGV4dD4KPC9zdmc+Cg==)
+
+**O exemplo concreto.** Vamos fingir um vocabulário de 3 caracteres: `a`, `b`, `c`.
+O tokenizer dá um número para cada:
+
+```text
+a → 0     b → 1     c → 2
+```
+
+Então a palavra `"cab"` vira a lista de números `[2, 0, 1]`. E a lista `[2, 0, 1]`
+volta a ser `"cab"`. É uma tradução direta, sem mistério.
+
+### O código do tokenizer
+
+Crie um arquivo `tokenizer.py` na pasta do projeto:
+
+```python
+import json
+from pathlib import Path
+
+# 1. LER O DATASET
+CAMINHO = Path(__file__).parent / "data" / "robot_voice.txt"
+texto = CAMINHO.read_text(encoding="utf-8")
+
+# 2. DESCOBRIR O ALFABETO (todos os caracteres únicos, em ordem)
+caracteres = sorted(set(texto))
+tamanho_vocab = len(caracteres)
+print("Tamanho do vocabulário:", tamanho_vocab)
+
+# 3. OS DOIS DICIONÁRIOS
+stoi = {c: i for i, c in enumerate(caracteres)}   # caractere -> número
+itos = {i: c for i, c in enumerate(caracteres)}   # número -> caractere
+
+# 4. AS FUNÇÕES DE IDA E VOLTA
+def encode(s):
+    return [stoi[c] for c in s]          # texto  -> números
+
+def decode(nums):
+    return "".join(itos[n] for n in nums)  # números -> texto
+
+# 5. TESTE DE IDA E VOLTA
+frase = "<obstacle> Oh look, a wall."
+numeros = encode(frase)
+print("Números:", numeros)
+print("Voltou:", decode(numeros))
+print("Bateu igual?", frase == decode(numeros))
+
+# 6. SALVAR O VOCABULÁRIO (as próximas etapas vão reusar)
+with open(Path(__file__).parent / "vocab.json", "w", encoding="utf-8") as f:
+    json.dump(caracteres, f, ensure_ascii=False)
+```
+
+**Como funciona, em palavras simples:**
+
+- `sorted(set(texto))` pega cada caractere único do dataset e coloca em ordem. Essa
+  é a lista de "todos os símbolos que o modelo conhece" — o vocabulário.
+- `stoi` (de *string to int*) é o dicionário caractere → número.
+- `itos` (de *int to string*) é o caminho de volta, número → caractere.
+- `encode` usa o `stoi` para traduzir um texto em números; `decode` usa o `itos`
+  para o contrário.
+
+### Rodando
+
+No terminal, dentro da pasta do projeto:
+
+```bash
+uv run python tokenizer.py
+```
+
+**O que você deve ver:**
+
+```text
+Tamanho do vocabulário: 59
+Números: [7, 47, 34, 51, 52, 33, 35, 44, 37, 8, 1, ...]
+Voltou: <obstacle> Oh look, a wall.
+Bateu igual? True
+```
+
+![Teste de ida e volta do tokenizer](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDYyMCAyMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJ0diIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNi41IiBtYXJrZXJIZWlnaHQ9IjYuNSIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPgogICAgICA8cGF0aCBkPSJNMiAxTDggNUwyIDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogICAgPC9tYXJrZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+TyB0ZXN0ZSBkZSBpZGEgZSB2b2x0YTogc2UgbyB0ZXh0byB2b2x0YSBpZ3VhbCwgbyB0b2tlbml6ZXIgZXN0w6EgY2VydG88L3RleHQ+CgogIDwhLS0gaWRhIC0tPgogIDxyZWN0IHg9IjQwIiB5PSI2MCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSI0NiIgcng9IjkiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSIxMTUiIHk9IjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNTU1Ij50ZXh0bzwvdGV4dD4KICA8dGV4dCB4PSIxMTUiIHk9Ijk4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmaWxsPSIjMzMzIj4iQSB3YWxsIjwvdGV4dD4KCiAgPHJlY3QgeD0iMjM1IiB5PSI2MCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSI0NiIgcng9IjkiIGZpbGw9IiNmNGYyZmMiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNTU1Ij5JRHMgKG7Dum1lcm9zKTwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9Ijk4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmaWxsPSIjMzMzIj5bNywgMSwgNDEsIDMzLi4uXTwvdGV4dD4KCiAgPHJlY3QgeD0iNDMwIiB5PSI2MCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSI0NiIgcng9IjkiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSI1MDUiIHk9IjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNTU1Ij50ZXh0byBkZSB2b2x0YTwvdGV4dD4KICA8dGV4dCB4PSI1MDUiIHk9Ijk4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmaWxsPSIjMzMzIj4iQSB3YWxsIjwvdGV4dD4KCiAgPGxpbmUgeDE9IjE5MCIgeTE9IjgzIiB4Mj0iMjMzIiB5Mj0iODMiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjdHYpIi8+CiAgPHRleHQgeD0iMjExIiB5PSI3NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzUzNEFCNyI+ZW5jb2RlPC90ZXh0PgogIDxsaW5lIHgxPSIzODUiIHkxPSI4MyIgeDI9IjQyOCIgeTI9IjgzIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI3R2KSIvPgogIDx0ZXh0IHg9IjQwNiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiMwRjZFNTYiPmRlY29kZTwvdGV4dD4KCiAgPCEtLSB2ZXJpZmljYcOnw6NvIC0tPgogIDxyZWN0IHg9IjE4MCIgeT0iMTQwIiB3aWR0aD0iMjYwIiBoZWlnaHQ9IjQwIiByeD0iOSIgZmlsbD0iI2VhZjVlMCIgc3Ryb2tlPSIjNjM5OTIyIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTY1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj4iQSB3YWxsIiA9PSAiQSB3YWxsIiAg4oaSICA8dHNwYW4gZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzYzOTkyMiI+VHJ1ZSDinJM8L3RzcGFuPjwvdGV4dD4KICA8cGF0aCBkPSJNMTE1IDEwNiBMMTE1IDE2MCBMMTc4IDE2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOTk5IiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWRhc2hhcnJheT0iNCAzIi8+CiAgPHBhdGggZD0iTTUwNSAxMDYgTDUwNSAxNjAgTDQ0MiAxNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzk5OSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1kYXNoYXJyYXk9IjQgMyIvPgo8L3N2Zz4K)
+
+Aquele **`Bateu igual? True`** é o sinal de sucesso: o tokenizer traduziu para
+números e voltou sem perder nada. **Esse é o nosso primeiro teste isolado de peça** —
+a mesma regra de ouro do robô, agora no cérebro: se o texto não voltar idêntico, algo
+está errado no tokenizer, e a gente conserta antes de seguir. E foi criado um arquivo `vocab.json`, que guarda
+o alfabeto para as próximas etapas usarem exatamente o mesmo mapeamento.
+
+**A frase-resumo (para repetir com propriedade):**
+
+> "Fiz tokenização em nível de caractere. O vocabulário tem 59 símbolos, e o
+> tokenizer converte texto em números (encode) e de volta (decode) com um par de
+> dicionários."
+
+---
+
+> **Fim da Instalação 1 da Parte 3.** Você já preparou o ambiente, criou o dataset
+> com a personalidade do robô, e construiu a primeira peça do cérebro: o tokenizer.
+> Na próxima instalação, vamos dar o segundo passo — os **embeddings**: como um
+> número vira um "vetor de significado" que o modelo consegue processar.
+
+---
+
+## 3.5 Embeddings: de número para "vetor de significado"
+
+O tokenizer nos deu números. Mas tem um problema: um número solto, como `33`, é
+pobre. Ele só serve de "crachá" do caractere — não dá para fazer contas úteis com
+um crachá. É aqui que entra o **embedding**.
+
+**A ideia em uma frase:** o embedding troca cada número por uma **lista de números**
+(um "vetor"), e essa lista é ajustada durante o treino.
+
+**A analogia:** pense na diferença entre saber só o **número** de um funcionário
+(o crachá "33") e ter a **ficha completa** dele (uma lista de características: setor,
+tempo de casa, habilidades...). O número identifica; a ficha *descreve*. O embedding
+é a ficha: em vez de um número solto, cada caractere ganha uma lista de valores que
+capturam características dele.
+
+**Por que uma lista e não um número?** Porque com vários números o modelo consegue
+guardar *características* do caractere: se é vogal, se costuma vir depois de espaço,
+se aparece em marcadores... Cada posição da lista é como uma "régua" medindo algum
+aspecto. Um número é um ponto; um vetor é uma descrição rica.
+
+### O exemplo concreto
+
+Vamos usar um vocabulário de 3 caracteres (`a`, `b`, `c`) e vetores de tamanho 4.
+A **tabela de embeddings** é uma grade com uma linha por caractere:
+
+```text
+        col0    col1    col2    col3
+linha 0:  0.5    -0.2     0.8     0.1     ← vetor do 'a'
+linha 1: -0.7     0.3     0.4    -0.9     ← vetor do 'b'
+linha 2:  0.2     0.6    -0.1     0.5     ← vetor do 'c'
+```
+
+Para pegar o embedding do `'c'`: o tokenizer diz que `'c'` é o número `2`, então
+vamos na tabela e **pegamos a linha 2**. Simples assim — o número é o *endereço* da
+linha, e a linha *é* o vetor.
+
+![Consulta na tabela de embeddings](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMzMCIgdmlld0JveD0iMCAwIDYyMCAzMzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJhcndFIiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjgiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI2IiBtYXJrZXJIZWlnaHQ9IjYiIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTIgMUw4IDVMMiA5IiBmaWxsPSJub25lIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICAgIDwvbWFya2VyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMzMCIgZmlsbD0iI2ZmZmZmZiIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzMiPk8gbsO6bWVybyDDqSBvIGVuZGVyZcOnbyBkYSBsaW5oYTsgYSBsaW5oYSDDqSBvIHZldG9yPC90ZXh0PgoKICA8IS0tIG7Dum1lcm8gLS0+CiAgPHJlY3QgeD0iMzAiIHk9IjE0MCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjUwIiByeD0iMTAiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSI3MCIgeT0iMTcwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjM0I4QkQ0Ij4yPC90ZXh0PgogIDxsaW5lIHgxPSIxMTIiIHkxPSIxNjUiIHgyPSIxNTgiIHkyPSIxNjUiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjYXJ3RSkiLz4KICA8dGV4dCB4PSIxMzUiIHk9IjE1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzc3NyI+YnVzY2E8L3RleHQ+CgogIDwhLS0gdGFiZWxhIC0tPgogIDxyZWN0IHg9IjE2NSIgeT0iNzAiIHdpZHRoPSIyNzAiIGhlaWdodD0iMTg1IiByeD0iMTAiIGZpbGw9IiNmNGYyZmMiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjkzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNTM0QUI3Ij50YWJlbGEgZGUgZW1iZWRkaW5ncyAoMyDDlyA0KTwvdGV4dD4KICA8dGV4dCB4PSIxODIiIHk9IjEyMiIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzMzMyI+bGluaGEgMDogIFsgMC41ICAtMC4yICAwLjggIDAuMSBdPC90ZXh0PgogIDx0ZXh0IHg9IjE4MiIgeT0iMTUwIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj5saW5oYSAxOiAgWyAtMC43ICAwLjMgIDAuNCAgLTAuOSBdPC90ZXh0PgogIDxyZWN0IHg9IjE3NiIgeT0iMTYyIiB3aWR0aD0iMjQ4IiBoZWlnaHQ9IjI2IiByeD0iNSIgZmlsbD0iI2ZiZTZlMiIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuMiIvPgogIDx0ZXh0IHg9IjE4MiIgeT0iMTgwIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQjIzQTJFIj5saW5oYSAyOiAgWyAwLjIgIDAuNiAgLTAuMSAgMC41IF08L3RleHQ+CiAgPHRleHQgeD0iMTgyIiB5PSIyMTAiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM3NzciPih1bWEgbGluaGEgcG9yIGNhcmFjdGVyZSk8L3RleHQ+CiAgPHRleHQgeD0iMzAwIiB5PSIyMzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM3NzciPmNvbWXDp2EgYWxlYXTDs3JpYTsgbyB0cmVpbm8gYWp1c3RhPC90ZXh0PgoKICA8bGluZSB4MT0iNDM3IiB5MT0iMTc1IiB4Mj0iNDgzIiB5Mj0iMTc1IiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2Fyd0UpIi8+CgogIDwhLS0gdmV0b3IgLS0+CiAgPHJlY3QgeD0iNDkwIiB5PSIxNDUiIHdpZHRoPSIxMTAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2ZiZTZlMiIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjU0NSIgeT0iMTY4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj52ZXRvcjwvdGV4dD4KICA8dGV4dCB4PSI1NDUiIHk9IjE5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0IyM0EyRSI+WzAuMiAwLjYgLTAuMSAwLjVdPC90ZXh0PgoKICA8dGV4dCB4PSIzMTAiIHk9IjMwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzc3NyI+Q29uc3VsdGFyIG8gZW1iZWRkaW5nID0gcGVnYXIgYSBsaW5oYSBjdWpvIG7Dum1lcm8gbyB0b2tlbml6ZXIgZGV1LiDDiSBzw7MgaXNzby48L3RleHQ+Cjwvc3ZnPgo=)
+
+**A parte mágica:** aquela tabela começa preenchida com **números aleatórios**. Ela
+não sabe nada no início. Durante o **treino**, o modelo ajusta esses números para
+valores úteis, e caracteres parecidos acabam com vetores parecidos. Ou seja: o
+embedding é uma **tabela de significados que o modelo preenche aprendendo**.
+
+### O embedding de posição (a ordem importa)
+
+Tem um detalhe: o embedding acima dá o mesmo vetor para o `'a'`, esteja ele no
+começo ou no fim da frase. Mas **ordem é tudo** na linguagem:
+
+```text
+"backup"  e  "pubcak"  →  mesmas letras, ordem diferente, sentido diferente
+```
+
+Para o modelo distinguir a ordem, criamos uma **segunda tabela**: o **embedding de
+posição**. Ela dá um vetor para cada *posição* (0, 1, 2...). Aí somamos os dois
+vetores — o do caractere e o da posição.
+
+**Exemplo concreto.** O caractere `'c'` na posição 0:
+
+```text
+  vetor de 'c'    [ 0.2,  0.6, -0.1,  0.5]
++ vetor da pos 0  [ 0.1,  0.1,  0.0, -0.1]
+------------------------------------------
+= vetor final     [ 0.3,  0.7, -0.1,  0.4]
+```
+
+![Soma do embedding de caractere e de posição](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDYyMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJhcndQIiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjgiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI2IiBtYXJrZXJIZWlnaHQ9IjYiIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTIgMUw4IDVMMiA5IiBmaWxsPSJub25lIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICAgIDwvbWFya2VyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2ZmZmZmZiIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzMiPkNhZGEgY2FyYWN0ZXJlIGNhcnJlZ2E6IHF1ZW0gZWxlIMOpICsgb25kZSBlbGUgZXN0w6E8L3RleHQ+CgogIDwhLS0gY2FyYWN0ZXJlIC0tPgogIDxyZWN0IHg9IjQwIiB5PSI3MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI1NiIgcng9IjEwIiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHRleHQgeD0iNjAiIHk9IjkyIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMEY2RTU2Ij5xdWVtIGVsZSDDqSAobyBjYXJhY3RlcmUgJ2MnKTwvdGV4dD4KICA8dGV4dCB4PSI2MCIgeT0iMTE0IiBmb250LXNpemU9IjE0IiBmaWxsPSIjMzMzIj5bIDAuMiAgIDAuNiAgIC0wLjEgICAwLjUgXTwvdGV4dD4KCiAgPHRleHQgeD0iMzEwIiB5PSIxMDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM1RjVFNUEiPis8L3RleHQ+CgogIDwhLS0gcG9zaWNhbyAtLT4KICA8cmVjdCB4PSI0MCIgeT0iMTQwIiB3aWR0aD0iMjQwIiBoZWlnaHQ9IjU2IiByeD0iMTAiIGZpbGw9IiNmNGYyZmMiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSI2MCIgeT0iMTYyIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNTM0QUI3Ij5vbmRlIGVsZSBlc3TDoSAocG9zacOnw6NvIDApPC90ZXh0PgogIDx0ZXh0IHg9IjYwIiB5PSIxODQiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiMzMzMiPlsgMC4xICAgMC4xICAgMC4wICAgLTAuMSBdPC90ZXh0PgoKICA8bGluZSB4MT0iMjkwIiB5MT0iMTUwIiB4Mj0iMzQ1IiB5Mj0iMTUwIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2Fyd1ApIi8+CiAgPHRleHQgeD0iMzE3IiB5PSIxMzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM3NzciPnNvbWE8L3RleHQ+CgogIDwhLS0gcmVzdWx0YWRvIC0tPgogIDxyZWN0IHg9IjM1NSIgeT0iMTEyIiB3aWR0aD0iMjM1IiBoZWlnaHQ9Ijc2IiByeD0iMTAiIGZpbGw9IiNmYmU2ZTIiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSIzNzUiIHk9IjEzNiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0IyM0EyRSI+dmV0b3IgZmluYWwgZGUgJ2MnIG5hIHBvc2nDp8OjbyAwPC90ZXh0PgogIDx0ZXh0IHg9IjM3NSIgeT0iMTYwIiBmb250LXNpemU9IjE0IiBmaWxsPSIjMzMzIj5bIDAuMyAgIDAuNyAgIC0wLjEgICAwLjQgXTwvdGV4dD4KICA8dGV4dCB4PSIzNzUiIHk9IjE4MCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzc3NyI+aWRlbnRpZGFkZSArIHBvc2nDp8OjbywganVudGFzPC90ZXh0PgoKICA8dGV4dCB4PSIzMTAiIHk9IjI0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzU1NSI+QSBzb21hIMOpIGVsZW1lbnRvIGEgZWxlbWVudG86ICAwLjIrMC4xPTAuMyAgIDAuNiswLjE9MC43ICAgLTAuMSswLjA9LTAuMSAgIDAuNSsoLTAuMSk9MC40PC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzc3Ij5Bc3NpbSBvIG1vZGVsbyBkaXN0aW5ndWUgYSBvcmRlbTogYSBtZXNtYSBsZXRyYSBlbSBvdXRyYSBwb3Npw6fDo28gdmlyYSBvdXRybyB2ZXRvci48L3RleHQ+Cjwvc3ZnPgo=)
+
+Agora cada caractere carrega **duas informações num vetor só**: *quem ele é* +
+*onde ele está*. Se o `'c'` estivesse em outra posição, o resultado seria diferente
+— e é assim que o modelo passa a enxergar a ordem.
+
+### O código
+
+O PyTorch tem uma peça pronta para tabelas de embedding: `nn.Embedding(linhas, colunas)`.
+Crie um arquivo `embedding_demo.py`:
+
+```python
+import json
+from pathlib import Path
+import torch
+import torch.nn as nn
+
+# Carrega o vocabulário salvo pelo tokenizer
+caracteres = json.loads((Path(__file__).parent / "vocab.json").read_text(encoding="utf-8"))
+stoi = {c: i for i, c in enumerate(caracteres)}
+def encode(s): return [stoi[c] for c in s]
+
+tamanho_vocab = len(caracteres)   # 59
+n_embd = 32                        # tamanho de cada vetor (nossa escolha)
+block_size = 32                    # janela de contexto (posições)
+
+# As DUAS tabelas
+emb_caractere = nn.Embedding(tamanho_vocab, n_embd)   # (59, 32)
+emb_posicao   = nn.Embedding(block_size, n_embd)      # (32, 32)
+
+# Passa um texto pelos dois embeddings
+texto = "cab"
+entrada = torch.tensor(encode(texto))          # números do texto
+posicoes = torch.arange(len(texto))            # [0, 1, 2]
+
+vetores_caractere = emb_caractere(entrada)     # (3, 32)
+vetores_posicao   = emb_posicao(posicoes)      # (3, 32)
+entrada_do_modelo = vetores_caractere + vetores_posicao   # a soma
+
+print("Formato da soma:", tuple(entrada_do_modelo.shape))  # (3, 32)
+```
+
+**O que você deve ver:** `Formato da soma: (3, 32)` — três caracteres, cada um com
+um vetor de 32 números, já "temperado" com a posição.
+
+**A frase-resumo:**
+
+> "Cada token vira um embedding de dimensão 32, buscando uma linha numa tabela de
+> pesos aprendíveis. Somamos um embedding de posição, elemento a elemento, para o
+> modelo ter noção de ordem."
+
+---
+
+> **Fim da Instalação 2 da Parte 3.** Agora os caracteres viraram vetores ricos que
+> carregam identidade e posição. Na próxima instalação, o coração do transformer:
+> a **atenção** — como cada caractere "olha" para os outros e decide no que prestar
+> atenção.
+
+---
+
+## 3.6 Atenção: como cada caractere "olha" para os outros
+
+Chegamos ao mecanismo que fez os transformers mudarem o mundo: a **atenção**
+(*self-attention*). É a peça mais rica, então vamos com calma.
+
+**O problema que ela resolve.** Até agora, cada caractere sabe *quem é* (embedding
+de caractere) e *onde está* (embedding de posição). Mas ele ainda está **sozinho**
+— não conhece os vizinhos. E o sentido depende do contexto: depois de `<obstacle>`,
+os próximos caracteres precisam formar uma reclamação. Para isso, cada caractere
+precisa "olhar para trás" e perceber o que veio antes.
+
+**A ideia em uma frase:** a atenção deixa cada caractere olhar para os outros e
+puxar informação dos que importam para ele — cada um decide sozinho onde focar.
+
+### A analogia da biblioteca (Query, Key, Value)
+
+Imagine uma biblioteca. Cada token ganha **três papéis**:
+
+- **Query (Q) — o pedido.** O que *este* token procura. Como um bilhete: "quero
+  algo sobre vulcões."
+- **Key (K) — a etiqueta.** O que *cada* token anuncia sobre si. Como o rótulo na
+  lombada de um livro: "este livro é sobre vulcões."
+- **Value (V) — o conteúdo.** O que você leva se escolher aquele livro.
+
+Cada token compara seu pedido (Q) com a etiqueta (K) de todos. Onde combina, a
+"nota" é alta. Aí o token monta sua nova versão pegando os conteúdos (V) dos
+outros, dando **mais peso** a quem combinou melhor. O detalhe elegante: cada token
+é **ao mesmo tempo leitor e livro** — tem um Query (para procurar) e também um Key
+e um Value (para ser encontrado).
+
+![Analogia da biblioteca para atenção](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjM2MCIgdmlld0JveD0iMCAwIDYyMCAzNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJhQSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNyIgbWFya2VySGVpZ2h0PSI3IiBvcmllbnQ9ImF1dG8tc3RhcnQtcmV2ZXJzZSI+CiAgICAgIDxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgICA8L21hcmtlcj4KICAgIDxtYXJrZXIgaWQ9ImFCIiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjgiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI2IiBtYXJrZXJIZWlnaHQ9IjYiIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTIgMUw4IDVMMiA5IiBmaWxsPSJub25lIiBzdHJva2U9IiM5YTlhOTUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICAgIDwvbWFya2VyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNjIwIiBoZWlnaHQ9IjM2MCIgZmlsbD0iI2ZmZmZmZiIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzMiPkNhZGEgdG9rZW4gY29tcGFyYSBzZXUgUXVlcnkgY29tIGEgS2V5IGRlIGNhZGEgb3V0cm8gdG9rZW48L3RleHQ+CgogIDwhLS0gbGVpdG9yIC0tPgogIDxyZWN0IHg9IjIwIiB5PSIxNTAiIHdpZHRoPSIxNzAiIGhlaWdodD0iOTAiIHJ4PSIxMCIgZmlsbD0iI2U2ZjBmYSIgc3Ryb2tlPSIjM0I4QkQ0IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjEwNSIgeT0iMTc2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjM0I4QkQ0Ij5Ub2tlbiBsZWl0b3I8L3RleHQ+CiAgPHRleHQgeD0iMTA1IiB5PSIxOTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPlF1ZXJ5IChvIHBlZGlkbyk6PC90ZXh0PgogIDx0ZXh0IHg9IjEwNSIgeT0iMjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj4icHJvY3VybyBjb250ZXh0bzwvdGV4dD4KICA8dGV4dCB4PSIxMDUiIHk9IjIzMSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+ZGUgb2JzdMOhY3VsbyI8L3RleHQ+CgogIDwhLS0gbGl2cm9zIC0tPgogIDxyZWN0IHg9IjM0MCIgeT0iNTAiIHdpZHRoPSIyNzAiIGhlaWdodD0iNzAiIHJ4PSIxMCIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuOCIvPgogIDx0ZXh0IHg9IjM1NSIgeT0iNzIiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPktleTogInNvdSBvIG1hcmNhZG9yICZsdDtvYnN0YWNsZSZndDsiPC90ZXh0PgogIDx0ZXh0IHg9IjM1NSIgeT0iOTAiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPlZhbHVlOiBpbmZvcm1hw6fDo28gZGUgb2JzdMOhY3VsbzwvdGV4dD4KICA8dGV4dCB4PSIzNTUiIHk9IjExMCIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBGNkU1NiI+Y2FzYSBtdWl0byDihpIgcGVzbyBBTFRPPC90ZXh0PgoKICA8cmVjdCB4PSIzNDAiIHk9IjE0NSIgd2lkdGg9IjI3MCIgaGVpZ2h0PSI3MCIgcng9IjEwIiBmaWxsPSIjZjVmNWY0IiBzdHJva2U9IiM5YTlhOTUiIHN0cm9rZS13aWR0aD0iMS4yIi8+CiAgPHRleHQgeD0iMzU1IiB5PSIxNjciIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPktleTogInNvdSB1bWEgdsOtcmd1bGEiPC90ZXh0PgogIDx0ZXh0IHg9IjM1NSIgeT0iMTg1IiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj5WYWx1ZTogaW5mb3JtYcOnw6NvIGRlIHBvbnR1YcOnw6NvPC90ZXh0PgogIDx0ZXh0IHg9IjM1NSIgeT0iMjA1IiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNzc3Ij5jYXNhIHBvdWNvIOKGkiBwZXNvIGJhaXhvPC90ZXh0PgoKICA8cmVjdCB4PSIzNDAiIHk9IjI0MCIgd2lkdGg9IjI3MCIgaGVpZ2h0PSI3MCIgcng9IjEwIiBmaWxsPSIjZjVmNWY0IiBzdHJva2U9IiM5YTlhOTUiIHN0cm9rZS13aWR0aD0iMS4yIi8+CiAgPHRleHQgeD0iMzU1IiB5PSIyNjIiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPktleTogInNvdSB1bSBlc3Bhw6dvIjwvdGV4dD4KICA8dGV4dCB4PSIzNTUiIHk9IjI4MCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+VmFsdWU6IGluZm9ybWHDp8OjbyBkZSBzZXBhcmHDp8OjbzwvdGV4dD4KICA8dGV4dCB4PSIzNTUiIHk9IjMwMCIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzc3NyI+Y2FzYSBwb3VjbyDihpIgcGVzbyBiYWl4bzwvdGV4dD4KCiAgPGxpbmUgeDE9IjE5MiIgeTE9IjE4MCIgeDI9IjMzNiIgeTI9IjkwIiAgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjMiICAgbWFya2VyLWVuZD0idXJsKCNhQSkiLz4KICA8bGluZSB4MT0iMTkyIiB5MT0iMTk1IiB4Mj0iMzM2IiB5Mj0iMTgwIiBzdHJva2U9IiM5YTlhOTUiIHN0cm9rZS13aWR0aD0iMS4zIiBtYXJrZXItZW5kPSJ1cmwoI2FCKSIvPgogIDxsaW5lIHgxPSIxOTIiIHkxPSIyMTAiIHgyPSIzMzYiIHkyPSIyNzUiIHN0cm9rZT0iIzlhOWE5NSIgc3Ryb2tlLXdpZHRoPSIxLjMiIG1hcmtlci1lbmQ9InVybCgjYUIpIi8+CgogIDx0ZXh0IHg9IjMxMCIgeT0iMzQ1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzc3Ij5BIG5vdmEgdmVyc8OjbyBkbyB0b2tlbiA9IG1pc3R1cmEgZG9zIFZhbHVlcywgY29tIG1haXMgcGVzbyBwYXJhIHF1ZW0gY2Fzb3UgbWVsaG9yLjwvdGV4dD4KPC9zdmc+Cg==)
+
+**De onde saem Q, K e V?** Cada token já tem seu vetor (a soma dos embeddings).
+Multiplicamos esse vetor por **três tabelas de pesos aprendíveis** (chamadas Wq, Wk,
+Wv), e saem três vetores: o Q, o K e o V. São três "vistas diferentes" do mesmo
+token. As tabelas começam aleatórias e o treino as ajusta.
+
+## 3.7 A mecânica da atenção, com números
+
+Vamos ver as contas com um exemplo minúsculo: 2 tokens (`'a'` e `'b'`), vetores de
+tamanho 2. Suponha que já saíram estes Q, K, V:
+
+```text
+Token 'a':   Q = [2, 0]    K = [1, 0]    V = [10,  0]
+Token 'b':   Q = [0, 2]    K = [0, 1]    V = [ 0, 10]
+```
+
+**Passo 1 — "quanto casa?" (produto escalar).** Comparamos o Query de `'a'` com a
+Key de cada token. O produto escalar multiplica posição por posição e soma:
+
+```text
+'a' olhando 'a':  [2,0]·[1,0] = 2
+'a' olhando 'b':  [2,0]·[0,1] = 0
+notas de 'a' = [2, 0]
+```
+
+> *Até aqui, temos apenas notas — o quanto o pedido de `'a'` casou com a etiqueta de cada token.*
+
+**Passo 2 — virar pesos (softmax).** As notas `[2, 0]` viram pesos que somam 100%.
+O softmax faz `e^nota` para cada uma e divide pelo total:
+
+```text
+e² ≈ 7,39    e⁰ = 1    total = 8,39
+pesos = [7,39/8,39 , 1/8,39] ≈ [0,88 , 0,12]
+```
+
+Então `'a'` presta 88% de atenção em si mesmo e 12% em `'b'`.
+
+> *Agora as notas viraram pesos que somam 100% — é onde o modelo decide em quem focar.*
+
+**Passo 3 — misturar os Values.** A nova versão de `'a'` é a soma dos Values,
+ponderada pelos pesos:
+
+```text
+0,88 × [10,0] + 0,12 × [0,10] = [8,8, 0] + [0, 1,2] = [8,8, 1,2]
+```
+
+`'a'` saiu como `[8,8, 1,2]` — quase todo o conteúdo dele mesmo, com um tempero de
+`'b'`. Ele reuniu contexto.
+
+> *Agora usamos os pesos para misturar os Values — o token sai transformado, carregando um pouco dos vizinhos que importaram.*
+
+![Os três passos da atenção](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMzMCIgdmlld0JveD0iMCAwIDYyMCAzMzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+CiAgICA8bWFya2VyIGlkPSJhTSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI4IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNiIgbWFya2VySGVpZ2h0PSI2IiBvcmllbnQ9ImF1dG8tc3RhcnQtcmV2ZXJzZSI+CiAgICAgIDxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIzMzAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5PIHRva2VuICdhJyByZXVuaW5kbyBjb250ZXh0byAoMyBwYXNzb3MpPC90ZXh0PgoKICA8cmVjdCB4PSIzMCIgeT0iNDQiIHdpZHRoPSI1NjAiIGhlaWdodD0iNzIiIHJ4PSIxMCIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjQ4IiB5PSI2NiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBGNkU1NiI+MS4gUHJvZHV0byBlc2NhbGFyIOKAlCBRdWVyeSBkZSAnYScgY29udHJhIGNhZGEgS2V5PC90ZXh0PgogIDx0ZXh0IHg9IjQ4IiB5PSI4OCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+USgnYScpwrdLKCdhJykgPSBbMiwwXcK3WzEsMF0gPSAyICAgICAgUSgnYScpwrdLKCdiJykgPSBbMiwwXcK3WzAsMV0gPSAwPC90ZXh0PgogIDx0ZXh0IHg9IjQ4IiB5PSIxMDciIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPm5vdGFzID0gWyAyICwgMCBdPC90ZXh0PgogIDxsaW5lIHgxPSIzMTAiIHkxPSIxMTYiIHgyPSIzMTAiIHkyPSIxMzIiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjYU0pIi8+CgogIDxyZWN0IHg9IjMwIiB5PSIxMzQiIHdpZHRoPSI1NjAiIGhlaWdodD0iNzIiIHJ4PSIxMCIgZmlsbD0iI2Y0ZjJmYyIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjQ4IiB5PSIxNTYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM1MzRBQjciPjIuIFNvZnRtYXgg4oCUIG5vdGFzIHZpcmFtIHBlc29zIHF1ZSBzb21hbSAxMDAlPC90ZXh0PgogIDx0ZXh0IHg9IjQ4IiB5PSIxNzgiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPmXCsiDiiYggNywzOSAgIGXigbAgPSAxICAgdG90YWwgPSA4LDM5PC90ZXh0PgogIDx0ZXh0IHg9IjQ4IiB5PSIxOTciIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPnBlc29zID0gWyAwLDg4ICwgMCwxMiBdICAg4oaSICAgODglIGVtICdhJywgMTIlIGVtICdiJzwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iMjA2IiB4Mj0iMzEwIiB5Mj0iMjIyIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2FNKSIvPgoKICA8cmVjdCB4PSIzMCIgeT0iMjI0IiB3aWR0aD0iNTYwIiBoZWlnaHQ9IjgwIiByeD0iMTAiIGZpbGw9IiNmYmU2ZTIiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSI0OCIgeT0iMjQ2IiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQjIzQTJFIj4zLiBTb21hIHBvbmRlcmFkYSBkb3MgVmFsdWVzIOKAlCBvIG5vdm8gdmV0b3IgZGUgJ2EnPC90ZXh0PgogIDx0ZXh0IHg9IjQ4IiB5PSIyNjgiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPjAsODggw5cgWzEwLDBdICsgMCwxMiDDlyBbMCwxMF0gPSBbOCw4LCAwXSArIFswLCAxLDJdPC90ZXh0PgogIDx0ZXh0IHg9IjQ4IiB5PSIyOTAiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzMiPj0gWyA4LDggLCAxLDIgXSAgIOKGkCAnYScgY29tIHVtIHRlbXBlcm8gZGUgJ2InPC90ZXh0Pgo8L3N2Zz4K)
+
+> **Detalhe técnico:** na prática, antes do softmax, dividimos as notas por
+> `√(tamanho do vetor)` — um ajuste que estabiliza o treino. As "notas cruas" que
+> entram no softmax têm um nome: **logits**.
+
+### A máscara causal (olhar só o passado)
+
+Nosso modelo **gera texto** um caractere por vez. Durante o treino, cada posição
+tem que prever o **próximo** caractere usando só o que veio **até ela**. Se um
+token pudesse ver o futuro, seria trapaça — ele copiaria a resposta.
+
+A solução: antes do softmax, pegamos as posições "do futuro" e colocamos **menos
+infinito** (`-∞`) nelas. Como o softmax faz `e^nota`, e `e^(-∞) = 0`, a posição
+futura vira **peso zero**. Fazendo isso para todos os tokens, a grade de pesos vira
+um **triângulo**.
+
+![Máscara causal triangular](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMyMCIgdmlld0JveD0iMCAwIDYyMCAzMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIzMjAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5Nw6FzY2FyYSBjYXVzYWw6IGNhZGEgdG9rZW4gc8OzIHbDqiBhIHNpIG1lc21vIGUgbyBwYXNzYWRvPC90ZXh0PgoKICA8IS0tIGNhYmXDp2FsaG9zIGNvbHVuYSAtLT4KICA8dGV4dCB4PSIzMDAiIHk9IjcwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNTU1Ij50b2tlbiAxPC90ZXh0PgogIDx0ZXh0IHg9IjQwMCIgeT0iNzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1NTUiPnRva2VuIDI8L3RleHQ+CiAgPHRleHQgeD0iNTAwIiB5PSI3MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzU1NSI+dG9rZW4gMzwvdGV4dD4KICA8dGV4dCB4PSIxODAiIHk9IjU1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjNzc3Ij5vbGhhIOKGkyAvIHBhcmEg4oaSPC90ZXh0PgoKICA8IS0tIGxpbmhhIHRva2VuIDEgLS0+CiAgPHRleHQgeD0iMjAwIiB5PSIxMDIiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1NTUiPnRva2VuIDE8L3RleHQ+CiAgPHJlY3QgeD0iMjU1IiB5PSI4MiIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQwIiByeD0iNiIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjMwMCIgeT0iMTA2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMEY2RTU2Ij52w6o8L3RleHQ+CiAgPHJlY3QgeD0iMzU1IiB5PSI4MiIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQwIiByeD0iNiIgZmlsbD0iI2YyZjJmMSIgc3Ryb2tlPSIjYzhjOGM0IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjEwNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzk5OSI+ZnV0dXJvIOKclTwvdGV4dD4KICA8cmVjdCB4PSI0NTUiIHk9IjgyIiB3aWR0aD0iOTAiIGhlaWdodD0iNDAiIHJ4PSI2IiBmaWxsPSIjZjJmMmYxIiBzdHJva2U9IiNjOGM4YzQiIHN0cm9rZS13aWR0aD0iMSIvPgogIDx0ZXh0IHg9IjUwMCIgeT0iMTA2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjOTk5Ij5mdXR1cm8g4pyVPC90ZXh0PgoKICA8IS0tIGxpbmhhIHRva2VuIDIgLS0+CiAgPHRleHQgeD0iMjAwIiB5PSIxNTIiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1NTUiPnRva2VuIDI8L3RleHQ+CiAgPHJlY3QgeD0iMjU1IiB5PSIxMzIiIHdpZHRoPSI5MCIgaGVpZ2h0PSI0MCIgcng9IjYiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KICA8dGV4dCB4PSIzMDAiIHk9IjE1NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzBGNkU1NiI+dsOqPC90ZXh0PgogIDxyZWN0IHg9IjM1NSIgeT0iMTMyIiB3aWR0aD0iOTAiIGhlaWdodD0iNDAiIHJ4PSI2IiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS40Ii8+CiAgPHRleHQgeD0iNDAwIiB5PSIxNTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMwRjZFNTYiPnbDqjwvdGV4dD4KICA8cmVjdCB4PSI0NTUiIHk9IjEzMiIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQwIiByeD0iNiIgZmlsbD0iI2YyZjJmMSIgc3Ryb2tlPSIjYzhjOGM0IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI1MDAiIHk9IjE1NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzk5OSI+ZnV0dXJvIOKclTwvdGV4dD4KCiAgPCEtLSBsaW5oYSB0b2tlbiAzIC0tPgogIDx0ZXh0IHg9IjIwMCIgeT0iMjAyIiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNTU1Ij50b2tlbiAzPC90ZXh0PgogIDxyZWN0IHg9IjI1NSIgeT0iMTgyIiB3aWR0aD0iOTAiIGhlaWdodD0iNDAiIHJ4PSI2IiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS40Ii8+CiAgPHRleHQgeD0iMzAwIiB5PSIyMDYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMwRjZFNTYiPnbDqjwvdGV4dD4KICA8cmVjdCB4PSIzNTUiIHk9IjE4MiIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQwIiByeD0iNiIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjQwMCIgeT0iMjA2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMEY2RTU2Ij52w6o8L3RleHQ+CiAgPHJlY3QgeD0iNDU1IiB5PSIxODIiIHdpZHRoPSI5MCIgaGVpZ2h0PSI0MCIgcng9IjYiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KICA8dGV4dCB4PSI1MDAiIHk9IjIwNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzBGNkU1NiI+dsOqPC90ZXh0PgoKICA8dGV4dCB4PSIzMTAiIHk9IjI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzU1NSI+TyBmdXR1cm8gdmlyYSAt4oieIGFudGVzIGRvIHNvZnRtYXgsIG8gcXVlIG8gemVyYTogcGVzbyAwLjwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjI4NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzc3NyI+QSBwYXJ0ZSBkZSBjaW1hIGRvIHRyacOibmd1bG8gZmljYSBzZW1wcmUgYmxvcXVlYWRhLjwvdGV4dD4KPC9zdmc+Cg==)
+
+### O código da atenção
+
+```python
+import torch
+import torch.nn.functional as F
+
+# Exemplo: 3 tokens, vetores de tamanho 2 (postos à mão para ver as contas)
+Q = torch.tensor([[2.,0.], [0.,2.], [1.,1.]])
+K = torch.tensor([[1.,0.], [0.,1.], [1.,1.]])
+V = torch.tensor([[10.,0.], [0.,10.], [5.,5.]])
+dk = Q.shape[1]
+
+# 1. produto escalar + escala
+notas = Q @ K.T / (dk ** 0.5)
+
+# 2. máscara causal (futuro vira -infinito)
+n = Q.shape[0]
+triangulo = torch.tril(torch.ones(n, n))
+notas = notas.masked_fill(triangulo == 0, float("-inf"))
+
+# 3. softmax -> pesos
+pesos = F.softmax(notas, dim=-1)
+
+# 4. soma ponderada dos values
+saida = pesos @ V
+print(saida)
+```
+
+Repare que o código é **exatamente** as contas que você acabou de acompanhar, na mesma ordem: o passo 1 (produto escalar + escala) é a linha `notas = Q @ K.T / ...`; o passo 2 (máscara causal) são as linhas do `triangulo`/`masked_fill`; o passo 3 (softmax) é `pesos = F.softmax(...)`; e o passo 4 (soma ponderada) é `saida = pesos @ V`. O código não traz mágica nova — ele implementa a matemática.
+
+**Traduzindo os símbolos estranhos:**
+
+- `@` é multiplicação de matrizes — faz o produto escalar de todos com todos de uma
+  vez.
+- `.T` (transposta) "vira a matriz de lado" para o `@` alinhar as dimensões.
+- `torch.tril` pega o triângulo inferior (o "mapa" do que é permitido).
+- `masked_fill(..., -inf)` coloca `-∞` onde o mapa é 0 (o futuro).
+- `dim=-1` no softmax aplica a operação **em cada linha separadamente** — por isso
+  cada linha soma 1.
+
+**A frase-resumo:**
+
+> "A atenção calcula notas com o produto escalar entre Query e Keys, escala por
+> `√dₖ`, aplica máscara causal para só olhar o passado, passa por softmax para
+> virar pesos, e faz a soma ponderada dos Values."
+
+---
+
+> **Fim da Instalação 3 da Parte 3.** Você atravessou o coração do transformer.
+> Na próxima instalação: a **FFN** (onde cada token processa o que reuniu), as duas
+> "pecinhas de cola" (**conexão residual** e **LayerNorm**), e a montagem do
+> **modelo completo**.
+
+---
+
+## 3.8 A FFN: onde cada token "pensa" sozinho
+
+A atenção mistura informação **entre** os tokens (cada um olhou os vizinhos e reuniu contexto). Falta agora um lugar onde cada token **processe, sozinho**, aquilo que reuniu. Essa é a **FFN** (rede feed-forward):
+
+> *A atenção reúne o contexto; a FFN transforma a representação de cada posição, uma por uma.*
+
+**A ideia em uma frase:** a FFN "abre" o vetor de cada token num espaço maior,
+aplica um filtro que corta os negativos, e "fecha" de volta ao tamanho original.
+
+**A analogia:** a atenção é *conversar com os vizinhos e coletar informação*; a FFN
+é *ir para casa e processar aquilo sozinho*.
+
+A FFN tem 3 etapas. Com um vetor de tamanho 2, `[1, -2]`:
+
+1. **Expandir** (uma camada linear leva de 2 para 4 números): `[1, -2, -1, 3]`
+2. **ReLU** (mantém positivos, zera negativos): `[1, 0, 0, 3]`
+3. **Contrair** (de 4 de volta para 2): `[4, 0]`
+
+![A camada FFN](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjM0MCIgdmlld0JveD0iMCAwIDYyMCAzNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0iZjEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMzQwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+QSBGRk46IGV4cGFuZGlyIOKGkiBjb3J0YXIgbmVnYXRpdm9zIOKGkiBjb250cmFpcjwvdGV4dD4KCiAgPHJlY3QgeD0iMjAwIiB5PSI0NCIgd2lkdGg9IjIyMCIgaGVpZ2h0PSI0NCIgcng9IjkiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjcwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj5lbnRyYSAodGFtLiAyKTogIFsgMSAsIC0yIF08L3RleHQ+CiAgPGxpbmUgeDE9IjMxMCIgeTE9Ijg4IiB4Mj0iMzEwIiB5Mj0iMTA0IiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2YxKSIvPgogIDx0ZXh0IHg9IjQzMCIgeT0iMTAwIiBmb250LXNpemU9IjExIiBmaWxsPSIjNzc3Ij4xLiBleHBhbmRpciAoMiDihpIgNCk8L3RleHQ+CgogIDxyZWN0IHg9IjIwMCIgeT0iMTA2IiB3aWR0aD0iMjIwIiBoZWlnaHQ9IjQ0IiByeD0iOSIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTMyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj5bIDEgLCAtMiAsIC0xICwgMyBdPC90ZXh0PgogIDxsaW5lIHgxPSIzMTAiIHkxPSIxNTAiIHgyPSIzMTAiIHkyPSIxNjYiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjZjEpIi8+CiAgPHRleHQgeD0iNDMwIiB5PSIxNjIiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM3NzciPjIuIFJlTFUgKG5lZ2F0aXZvcyDihpIgMCk8L3RleHQ+CgogIDxyZWN0IHg9IjIwMCIgeT0iMTY4IiB3aWR0aD0iMjIwIiBoZWlnaHQ9IjQ0IiByeD0iOSIgZmlsbD0iI2ZiZTZlMiIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTk0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj5bIDEgLCAwICwgMCAsIDMgXTwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iMjEyIiB4Mj0iMzEwIiB5Mj0iMjI4IiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2YxKSIvPgogIDx0ZXh0IHg9IjQzMCIgeT0iMjI0IiBmb250LXNpemU9IjExIiBmaWxsPSIjNzc3Ij4zLiBjb250cmFpciAoNCDihpIgMik8L3RleHQ+CgogIDxyZWN0IHg9IjIwMCIgeT0iMjMwIiB3aWR0aD0iMjIwIiBoZWlnaHQ9IjQ0IiByeD0iOSIgZmlsbD0iI2VhZjVlMCIgc3Ryb2tlPSIjNjM5OTIyIiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMjU2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj5zYWkgKHRhbS4gMik6ICBbIDQgLCAwIF08L3RleHQ+CgogIDx0ZXh0IHg9IjMxMCIgeT0iMzA1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzc3Ij5Sb2RhIHBhcmEgY2FkYSB0b2tlbiBzZXBhcmFkYW1lbnRlLiBBIGF0ZW7Dp8OjbyBtaXN0dXJhIGVudHJlIHRva2VuczsgYSBGRk4gcHJvY2Vzc2EgZGVudHJvIGRlIGNhZGEgdW0uPC90ZXh0Pgo8L3N2Zz4K)
+
+**O que é uma "camada linear"?** É uma tabela de pesos: cada número de saída é uma
+combinação dos números de entrada, multiplicados por pesos. A ReLU (*Rectified
+Linear Unit*) é uma **função de ativação**: a não-linearidade que dá ao modelo poder
+de aprender padrões complexos. Sem ela, empilhar camadas não adiantaria (viraria
+tudo uma conta só).
+
+## 3.9 As duas pecinhas de cola: residual e LayerNorm
+
+Para um modelo de vários blocos treinar bem, precisamos de duas peças de apoio.
+
+**Conexão residual.** Em vez de o bloco *substituir* o vetor do token, ele *soma* o
+que aprendeu ao vetor original: `saída = x + f(x)`. Isso cria um atalho que preserva
+a informação ao longo dos blocos e ajuda o treino. O bloco aprende só o "ajuste".
+
+![Conexão residual](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjI0MCIgdmlld0JveD0iMCAwIDYyMCAyNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0icjEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+CiAgPG1hcmtlciBpZD0icjIiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMjQwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+Q29uZXjDo28gcmVzaWR1YWw6IHNvbWEgYSBlbnRyYWRhIGRlIHZvbHRhIG5hIHNhw61kYTwvdGV4dD4KCiAgPHJlY3QgeD0iMjAiIHk9IjExMCIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQ2IiByeD0iOSIgZmlsbD0iI2U2ZjBmYSIgc3Ryb2tlPSIjM0I4QkQ0IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjY1IiB5PSIxMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzQjhCRDQiPng8L3RleHQ+CiAgPHRleHQgeD0iNjUiIHk9IjE0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+WyAyICwgNSBdPC90ZXh0PgoKICA8bGluZSB4MT0iMTEwIiB5MT0iMTMzIiB4Mj0iMTY2IiB5Mj0iMTMzIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI3IxKSIvPgogIDxyZWN0IHg9IjE2OCIgeT0iMTEwIiB3aWR0aD0iMTcwIiBoZWlnaHQ9IjQ2IiByeD0iOSIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjI1MyIgeT0iMTMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMEY2RTU2Ij5ibG9jbzogZih4KTwvdGV4dD4KICA8dGV4dCB4PSIyNTMiIHk9IjE0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+WyAwLjMgLCAtMSBdPC90ZXh0PgoKICA8bGluZSB4MT0iMzM4IiB5MT0iMTMzIiB4Mj0iMzk0IiB5Mj0iMTMzIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI3IxKSIvPgogIDxjaXJjbGUgY3g9IjQyMCIgY3k9IjEzMyIgcj0iMjIiIGZpbGw9IiNmYmU2ZTIiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KICA8dGV4dCB4PSI0MjAiIHk9IjE0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0IyM0EyRSI+KzwvdGV4dD4KCiAgPCEtLSBhdGFsaG8gLS0+CiAgPHBhdGggZD0iTTY1IDExMCBDIDY1IDU1LCA0MjAgNTUsIDQyMCAxMDgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI3IyKSIvPgogIDx0ZXh0IHg9IjI0MyIgeT0iNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNCMjNBMkUiPmF0YWxobzogYSBlbnRyYWRhIHBhc3NhIGRpcmV0bzwvdGV4dD4KCiAgPGxpbmUgeDE9IjQ0MiIgeTE9IjEzMyIgeDI9IjQ3OCIgeTI9IjEzMyIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNyMSkiLz4KICA8cmVjdCB4PSI0ODAiIHk9IjExMCIgd2lkdGg9IjEyMCIgaGVpZ2h0PSI0NiIgcng9IjkiIGZpbGw9IiNlYWY1ZTAiIHN0cm9rZT0iIzYzOTkyMiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KICA8dGV4dCB4PSI1NDAiIHk9IjEzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+eCArIGYoeCk8L3RleHQ+CiAgPHRleHQgeD0iNTQwIiB5PSIxNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPlsgMi4zICwgNCBdPC90ZXh0PgoKICA8dGV4dCB4PSIzMTAiIHk9IjIxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzc3NyI+TyBvcmlnaW5hbCDDqSBwcmVzZXJ2YWRvOyBvIGJsb2NvIHPDsyBzb21hIHVtIHBlcXVlbm8gYWp1c3RlIChvICJyZXPDrWR1byIpLjwvdGV4dD4KPC9zdmc+Cg==)
+
+**LayerNorm.** Ajeita os números de cada vetor para uma escala padrão (subtrai a
+média, divide pelo desvio padrão). Assim os valores não explodem nem somem ao passar
+pela rede — o treino fica estável.
+
+![LayerNorm](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjI1MCIgdmlld0JveD0iMCAwIDYyMCAyNTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0ibDEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMjUwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+TGF5ZXJOb3JtOiByZWVxdWlsaWJyYSBvcyBuw7ptZXJvcyBwYXJhIHVtYSBlc2NhbGEgcGFkcsOjbzwvdGV4dD4KCiAgPHJlY3QgeD0iMTgwIiB5PSI0NCIgd2lkdGg9IjI2MCIgaGVpZ2h0PSI0MCIgcng9IjkiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjY5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj5lbnRyYWRhOiAgWyAyICwgNCAsIDYgLCA4IF08L3RleHQ+CiAgPGxpbmUgeDE9IjMxMCIgeTE9Ijg0IiB4Mj0iMzEwIiB5Mj0iOTgiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjbDEpIi8+CiAgPHRleHQgeD0iNDUwIiB5PSI5NSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzc3NyI+MS4gc3VidHJhaSBhIG3DqWRpYSAoNSk8L3RleHQ+CgogIDxyZWN0IHg9IjE4MCIgeT0iMTAwIiB3aWR0aD0iMjYwIiBoZWlnaHQ9IjQwIiByeD0iOSIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTI1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj5bIC0zICwgLTEgLCAxICwgMyBdPC90ZXh0PgogIDxsaW5lIHgxPSIzMTAiIHkxPSIxNDAiIHgyPSIzMTAiIHkyPSIxNTQiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjbDEpIi8+CiAgPHRleHQgeD0iNDUwIiB5PSIxNTEiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM3NzciPjIuIGRpdmlkZSBwZWxvIGRlc3ZpbyAo4omIMiwyNCk8L3RleHQ+CgogIDxyZWN0IHg9IjE4MCIgeT0iMTU2IiB3aWR0aD0iMjYwIiBoZWlnaHQ9IjQwIiByeD0iOSIgZmlsbD0iI2VhZjVlMCIgc3Ryb2tlPSIjNjM5OTIyIiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTgxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzIj5bIC0xLDM0ICwgLTAsNDUgLCAwLDQ1ICwgMSwzNCBdPC90ZXh0PgoKICA8dGV4dCB4PSIzMTAiIHk9IjIyNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzc3NyI+U2UgYSBlbnRyYWRhIGZvc3NlIFsyMDAsNDAwLDYwMCw4MDBdLCBhIHNhw61kYSBzZXJpYSBhIE1FU01BLiBQb3IgaXNzbyBlc3RhYmlsaXphLjwvdGV4dD4KPC9zdmc+Cg==)
+
+## 3.10 O bloco e o modelo completo
+
+Um **bloco** junta atenção e FFN, cada uma embrulhada com LayerNorm e conexão
+residual. O padrão se repete duas vezes:
+
+```text
+x = x + Atenção(LayerNorm(x))    # sub-camada 1
+x = x + FFN(LayerNorm(x))        # sub-camada 2
+```
+
+![Anatomia de um bloco](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYyMCA0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0iYjEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+CiAgPG1hcmtlciBpZD0iYjIiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iNDAwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+QW5hdG9taWEgZGUgdW0gYmxvY286IHBhZHLDo28gcmVwZXRpZG8gMsOXPC90ZXh0PgoKICA8cmVjdCB4PSIyMzAiIHk9IjM2IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjMwIiByeD0iOCIgZmlsbD0iI2U2ZjBmYSIgc3Ryb2tlPSIjM0I4QkQ0IiBzdHJva2Utd2lkdGg9IjEuMyIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iNTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzQjhCRDQiPmVudHJhOiB4PC90ZXh0PgogIDxsaW5lIHgxPSIzMTAiIHkxPSI2NiIgeDI9IjMxMCIgeTI9IjgwIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2IxKSIvPgoKICA8dGV4dCB4PSI1NjAiIHk9IjEyMCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzc3NyI+c3ViLWNhbWFkYSAxPC90ZXh0PgogIDxyZWN0IHg9IjIzMCIgeT0iODIiIHdpZHRoPSIxNjAiIGhlaWdodD0iMjYiIHJ4PSI3IiBmaWxsPSIjZjRmMmZjIiBzdHJva2U9IiM1MzRBQjciIHN0cm9rZS13aWR0aD0iMS4yIi8+CiAgPHRleHQgeD0iMzEwIiB5PSI5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzUzNEFCNyI+TGF5ZXJOb3JtPC90ZXh0PgogIDxsaW5lIHgxPSIzMTAiIHkxPSIxMDgiIHgyPSIzMTAiIHkyPSIxMjAiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjYjEpIi8+CiAgPHJlY3QgeD0iMjMwIiB5PSIxMjIiIHdpZHRoPSIxNjAiIGhlaWdodD0iMzAiIHJ4PSI3IiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIxNDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPkF0ZW7Dp8OjbzwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iMTUyIiB4Mj0iMzEwIiB5Mj0iMTY2IiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2IxKSIvPgogIDxjaXJjbGUgY3g9IjMxMCIgY3k9IjE4NCIgcj0iMTYiIGZpbGw9IiNmYmU2ZTIiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjE5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0IyM0EyRSI+KzwvdGV4dD4KICA8cGF0aCBkPSJNMjMwIDUxIEwgMTUwIDUxIEwgMTUwIDE4NCBMIDI5MiAxODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIxLjgiIG1hcmtlci1lbmQ9InVybCgjYjIpIi8+CiAgPGxpbmUgeDE9IjMxMCIgeTE9IjIwMCIgeDI9IjMxMCIgeTI9IjIxNCIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNiMSkiLz4KCiAgPHRleHQgeD0iNTYwIiB5PSIyNTIiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM3NzciPnN1Yi1jYW1hZGEgMjwvdGV4dD4KICA8cmVjdCB4PSIyMzAiIHk9IjIxNiIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIyNiIgcng9IjciIGZpbGw9IiNmNGYyZmMiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjIzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzUzNEFCNyI+TGF5ZXJOb3JtPC90ZXh0PgogIDxsaW5lIHgxPSIzMTAiIHkxPSIyNDIiIHgyPSIzMTAiIHkyPSIyNTQiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjYjEpIi8+CiAgPHJlY3QgeD0iMjMwIiB5PSIyNTYiIHdpZHRoPSIxNjAiIGhlaWdodD0iMzAiIHJ4PSI3IiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyNzYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPkZGTjwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iMjg2IiB4Mj0iMzEwIiB5Mj0iMzAwIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2IxKSIvPgogIDxjaXJjbGUgY3g9IjMxMCIgY3k9IjMxOCIgcj0iMTYiIGZpbGw9IiNmYmU2ZTIiIHN0cm9rZT0iI0IyM0EyRSIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjMyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0IyM0EyRSI+KzwvdGV4dD4KICA8cGF0aCBkPSJNMzkwIDIxNCBMIDQ3MCAyMTQgTCA0NzAgMzE4IEwgMzI4IDMxOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuOCIgbWFya2VyLWVuZD0idXJsKCNiMikiLz4KICA8bGluZSB4MT0iMzEwIiB5MT0iMzM0IiB4Mj0iMzEwIiB5Mj0iMzQ4IiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2IxKSIvPgoKICA8cmVjdCB4PSIyMzAiIHk9IjM1MCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIzMCIgcng9IjgiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjM3MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzNCOEJENCI+c2FpOiB4IHByb2Nlc3NhZG88L3RleHQ+Cjwvc3ZnPgo=)
+
+O modelo completo é: embeddings → alguns blocos empilhados → LayerNorm final →
+camada de saída (que dá uma nota para cada caractere).
+
+![O mini-GPT completo](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjQzMCIgdmlld0JveD0iMCAwIDYyMCA0MzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0ibTEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iNDMwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+TyBtaW5pLUdQVCBjb21wbGV0bzwvdGV4dD4KCiAgPHJlY3QgeD0iMTcwIiB5PSIzOCIgd2lkdGg9IjI4MCIgaGVpZ2h0PSI0MCIgcng9IjkiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjQiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjYzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmaWxsPSIjMzMzIj5lbWJlZGRpbmdzIChjYXJhY3RlcmUgKyBwb3Npw6fDo28pPC90ZXh0PgogIDxsaW5lIHgxPSIzMTAiIHkxPSI3OCIgeDI9IjMxMCIgeTI9IjkyIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI20xKSIvPgoKICA8cmVjdCB4PSIxNTAiIHk9Ijk0IiB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgcng9IjEyIiBmaWxsPSJub25lIiBzdHJva2U9IiNjOGM4YzQiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWRhc2hhcnJheT0iNSA0Ii8+CiAgPHRleHQgeD0iMTYyIiB5PSIxMTAiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM3NzciPm9zIDMgYmxvY29zIChtZXNtYSBwZcOnYSByZXBldGlkYSk8L3RleHQ+CgogIDxyZWN0IHg9IjE3NSIgeT0iMTE4IiB3aWR0aD0iMjcwIiBoZWlnaHQ9IjQyIiByeD0iOSIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTM1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMEY2RTU2Ij5ibG9jbyAxPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMTUyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5MYXllck5vcm3ihpJBdGVuw6fDo2/ihpIrICAgTGF5ZXJOb3Jt4oaSRkZO4oaSKzwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iMTYwIiB4Mj0iMzEwIiB5Mj0iMTcyIiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI20xKSIvPgogIDxyZWN0IHg9IjE3NSIgeT0iMTc0IiB3aWR0aD0iMjcwIiBoZWlnaHQ9IjQyIiByeD0iOSIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTkxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMEY2RTU2Ij5ibG9jbyAyPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMjA4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5MYXllck5vcm3ihpJBdGVuw6fDo2/ihpIrICAgTGF5ZXJOb3Jt4oaSRkZO4oaSKzwvdGV4dD4KICA8bGluZSB4MT0iMzEwIiB5MT0iMjE2IiB4Mj0iMzEwIiB5Mj0iMjI4IiBzdHJva2U9IiM1RjVFNUEiIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI20xKSIvPgogIDxyZWN0IHg9IjE3NSIgeT0iMjMwIiB3aWR0aD0iMjcwIiBoZWlnaHQ9IjQyIiByeD0iOSIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMjQ3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMEY2RTU2Ij5ibG9jbyAzPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMjY0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5MYXllck5vcm3ihpJBdGVuw6fDo2/ihpIrICAgTGF5ZXJOb3Jt4oaSRkZO4oaSKzwvdGV4dD4KCiAgPGxpbmUgeDE9IjMxMCIgeTE9IjI3NCIgeDI9IjMxMCIgeTI9IjI5MCIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNtMSkiLz4KICA8cmVjdCB4PSIyMDAiIHk9IjI5MiIgd2lkdGg9IjIyMCIgaGVpZ2h0PSIzNCIgcng9IjgiIGZpbGw9IiNmNGYyZmMiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjMxMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzUzNEFCNyI+TGF5ZXJOb3JtIGZpbmFsPC90ZXh0PgogIDxsaW5lIHgxPSIzMTAiIHkxPSIzMjYiIHgyPSIzMTAiIHkyPSIzNDIiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjbTEpIi8+CgogIDxyZWN0IHg9IjE3MCIgeT0iMzQ0IiB3aWR0aD0iMjgwIiBoZWlnaHQ9IjUwIiByeD0iOSIgZmlsbD0iI2ZiZTZlMiIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMzY0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQjIzQTJFIj5jYW1hZGEgZGUgc2HDrWRhIChsb2dpdHMpPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMzgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj51bWEgbm90YSBwYXJhIGNhZGEgdW0gZG9zIDU5IGNhcmFjdGVyZXMg4oaSIHNvZnRtYXggZXNjb2xoZSBvIHByw7N4aW1vPC90ZXh0Pgo8L3N2Zz4K)
+
+### O código do modelo
+
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+vocab_size = 59
+n_embd     = 32
+block_size = 32
+n_layer    = 3
+
+class Atencao(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.query = nn.Linear(n_embd, n_embd, bias=False)
+        self.chave = nn.Linear(n_embd, n_embd, bias=False)
+        self.value = nn.Linear(n_embd, n_embd, bias=False)
+        self.proj  = nn.Linear(n_embd, n_embd)
+        self.register_buffer("mascara", torch.tril(torch.ones(block_size, block_size)))
+    def forward(self, x):
+        B, T, C = x.shape
+        q, k, v = self.query(x), self.chave(x), self.value(x)
+        notas = q @ k.transpose(-2, -1) / (C ** 0.5)
+        notas = notas.masked_fill(self.mascara[:T, :T] == 0, float("-inf"))
+        pesos = F.softmax(notas, dim=-1)
+        return self.proj(pesos @ v)
+
+class FFN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.rede = nn.Sequential(
+            nn.Linear(n_embd, 4 * n_embd), nn.ReLU(), nn.Linear(4 * n_embd, n_embd),
+        )
+    def forward(self, x):
+        return self.rede(x)
+
+class Bloco(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.ln1, self.atencao = nn.LayerNorm(n_embd), Atencao()
+        self.ln2, self.ffn     = nn.LayerNorm(n_embd), FFN()
+    def forward(self, x):
+        x = x + self.atencao(self.ln1(x))
+        x = x + self.ffn(self.ln2(x))
+        return x
+
+class MiniGPT(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.emb_token   = nn.Embedding(vocab_size, n_embd)
+        self.emb_posicao = nn.Embedding(block_size, n_embd)
+        self.blocos      = nn.Sequential(*[Bloco() for _ in range(n_layer)])
+        self.ln_final    = nn.LayerNorm(n_embd)
+        self.saida       = nn.Linear(n_embd, vocab_size)
+    def forward(self, idx):
+        B, T = idx.shape
+        tok = self.emb_token(idx)
+        pos = self.emb_posicao(torch.arange(T, device=idx.device))
+        x = tok + pos
+        x = self.blocos(x)
+        x = self.ln_final(x)
+        return self.saida(x)
+```
+
+Repare como os 3 blocos viram uma linha: `nn.Sequential(*[Bloco() for _ in range(n_layer)])`.
+Trocar o `n_layer` muda a profundidade do modelo. Esse modelo tem cerca de **42.700
+parâmetros** — minúsculo, de propósito, para caber num microcontrolador.
+
+**A frase-resumo:**
+
+> "Cada bloco tem duas sub-camadas (atenção e FFN) na forma pre-norm:
+> `x = x + SubCamada(LayerNorm(x))`. O modelo é embeddings → blocos → LayerNorm
+> final → camada linear de saída que produz os logits."
+
+---
+
+## 3.11 Treino: como o modelo aprende
+
+O modelo recém-criado é um recém-nascido: pesos aleatórios, respostas sem sentido.
+O **treino** ajusta esses pesos. É um laço repetido milhares de vezes:
+
+1. **Prever** — o modelo tenta adivinhar o próximo caractere
+2. **Medir o erro** (o *loss*) — o quanto ele errou
+3. **Calcular o gradiente** — para onde empurrar cada peso
+4. **Ajustar os pesos** — um passinho na direção certa
+5. **Repetir**
+
+### O erro (loss)
+
+O modelo dá uma **probabilidade** para cada caractere. O erro mede a *surpresa* com
+a resposta certa: probabilidade alta na resposta certa → erro baixo; probabilidade
+baixa → erro alto. A fórmula (**cross-entropy**) é `-log(prob da resposta certa)`.
+
+![O erro / loss](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMzMCIgdmlld0JveD0iMCAwIDYyMCAzMzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIzMzAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5PIGVycm8gbWVkZSBhIHN1cnByZXNhIGNvbSBhIHJlc3Bvc3RhIGNlcnRhIChhcXVpLCAnYScpPC90ZXh0PgoKICA8dGV4dCB4PSIxNjUiIHk9IjU0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5tb2RlbG8gYm9tPC90ZXh0PgogIDxsaW5lIHgxPSI2MCIgeTE9IjIzMCIgeDI9IjI4MCIgeTI9IjIzMCIgc3Ryb2tlPSIjOTk5IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSI4MCIgeT0iMTAwIiB3aWR0aD0iNDUiIGhlaWdodD0iMTMwIiBmaWxsPSIjZmJlNmUyIiBzdHJva2U9IiNCMjNBMkUiIHN0cm9rZS13aWR0aD0iMS4yIi8+CiAgPHRleHQgeD0iMTAyIiB5PSIyNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPmE9MCw3PC90ZXh0PgogIDx0ZXh0IHg9IjEwMiIgeT0iOTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiNCMjNBMkUiPmNlcnRhPC90ZXh0PgogIDxyZWN0IHg9IjE1MCIgeT0iMTkwIiB3aWR0aD0iNDUiIGhlaWdodD0iNDAiIGZpbGw9IiNlZWUiIHN0cm9rZT0iIzk5OSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iMTcyIiB5PSIyNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPmI9MCwyPC90ZXh0PgogIDxyZWN0IHg9IjIyMCIgeT0iMjEwIiB3aWR0aD0iNDUiIGhlaWdodD0iMjAiIGZpbGw9IiNlZWUiIHN0cm9rZT0iIzk5OSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iMjQyIiB5PSIyNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPmM9MCwxPC90ZXh0PgogIDxyZWN0IHg9IjYwIiB5PSIyNjIiIHdpZHRoPSIyMjAiIGhlaWdodD0iNDAiIHJ4PSI4IiBmaWxsPSIjZThmNGYwIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgPHRleHQgeD0iMTcwIiB5PSIyODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPmVycm8gPSAtbG9nKDAsNykg4omIIDAsMzY8L3RleHQ+CiAgPHRleHQgeD0iMTcwIiB5PSIyOTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPkJBSVhPPC90ZXh0PgoKICA8bGluZSB4MT0iMzEwIiB5MT0iNDUiIHgyPSIzMTAiIHkyPSIzMDUiIHN0cm9rZT0iI2RkZCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI0IDQiLz4KCiAgPHRleHQgeD0iNDU1IiB5PSI1NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+bW9kZWxvIHJ1aW08L3RleHQ+CiAgPGxpbmUgeDE9IjM1MCIgeTE9IjIzMCIgeDI9IjU3MCIgeTI9IjIzMCIgc3Ryb2tlPSIjOTk5IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cmVjdCB4PSIzNzAiIHk9IjIxMCIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmJlNmUyIiBzdHJva2U9IiNCMjNBMkUiIHN0cm9rZS13aWR0aD0iMS4yIi8+CiAgPHRleHQgeD0iMzkyIiB5PSIyNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPmE9MCwxPC90ZXh0PgogIDx0ZXh0IHg9IjM5MiIgeT0iMjAyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwIiBmaWxsPSIjQjIzQTJFIj5jZXJ0YTwvdGV4dD4KICA8cmVjdCB4PSI0NDAiIHk9IjExMCIgd2lkdGg9IjQ1IiBoZWlnaHQ9IjEyMCIgZmlsbD0iI2VlZSIgc3Ryb2tlPSIjOTk5IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI0NjIiIHk9IjI0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+Yj0wLDY8L3RleHQ+CiAgPHJlY3QgeD0iNTEwIiB5PSIxNzAiIHdpZHRoPSI0NSIgaGVpZ2h0PSI2MCIgZmlsbD0iI2VlZSIgc3Ryb2tlPSIjOTk5IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI1MzIiIHk9IjI0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+Yz0wLDM8L3RleHQ+CiAgPHJlY3QgeD0iMzUwIiB5PSIyNjIiIHdpZHRoPSIyMjAiIGhlaWdodD0iNDAiIHJ4PSI4IiBmaWxsPSIjZmRlZWUwIiBzdHJva2U9IiNCQTc1MTciIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgPHRleHQgeD0iNDYwIiB5PSIyODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPmVycm8gPSAtbG9nKDAsMSkg4omIIDIsMzA8L3RleHQ+CiAgPHRleHQgeD0iNDYwIiB5PSIyOTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCQTc1MTciPkFMVE88L3RleHQ+Cjwvc3ZnPgo=)
+
+### O gradiente (a descida da montanha)
+
+O gradiente diz, para cada peso, se aumentá-lo faz o erro subir ou descer. Andamos no
+sentido **contrário** (ladeira abaixo), com passo dado pela **taxa de aprendizado**.
+Repetindo, chegamos ao fundo do vale (menor erro).
+
+![Descida do gradiente](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjMzMCIgdmlld0JveD0iMCAwIDYyMCAzMzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0iZzEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMzMwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+RGVzY2lkYSBkbyBncmFkaWVudGU6IGFuZGFyIGxhZGVpcmEgYWJhaXhvIGF0w6kgbyBtZW5vciBlcnJvPC90ZXh0PgoKICA8bGluZSB4MT0iNzAiIHkxPSI2MCIgeDI9IjcwIiB5Mj0iMjcwIiBzdHJva2U9IiM5OTkiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxsaW5lIHgxPSI3MCIgeTE9IjI3MCIgeDI9IjU4MCIgeTI9IjI3MCIgc3Ryb2tlPSIjOTk5IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI2MCIgeT0iNjYiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1NTUiPmVycm88L3RleHQ+CiAgPHRleHQgeD0iNTc1IiB5PSIyOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1NTUiPnBlc28gdzwvdGV4dD4KCiAgPHBvbHlsaW5lIHBvaW50cz0iOTAsNzAgMTMwLDE0MCAxNzAsMTkwIDIxMCwyMjUgMjUwLDI1MCAyOTAsMjY0IDMzMCwyNjggMzcwLDI2NCA0MTAsMjUwIDQ1MCwyMjUgNDkwLDE5MCA1MzAsMTQwIDU3MCw3MCIKICAgIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KCiAgPGNpcmNsZSBjeD0iMzMwIiBjeT0iMjY4IiByPSI1IiBmaWxsPSIjNjM5OTIyIi8+CiAgPHRleHQgeD0iMzMwIiB5PSIyODgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPmVycm8gbcOtbmltbzwvdGV4dD4KCiAgPGNpcmNsZSBjeD0iNDkwIiBjeT0iMTkwIiByPSI5IiBmaWxsPSIjQjIzQTJFIi8+CiAgPHRleHQgeD0iNTEwIiB5PSIxODAiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMiPmNvbWXDp286IHc9NTwvdGV4dD4KICA8Y2lyY2xlIGN4PSI0NTUiIGN5PSIyMjIiIHI9IjgiIGZpbGw9IiNCQTc1MTciLz4KICA8Y2lyY2xlIGN4PSI0MjUiIGN5PSIyNDIiIHI9IjgiIGZpbGw9IiNCQTc1MTciLz4KICA8Y2lyY2xlIGN4PSI0MDAiIGN5PSIyNTUiIHI9IjciIGZpbGw9IiNCQTc1MTciLz4KICA8cGF0aCBkPSJNNDgyIDE5NyBRIDQ2OCAyMTMgNDYzIDIxOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuMyIgbWFya2VyLWVuZD0idXJsKCNnMSkiLz4KICA8cGF0aCBkPSJNNDQ4IDIyOCBRIDQzNyAyMzggNDMzIDI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuMyIgbWFya2VyLWVuZD0idXJsKCNnMSkiLz4KCiAgPHRleHQgeD0iMjMwIiB5PSIxMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM3NzciPmNhZGEgcGFzc28gZGVzY2UgYSBsYWRlaXJhPC90ZXh0Pgo8L3N2Zz4K)
+
+O PyTorch calcula os gradientes de todos os ~42.700 pesos automaticamente — isso se
+chama **backpropagation** — com uma linha: `loss.backward()`.
+
+### Como alimentamos o modelo
+
+O modelo aprende prevendo o **próximo** caractere. Então a "resposta" é o texto
+deslocado 1 posição. Para `backup` (janela de 5):
+
+```text
+entrada (x):  b  a  c  k  u
+resposta (y): a  c  k  u  p
+```
+
+### O código do treino
+
+```python
+import json
+from pathlib import Path
+import torch
+import torch.nn.functional as F
+from model import MiniGPT, block_size
+
+batch_size, max_iters, lr = 32, 3000, 1e-3
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+pasta = Path(__file__).parent
+caracteres = json.loads((pasta / "vocab.json").read_text(encoding="utf-8"))
+stoi = {c: i for i, c in enumerate(caracteres)}
+texto = (pasta / "data" / "robot_voice.txt").read_text(encoding="utf-8")
+dados = torch.tensor([stoi[c] for c in texto], dtype=torch.long)
+
+def pegar_lote():
+    ini = torch.randint(len(dados) - block_size, (batch_size,))
+    x = torch.stack([dados[i     : i + block_size]     for i in ini])
+    y = torch.stack([dados[i + 1 : i + block_size + 1] for i in ini])
+    return x.to(device), y.to(device)
+
+modelo = MiniGPT().to(device)
+otimizador = torch.optim.AdamW(modelo.parameters(), lr=lr)
+
+for passo in range(max_iters + 1):
+    x, y = pegar_lote()
+    logits = modelo(x)                                  # prever
+    B, T, V = logits.shape
+    loss = F.cross_entropy(logits.view(B*T, V), y.view(B*T))  # erro
+    otimizador.zero_grad()
+    loss.backward()                                     # gradiente
+    otimizador.step()                                   # ajustar
+    if passo % 300 == 0:
+        print(f"passo {passo:5d}  |  erro: {loss.item():.4f}")
+
+torch.save(modelo.state_dict(), pasta / "modelo_treinado.pt")
+```
+
+**O que você deve ver:** o erro caindo de ~4,2 para menos de 1 ao longo dos passos, e
+um arquivo `modelo_treinado.pt` salvo no fim. O `AdamW` é o **otimizador** — quem dá
+o passo de descida.
+
+## 3.12 Geração: ouvir o robô falar
+
+O modelo gera texto de forma **autorregressiva**: prevê o próximo caractere, anexa ao
+contexto, e repete. Cada caractere gerado realimenta a entrada.
+
+![Ciclo de geração](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjI4MCIgdmlld0JveD0iMCAwIDYyMCAyODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0iYzEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+CiAgPG1hcmtlciBpZD0iYzIiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjIzQTJFIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMjgwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+R2VyYcOnw6NvOiB1bSBjYXJhY3RlcmUgcG9yIHZleiwgcmVhbGltZW50YW5kbyBvIGNvbnRleHRvPC90ZXh0PgoKICA8cmVjdCB4PSIyMCIgeT0iODAiIHdpZHRoPSIxMjAiIGhlaWdodD0iNTYiIHJ4PSIxMCIgZmlsbD0iI2U2ZjBmYSIgc3Ryb2tlPSIjM0I4QkQ0IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjgwIiB5PSIxMDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzQjhCRDQiPmNvbnRleHRvPC90ZXh0PgogIDx0ZXh0IHg9IjgwIiB5PSIxMjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPiImbHQ7b2JzdGFjbGUmZ3Q7IE8iPC90ZXh0PgogIDxsaW5lIHgxPSIxNDAiIHkxPSIxMDgiIHgyPSIxNzIiIHkyPSIxMDgiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjYzEpIi8+CgogIDxyZWN0IHg9IjE3NCIgeT0iODAiIHdpZHRoPSIxMTAiIGhlaWdodD0iNTYiIHJ4PSIxMCIgZmlsbD0iI2Y0ZjJmYyIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjIyOSIgeT0iMTA1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNTM0QUI3Ij5tb2RlbG88L3RleHQ+CiAgPHRleHQgeD0iMjI5IiB5PSIxMjMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPm1pbmktR1BUPC90ZXh0PgogIDxsaW5lIHgxPSIyODQiIHkxPSIxMDgiIHgyPSIzMTYiIHkyPSIxMDgiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjYzEpIi8+CgogIDxyZWN0IHg9IjMxOCIgeT0iODAiIHdpZHRoPSIxMzAiIGhlaWdodD0iNTYiIHJ4PSIxMCIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNCIvPgogIDx0ZXh0IHg9IjM4MyIgeT0iMTAyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMEY2RTU2Ij5wcm9iYWJpbGlkYWRlczwvdGV4dD4KICA8dGV4dCB4PSIzODMiIHk9IjEyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+ZG9zIDU5IGNhcmFjdGVyZXM8L3RleHQ+CiAgPGxpbmUgeDE9IjQ0OCIgeTE9IjEwOCIgeDI9IjQ4MCIgeTI9IjEwOCIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgbWFya2VyLWVuZD0idXJsKCNjMSkiLz4KCiAgPHJlY3QgeD0iNDgyIiB5PSI4MCIgd2lkdGg9IjExNSIgaGVpZ2h0PSI1NiIgcng9IjEwIiBmaWxsPSIjZmJlNmUyIiBzdHJva2U9IiNCMjNBMkUiIHN0cm9rZS13aWR0aD0iMS40Ii8+CiAgPHRleHQgeD0iNTM5IiB5PSIxMDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCMjNBMkUiPnNvcnRlaWEgMTwvdGV4dD4KICA8dGV4dCB4PSI1MzkiIHk9IjEyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMyI+4oaSICJoIjwvdGV4dD4KCiAgPHBhdGggZD0iTTUzOSAxMzggTCA1MzkgMjEwIEwgODAgMjEwIEwgODAgMTM4IiBmaWxsPSJub25lIiBzdHJva2U9IiNCMjNBMkUiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNjMikiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0IyM0EyRSI+YW5leGEgImgiIGFvIGNvbnRleHRvIGUgcmVwZXRlPC90ZXh0PgogIDx0ZXh0IHg9IjMxMCIgeT0iMjU2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzc3Ij5vIGNvbnRleHRvIHZpcmEgIiZsdDtvYnN0YWNsZSZndDsgT2giIGUgbyBjaWNsbyByZWNvbWXDp2E8L3RleHQ+Cjwvc3ZnPgo=)
+
+Em cada passo, o modelo dá probabilidades e a gente **sorteia** um caractere (como um
+dado viciado). Sortear, em vez de sempre pegar o mais provável, dá **variedade** — por
+isso o robô diz frases diferentes a cada vez.
+
+### O código de geração
+
+```python
+import json
+from pathlib import Path
+import torch
+import torch.nn.functional as F
+from model import MiniGPT, block_size
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+pasta = Path(__file__).parent
+caracteres = json.loads((pasta / "vocab.json").read_text(encoding="utf-8"))
+stoi = {c: i for i, c in enumerate(caracteres)}
+itos = {i: c for i, c in enumerate(caracteres)}
+def encode(s): return [stoi[c] for c in s]
+def decode(n): return "".join(itos[i] for i in n)
+
+modelo = MiniGPT().to(device)
+modelo.load_state_dict(torch.load(pasta / "modelo_treinado.pt", map_location=device))
+modelo.eval()
+
+def gerar(prompt, max_novos=120, temperatura=0.8):
+    idx = torch.tensor([encode(prompt)], dtype=torch.long, device=device)
+    for _ in range(max_novos):
+        cond = idx[:, -block_size:]
+        with torch.no_grad():
+            logits = modelo(cond)[:, -1, :] / temperatura
+        probs = F.softmax(logits, dim=-1)
+        prox = torch.multinomial(probs, num_samples=1)
+        idx = torch.cat([idx, prox], dim=1)
+        if prox.item() == stoi["\n"]:
+            break
+    return decode(idx[0].tolist())
+
+for m in ["<start>", "<explore>", "<obstacle>", "<stuck>"]:
+    print(gerar(m + " ").strip())
+```
+
+**O que você deve ver:** o robô gerando uma frase para cada marcador — diferentes a
+cada execução, por causa do sorteio. Num modelo minúsculo com pouco treino, algumas
+palavras saem "tortas"; isso melhora com mais dados e mais treino, mas o **tom
+sarcástico** já aparece.
+
+**A frase-resumo:**
+
+> "A geração é autorregressiva: o modelo prevê a distribuição do próximo token,
+> amostramos um token, anexamos ao contexto e repetimos. A temperatura controla o
+> quão ousado é o sorteio."
+
+---
+
+## Encerramento da Parte 3
+
+Você construiu, do zero e entendendo cada peça, um **modelo de linguagem completo**:
+
+- ✅ Tokenizer (texto ↔ números)
+- ✅ Embeddings (caractere + posição)
+- ✅ Atenção (Query/Key/Value, softmax, máscara causal)
+- ✅ FFN, conexão residual e LayerNorm
+- ✅ O modelo mini-GPT montado
+- ✅ Treino (erro + gradiente) e geração de texto
+
+Isso é algo que muita gente que *usa* IA nunca fez: você entende o que acontece por
+dentro. Na **Parte 4**, vamos levar esse cérebro para o microcontrolador ESP32-S3 e
+uni-lo ao corpo do robô.
+
+# Parte 4 — A União: o cérebro no ESP32-S3
+
+> **Onde estamos na jornada.** Na Parte 1 montamos o corpo do robô. Na Parte 3
+> construímos e treinamos o cérebro (a LLM) no computador. Agora vem o encontro:
+> vamos **levar o cérebro para dentro do robô** — fazer o modelo rodar num segundo
+> microcontrolador, o ESP32-S3, e conversar com o ESP32 do corpo.
+
+Esta é a parte que transforma um "modelo que roda no PC" num **robô de verdade que
+fala sozinho**. É também a mais avançada do projeto, então vamos com calma, testando
+cada peça.
+
+> **Nota sobre a versão do modelo.** Para o embarque, o nano-grump foi turbinado para
+> uma versão 2.0 mais capaz — ainda minúscula, mas com mais "musculatura" para falar
+> melhor rodando sozinho no chip. As dimensões usadas nesta parte são: `vocab_size=59`,
+> `n_embd=64`, `block_size=128`, `n_layer=4`, `n_heads=4` (atenção de 4 cabeças), com
+> ~215 mil parâmetros. A arquitetura é a mesma que você aprendeu na Parte 3 — só um
+> pouco maior. Se você seguiu a Parte 3 com a versão de 42 mil parâmetros, o processo
+> aqui é idêntico; só mudam os números do cabeçalho.
+
+---
+
+## 4.1 O problema: dois idiomas diferentes
+
+Seu modelo foi treinado em **PyTorch**, que é Python — um ambiente pesado, impossível
+de rodar num microcontrolador. O ESP32-S3 roda **C puro**, lendo os dados direto da
+memória flash.
+
+**A analogia:** o `modelo_treinado.pt` é uma receita escrita em português; o ESP32-S3
+só lê receitas em japonês. Precisamos **traduzir a receita** — sem mudar nenhum
+ingrediente nem passo, só reescrever no idioma que o chip entende.
+
+O caminho completo, do PC ao chip:
+
+![Pipeline de embarque](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDYyMCAyMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0iZTEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUY1RTVBIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+RG8gdHJlaW5vIG5vIFBDIGF0w6kgbyBjaGlwOiBvIGNhbWluaG8gZG9zIHBlc29zPC90ZXh0PgoKICA8cmVjdCB4PSIyMCIgeT0iNzAiIHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2Y0ZjJmYyIgc3Ryb2tlPSIjNTM0QUI3IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjgwIiB5PSI5NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzUzNEFCNyI+bW9kZWxvPC90ZXh0PgogIDx0ZXh0IHg9IjgwIiB5PSIxMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiMzMzMiPi5wdCAoUHlUb3JjaCk8L3RleHQ+CgogIDxsaW5lIHgxPSIxNDAiIHkxPSIxMDAiIHgyPSIxNzIiIHkyPSIxMDAiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjZTEpIi8+CiAgPHRleHQgeD0iMTU2IiB5PSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI5IiBmaWxsPSIjNzc3Ij5leHBvcnQucHk8L3RleHQ+CgogIDxyZWN0IHg9IjE3NCIgeT0iNzAiIHdpZHRoPSIxMjAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDx0ZXh0IHg9IjIzNCIgeT0iOTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjZFNTYiPm5hbm8tZ3J1bXA8L3RleHQ+CiAgPHRleHQgeD0iMjM0IiB5PSIxMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiMzMzMiPi5iaW4gKDgyNCBLQik8L3RleHQ+CgogIDxsaW5lIHgxPSIyOTQiIHkxPSIxMDAiIHgyPSIzMjYiIHkyPSIxMDAiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjZTEpIi8+CiAgPHRleHQgeD0iMzEwIiB5PSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI5IiBmaWxsPSIjNzc3Ij5lc3B0b29sPC90ZXh0PgoKICA8cmVjdCB4PSIzMjgiIHk9IjcwIiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNmZGVlZTAiIHN0cm9rZT0iI0JBNzUxNyIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSIzODgiIHk9Ijk1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjQkE3NTE3Ij5mbGFzaCBkbyBTMzwvdGV4dD4KICA8dGV4dCB4PSIzODgiIHk9IjExMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzMzMyI+MHgxMTAwMDA8L3RleHQ+CgogIDxsaW5lIHgxPSI0NDgiIHkxPSIxMDAiIHgyPSI0ODAiIHkyPSIxMDAiIHN0cm9rZT0iIzVGNUU1QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjZTEpIi8+CiAgPHRleHQgeD0iNDY0IiB5PSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI5IiBmaWxsPSIjNzc3Ij5maXJtd2FyZSBDPC90ZXh0PgoKICA8cmVjdCB4PSI0ODIiIHk9IjcwIiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNlNmYwZmEiIHN0cm9rZT0iIzNCOEJENCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSI1NDIiIHk9Ijk1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjM0I4QkQ0Ij5FU1AzMi1TMzwvdGV4dD4KICA8dGV4dCB4PSI1NDIiIHk9IjExMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzMzMyI+Z2VyYSB0ZXh0bzwvdGV4dD4KCiAgPHRleHQgeD0iMzEwIiB5PSIxNzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM3NzciPk8gdHJlaW5vIMOpIG5vIFBDLiBObyBjaGlwIHPDsyByb2RhIGEgaW5mZXLDqm5jaWEgKGdlcmHDp8OjbyksIGxlbmRvIG9zIHBlc29zIGRhIGZsYXNoLjwvdGV4dD4KPC9zdmc+Cg==)
+
+Repare num ponto fundamental: **o treino acontece no PC**. O chip só roda a
+**inferência** (a geração de texto). O modelo não "aprende" no robô — ele já vem
+treinado, e no chip apenas lê os pesos e gera frases.
+
+Vamos dividir o embarque em três etapas:
+
+1. **Exportar** — um script Python que traduz o `.pt` num arquivo `.bin`
+2. **Gravar e ler** — colocar o `.bin` na flash e o firmware C lê os pesos
+3. **Comunicar** — os dois ESP32 conversam (corpo → cérebro → frase)
+
+---
+
+## 4.2 Etapa 1 — Exportar os pesos (.pt → .bin)
+
+**A ideia em uma frase:** o script de exportação pega os ~215 mil números do modelo
+treinado, converte todos para um formato universal (float32), e salva num arquivo
+binário com uma "etiqueta" no começo.
+
+**O que é um arquivo binário?** É a diferença entre um `.txt` (que você abre e lê) e
+um arquivo que só o computador entende — uma sequência de bytes puros. O `.bin` é
+desse segundo tipo: números empacotados de forma que o C leia rapidamente.
+
+**O que são os "pesos"?** O modelo treinado é, no fundo, uma **coleção de números** —
+os ~215 mil valores que o treino ajustou. São eles que dão personalidade ao robô.
+Exportar é só empacotar esses números num formato que o C leia.
+
+### A estrutura do arquivo .bin
+
+O arquivo tem duas partes, nesta ordem:
+
+![Estrutura do arquivo .bin](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjM2MCIgdmlld0JveD0iMCAwIDYyMCAzNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPHJlY3Qgd2lkdGg9IjYyMCIgaGVpZ2h0PSIzNjAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjI4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzMzIj5BIGVzdHJ1dHVyYSBkbyBhcnF1aXZvIG5hbm8tZ3J1bXAuYmluPC90ZXh0PgoKICA8IS0tIGNhYmXDp2FsaG8gLS0+CiAgPHJlY3QgeD0iMTIwIiB5PSI0NiIgd2lkdGg9IjM4MCIgaGVpZ2h0PSI4NiIgcng9IjgiIGZpbGw9IiNmNGYyZmMiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KICA8dGV4dCB4PSIzMTAiIHk9IjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNTM0QUI3Ij5DQUJFw4dBTEhPIOKAlCA2IGludGVpcm9zICgyNCBieXRlcyk8L3RleHQ+CiAgPHRleHQgeD0iMTQwIiB5PSI4NiIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+dm9jYWJfc2l6ZSA9IDU5ICAgIG5fZW1iZCA9IDY0ICAgIGJsb2NrX3NpemUgPSA2NDwvdGV4dD4KICA8dGV4dCB4PSIxNDAiIHk9IjEwNCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+bl9sYXllciA9IDQgICAgbl9oZWFkcyA9IDQgICAgcmVzZXJ2YWRvID0gMDwvdGV4dD4KICA8dGV4dCB4PSIxNDAiIHk9IjEyMiIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzc3NyI+YSAiZXRpcXVldGEiOiBkaXogYW8gRVNQMzIgYXMgZGltZW5zw7VlcyBhbnRlcyBkZSBsZXIgb3MgbsO6bWVyb3M8L3RleHQ+CgogIDwhLS0gcGVzb3MgLS0+CiAgPHJlY3QgeD0iMTIwIiB5PSIxNDIiIHdpZHRoPSIzODAiIGhlaWdodD0iMTgwIiByeD0iOCIgZmlsbD0iI2U4ZjRmMCIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNiIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMTYyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMEY2RTU2Ij5QRVNPUyDigJQgMjEwLjk0NCBuw7ptZXJvcyBmbG9hdDMyLCBlbSBvcmRlbSBmaXhhPC90ZXh0PgogIDx0ZXh0IHg9IjE0MCIgeT0iMTg0IiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5lbWJfdG9rZW4gKDU5IMOXIDY0KTwvdGV4dD4KICA8dGV4dCB4PSIxNDAiIHk9IjIwMiIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+ZW1iX3Bvc2ljYW8gKDY0IMOXIDY0KTwvdGV4dD4KICA8dGV4dCB4PSIxNDAiIHk9IjIyNCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+YmxvY28gMDogIGxuMSDCtyBxLGssdixwcm9qIMK3IGxuMiDCtyBmZm4xLCBmZm4yPC90ZXh0PgogIDx0ZXh0IHg9IjE0MCIgeT0iMjQyIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5ibG9jbyAxOiAgKGlkZW0pPC90ZXh0PgogIDx0ZXh0IHg9IjE0MCIgeT0iMjYwIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5ibG9jbyAyOiAgKGlkZW0pPC90ZXh0PgogIDx0ZXh0IHg9IjE0MCIgeT0iMjc4IiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5ibG9jbyAzOiAgKGlkZW0pPC90ZXh0PgogIDx0ZXh0IHg9IjE0MCIgeT0iMzAwIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5sbl9maW5hbCDCtyBjYW1hZGEgZGUgc2HDrWRhPC90ZXh0PgoKICA8dGV4dCB4PSIzMTAiIHk9IjM0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzc3NyI+TyBmaXJtd2FyZSBDIGzDqiBkZSBjaW1hIHBhcmEgYmFpeG8sIG5hIE1FU01BIG9yZGVtLiBQeXRob24gZSBDIHByZWNpc2FtIGNvbmNvcmRhci48L3RleHQ+Cjwvc3ZnPgo=)
+
+A **ordem dos pesos tem que ser idêntica** nos dois lados: o `export.py` escreve numa
+ordem, e o firmware C lê exatamente na mesma. É como combinar previamente em que
+gaveta fica cada coisa.
+
+### O código do export.py
+
+```python
+"""
+export.py — traduz o modelo_treinado.pt para nano-grump.bin
+Uso:  uv run export.py
+Saída: nano-grump.bin (pronto para gravar no ESP32-S3)
+"""
+import struct
+from pathlib import Path
+import torch
+from model import MiniGPT, vocab_size, n_embd, block_size, n_layer, n_heads
+
+pasta = Path(__file__).parent
+modelo = MiniGPT()
+modelo.load_state_dict(torch.load(pasta / "modelo_treinado.pt", map_location="cpu"))
+modelo.eval()
+
+# Converte um tensor PyTorch em bytes float32 (4 bytes por número)
+def para_bytes(tensor):
+    return tensor.detach().cpu().numpy().astype("f").tobytes()
+
+with open(pasta / "nano-grump.bin", "wb") as f:      # "wb" = escrita binária
+    # BLOCO 1: cabeçalho — 6 inteiros (a "etiqueta")
+    f.write(struct.pack("6i", vocab_size, n_embd, block_size,
+                        n_layer, n_heads, 0))
+
+    # BLOCO 2: pesos, em ORDEM FIXA
+    f.write(para_bytes(modelo.emb_token.weight))
+    f.write(para_bytes(modelo.emb_posicao.weight))
+    for bloco in modelo.blocos:
+        f.write(para_bytes(bloco.ln1.weight));  f.write(para_bytes(bloco.ln1.bias))
+        f.write(para_bytes(bloco.atencao.query.weight))
+        f.write(para_bytes(bloco.atencao.chave.weight))
+        f.write(para_bytes(bloco.atencao.value.weight))
+        f.write(para_bytes(bloco.atencao.proj.weight))
+        f.write(para_bytes(bloco.atencao.proj.bias))
+        f.write(para_bytes(bloco.ln2.weight));  f.write(para_bytes(bloco.ln2.bias))
+        f.write(para_bytes(bloco.ffn.rede[0].weight))
+        f.write(para_bytes(bloco.ffn.rede[0].bias))
+        f.write(para_bytes(bloco.ffn.rede[2].weight))
+        f.write(para_bytes(bloco.ffn.rede[2].bias))
+    f.write(para_bytes(modelo.ln_final.weight)); f.write(para_bytes(modelo.ln_final.bias))
+    f.write(para_bytes(modelo.saida.weight))
+
+print("nano-grump.bin gerado.")
+```
+
+**Traduzindo os pontos novos:**
+
+- `struct.pack("6i", ...)` empacota 6 inteiros em bytes — é o cabeçalho.
+- `.astype("f")` converte cada número para **float32** (4 bytes), o formato que o C lê
+  nativamente. É como trocar "xícaras" por "mililitros": mesmo valor, unidade universal.
+- `"wb"` abre o arquivo em modo de **escrita binária**.
+
+Rode com `uv run export.py`. Você deve ver a criação do `nano-grump.bin` de **~840 KB**
+(≈215 mil números × 4 bytes).
+
+---
+
+## 4.3 Etapa 2 — Gravar na flash e ler o cabeçalho
+
+### As partições da flash
+
+A flash do ESP32-S3 (16 MB) é dividida em **regiões** (partições), como um HD. Um
+arquivo `partitions.csv` define essas regiões. A que nos interessa é a `model`, no
+endereço `0x110000`, com 14,9 MB — onde o `nano-grump.bin` (~840 KB) cabe folgado.
+
+![Partições da flash e comunicação](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjIwIiBoZWlnaHQ9IjQ3MCIgdmlld0JveD0iMCAwIDYyMCA0NzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPGRlZnM+PG1hcmtlciBpZD0iZDEiIHZpZXdCb3g9IjAgMCAxMCAxMCIgcmVmWD0iOCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjciIG1hcmtlckhlaWdodD0iNyIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPjxwYXRoIGQ9Ik0yIDFMOCA1TDIgOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9tYXJrZXI+PC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MjAiIGhlaWdodD0iNDcwIiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iMzEwIiB5PSIyNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzMyI+QXMgcGFydGnDp8O1ZXMgZGEgZmxhc2ggZSBvcyBkb2lzIG1pY3JvY29udHJvbGFkb3JlczwvdGV4dD4KCiAgPCEtLSBwYXJ0acOnw7VlcyAtLT4KICA8dGV4dCB4PSIzMTAiIHk9IjUyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjNTU1Ij5GbGFzaCBkbyBFU1AzMi1TMyAoMTYgTUIpIGRpdmlkaWRhIGVtIHJlZ2nDtWVzPC90ZXh0PgogIDxyZWN0IHg9IjkwIiB5PSI2MiIgd2lkdGg9IjQ0MCIgaGVpZ2h0PSIyNiIgcng9IjQiIGZpbGw9IiNmMmYyZjEiIHN0cm9rZT0iIzg4OCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iMTAwIiB5PSI3OSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+bnZzIMK3IDB4OTAwMCDCtyBjb25maWd1cmHDp8O1ZXMgZG8gc2lzdGVtYTwvdGV4dD4KICA8cmVjdCB4PSI5MCIgeT0iOTAiIHdpZHRoPSI0NDAiIGhlaWdodD0iMjYiIHJ4PSI0IiBmaWxsPSIjZTZmMGZhIiBzdHJva2U9IiMzQjhCRDQiIHN0cm9rZS13aWR0aD0iMS4yIi8+CiAgPHRleHQgeD0iMTAwIiB5PSIxMDciIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMzMzMiPmZhY3RvcnkgwrcgMHgxMDAwMCDCtyBvIGZpcm13YXJlIChvIGPDs2RpZ28gQykg4oCUIDEgTUI8L3RleHQ+CiAgPHJlY3QgeD0iOTAiIHk9IjExOCIgd2lkdGg9IjQ0MCIgaGVpZ2h0PSIzMCIgcng9IjQiIGZpbGw9IiNlOGY0ZjAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjYiLz4KICA8dGV4dCB4PSIxMDAiIHk9IjEzNyIgZm9udC1zaXplPSIxMSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBGNkU1NiI+bW9kZWwgwrcgMHgxMTAwMDAgwrcgb3MgcGVzb3MgKG5hbm8tZ3J1bXAuYmluKSDigJQgMTQsOSBNQjwvdGV4dD4KICA8cmVjdCB4PSI5MCIgeT0iMTUwIiB3aWR0aD0iNDQwIiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iI2YyZjJmMSIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSIxMDAiIHk9IjE2NiIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+Y29yZWR1bXAgwrcgMHhGRjAwMDAgwrcgbG9nIGRlIGZhbGhhPC90ZXh0PgoKICA8IS0tIGNvbXVuaWNhw6fDo28gLS0+CiAgPHRleHQgeD0iMzEwIiB5PSIyMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM1NTUiPk9zIGRvaXMgbWljcm9jb250cm9sYWRvcmVzIGNvbnZlcnNhbTwvdGV4dD4KCiAgPHJlY3QgeD0iNDAiIHk9IjIzMCIgd2lkdGg9IjIzMCIgaGVpZ2h0PSIxNTAiIHJ4PSIxMCIgZmlsbD0iI2U2ZjBmYSIgc3Ryb2tlPSIjM0I4QkQ0IiBzdHJva2Utd2lkdGg9IjEuNiIvPgogIDx0ZXh0IHg9IjE1NSIgeT0iMjU0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjM0I4QkQ0Ij5FU1AzMi1XUk9PTS0zMjwvdGV4dD4KICA8dGV4dCB4PSIxNTUiIHk9IjI3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+byBDT1JQTzwvdGV4dD4KICA8dGV4dCB4PSIxNTUiIHk9IjI5NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+c2Vuc29yZXMgKyBuYXZlZ2HDp8OjbzwvdGV4dD4KICA8dGV4dCB4PSIxNTUiIHk9IjMxNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzMzMyI+ZGV0ZWN0YSBhIHNpdHVhw6fDo288L3RleHQ+CiAgPHRleHQgeD0iMTU1IiB5PSIzNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM1NTUiPiJiYXRpIG51bSBvYnN0w6FjdWxvISI8L3RleHQ+CgogIDxyZWN0IHg9IjM1MCIgeT0iMjMwIiB3aWR0aD0iMjMwIiBoZWlnaHQ9IjE1MCIgcng9IjEwIiBmaWxsPSIjZmRlZWUwIiBzdHJva2U9IiNCQTc1MTciIHN0cm9rZS13aWR0aD0iMS42Ii8+CiAgPHRleHQgeD0iNDY1IiB5PSIyNTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNCQTc1MTciPkVTUDMyLVMzPC90ZXh0PgogIDx0ZXh0IHg9IjQ2NSIgeT0iMjcyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5vIEPDiVJFQlJPPC90ZXh0PgogIDx0ZXh0IHg9IjQ2NSIgeT0iMjk2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5yb2RhIGEgTExNPC90ZXh0PgogIDx0ZXh0IHg9IjQ2NSIgeT0iMzE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjMzMzIj5nZXJhIGEgZnJhc2UgKyBkaXNwbGF5PC90ZXh0PgogIDx0ZXh0IHg9IjQ2NSIgeT0iMzQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjExIiBmaWxsPSIjNTU1Ij4iQSB3YWxsLiBBZ2Fpbi4gV293LiI8L3RleHQ+CgogIDxsaW5lIHgxPSIyNzIiIHkxPSIzMDAiIHgyPSIzNDgiIHkyPSIzMDAiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIyIiBtYXJrZXItZW5kPSJ1cmwoI2QxKSIvPgogIDx0ZXh0IHg9IjMxMCIgeT0iMjkyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwIiBmaWxsPSIjMEY2RTU2Ij5tYXJjYWRvcjwvdGV4dD4KICA8dGV4dCB4PSIzMTAiIHk9IjMxNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSI5IiBmaWxsPSIjNzc3Ij4mbHQ7b2JzdGFjbGUmZ3Q7PC90ZXh0PgoKICA8dGV4dCB4PSIzMTAiIHk9IjQxMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzc3NyI+TyBjb3JwbyBtYW5kYSBzw7MgYSBldGlxdWV0YSBkYSBzaXR1YcOnw6NvOyBvIGPDqXJlYnJvIGRldm9sdmUgYSBmcmFzZSBzYXJjw6FzdGljYS48L3RleHQ+CiAgPHRleHQgeD0iMzEwIiB5PSI0MzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM3NzciPkNvbXVuaWNhw6fDo28gcG9yIFNlcmlhbC9VQVJUIGVudHJlIG9zIGRvaXMuPC90ZXh0Pgo8L3N2Zz4K)
+
+**Conteúdo do `partitions.csv`:**
+
+```csv
+# Name,   Type, SubType, Offset,   Size
+nvs,      data, nvs,     0x9000,   0x5000
+factory,  app,  factory, 0x10000,  0x100000
+model,    data, 0x40,    0x110000, 0xEF0000
+coredump, data, coredump,0xFF0000, 0x10000
+```
+
+### Gravando o .bin com esptool
+
+Conecte o ESP32-S3, segure o botão **BOOT**, e rode (troque `COM12` pela sua porta):
+
+```bash
+python -m esptool --chip esp32s3 --port COM12 write-flash 0x110000 nano-grump.bin
+```
+
+Você deve ver ao final: **`Hash of data verified`** — os bytes chegaram íntegros no
+endereço `0x110000`. Fazemos isso **antes** de qualquer firmware: se algo der errado,
+sabemos que foi na gravação dos dados, não no código.
+
+### Configurando o Arduino IDE
+
+Para o firmware enxergar a partição `model`, o Arduino IDE precisa usar o
+`partitions.csv` customizado:
+
+1. Coloque o `firmware.ino` e o `partitions.csv` **na mesma pasta**, e essa pasta
+   deve ter o **mesmo nome do `.ino`** (ex: `firmware/firmware.ino`).
+2. Em `Ferramentas → Partition Scheme`, selecione **Custom** (essa opção só aparece
+   quando há um `partitions.csv` na pasta do sketch).
+3. Confirme também: Placa = **ESP32S3 Dev Module**, PSRAM = **OPI PSRAM**,
+   Flash Size = **16MB**.
+
+> **Pegadinha comum:** o `.ino` precisa estar direto na pasta de mesmo nome
+> (`firmware/firmware.ino`), não numa subpasta aninhada. Se o upload continuar indo
+> para `0x10000` com esquema padrão, é sinal de que o Arduino IDE não achou o
+> `partitions.csv`. E note: o **firmware** sempre vai para `0x10000` (partição
+> `factory`); os **pesos** ficam em `0x110000` (partição `model`). Os dois coexistem.
+
+### Firmware mínimo: ler o cabeçalho (teste da peça isolada)
+
+Antes da inferência, um firmware que só lê o cabeçalho e imprime os 6 números —
+para confirmar que a base está certa (a regra de ouro: testar uma peça de cada vez).
+
+```cpp
+#include "esp_partition.h"
+
+struct __attribute__((packed)) Cabecalho {
+  int vocab_size, n_embd, block_size, n_layer, n_heads, reservado;
+};
+
+void setup() {
+  Serial.begin(115200); delay(1500);
+
+  // Encontrar a partição "model"
+  const esp_partition_t *part = esp_partition_find_first(
+    ESP_PARTITION_TYPE_DATA, (esp_partition_subtype_t)0x40, "model");
+  if (!part) { Serial.println("ERRO: particao 'model' nao encontrada."); return; }
+  Serial.printf("Particao: %.1f MB @ 0x%x\n", part->size/1048576.0, part->address);
+
+  // Mapear na memória e ler os primeiros 24 bytes como Cabecalho
+  const void *base; esp_partition_mmap_handle_t h;
+  esp_partition_mmap(part, 0, part->size, ESP_PARTITION_MMAP_DATA, &base, &h);
+  const Cabecalho *cab = (const Cabecalho *)base;
+
+  Serial.printf("vocab_size=%d n_embd=%d block_size=%d n_layer=%d n_heads=%d\n",
+    cab->vocab_size, cab->n_embd, cab->block_size, cab->n_layer, cab->n_heads);
+}
+void loop() {}
+```
+
+Grave e abra o Monitor Serial (115200 baud). Você deve ver
+`vocab_size=59 n_embd=64 block_size=128 n_layer=4 n_heads=4`. Se bater, a ponte
+Python → C está funcionando.
+
+---
+
+## 4.4 Etapa 3 — A inferência em C
+
+Aqui o modelo ganha vida no chip. A boa notícia: **a matemática é idêntica** à que
+você aprendeu na Parte 3. O que muda é o idioma — em vez de o PyTorch cuidar de tudo,
+você diz explicitamente onde cada número está na memória.
+
+### Os três tipos de memória do ESP32-S3
+
+Pense em três mesas de trabalho de tamanhos diferentes:
+
+- **Flash** (16 MB) — mesa gigante, mas **só leitura**. Aqui ficam os pesos (~840 KB).
+- **PSRAM** (8 MB) — mesa grande, leitura e escrita. Aqui fica o "cache" da sequência.
+- **SRAM** (512 KB) — mesa pequena e rápida. Aqui ficam os vetores de cálculo.
+
+Os pesos nunca mudam → ficam na flash (lidos direto, sem copiar). Os cálculos mudam a
+cada caractere → ficam na SRAM/PSRAM.
+
+### As funções matemáticas (as mesmas peças, em C)
+
+Cada operação da Parte 3 vira uma função em C:
+
+```cpp
+// matmul: multiplica matriz por vetor — é o que o Linear() do PyTorch faz
+static void matmul(float *out, const float *x,
+                   const float *A, int linhas, int colunas) {
+  for (int i = 0; i < linhas; i++) {
+    float acc = 0.0f;
+    for (int j = 0; j < colunas; j++)
+      acc += A[i * colunas + j] * x[j];
+    out[i] = acc;
+  }
+}
+
+// softmax: converte notas em probabilidades que somam 1 (demo da atenção)
+static void softmax(float *x, int n) {
+  float mx = x[0];
+  for (int i = 1; i < n; i++) if (x[i] > mx) mx = x[i];
+  float soma = 0.0f;
+  for (int i = 0; i < n; i++) { x[i] = expf(x[i] - mx); soma += x[i]; }
+  for (int i = 0; i < n; i++) x[i] /= soma;
+}
+
+// relu: zera os negativos (a ativação da FFN)
+static void relu(float *x, int n) {
+  for (int i = 0; i < n; i++) if (x[i] < 0.0f) x[i] = 0.0f;
+}
+```
+
+### O forward pass em C (a tradução direta do model.py)
+
+O coração da inferência é o mesmo fluxo da Parte 3: embedding → blocos (atenção + FFN
+com residual) → LayerNorm final → camada de saída. Cada token entra, e sai uma lista
+de notas (logits) para os 59 caracteres.
+
+```cpp
+static void forward(int token, int pos) {
+  // 1. EMBEDDING (caractere + posição) — Parte 3, seções 3.5–3.6
+  const float *te = w.emb_token + token * N_EMBD;
+  const float *pe = w.emb_pos   + pos   * N_EMBD;
+  for (int i = 0; i < N_EMBD; i++) x[i] = te[i] + pe[i];
+
+  // 2. BLOCOS (atenção multi-cabeça + FFN, com residual) — Parte 3, 3.7–3.11
+  for (int l = 0; l < N_LAYER; l++) {
+    // ... LayerNorm -> Q,K,V -> atenção por cabeça -> soma ponderada
+    // ... + residual -> LayerNorm -> FFN (expandir, ReLU, contrair) -> residual
+    // (a mesma sequência do bloco que você montou na Parte 3)
+  }
+
+  // 3. LAYERNORM FINAL + CAMADA DE SAÍDA -> logits (59 notas)
+  layernorm(xb, x, w.ln_final_w, w.ln_final_b, N_EMBD);
+  matmul(logits, xb, w.saida_w, VOCAB_SIZE, N_EMBD);
+}
+```
+
+> **Cuidado com o LayerNorm (lição aprendida na prática).** É tentador simplificar o
+> LayerNorm por um primo mais simples chamado RMSNorm no firmware — mas o modelo foi
+> **treinado com LayerNorm completo** (com média e bias). Usar RMSNorm no chip faz as
+> contas divergirem do treino e o robô gera "palavras tortas". Use o mesmo LayerNorm
+> dos dois lados: subtrai a média, divide pelo desvio, aplica peso e bias.
+>
+> O firmware completo (com a atenção multi-cabeça detalhada, o cache KV que guarda as
+> keys e values das posições anteriores, e o mapeamento dos ponteiros para a flash)
+> é longo. O ponto para você levar: **cada função é uma peça que você já entende da
+> Parte 3, reescrita em C**. A atenção usa `matmul` + `softmax`, a FFN usa `matmul` +
+> `relu`, e o cache KV é a forma prática de implementar a máscara causal (cada token
+> só olha as posições já calculadas).
+
+### A geração (top-k + temperatura, como no generate.py)
+
+O loop de geração é o mesmo ciclo autorregressivo da Parte 3: prevê → sorteia →
+anexa → repete. No chip, aplicamos temperatura e top-k antes do sorteio:
+
+```cpp
+// Aplicar temperatura, manter só os TOP_K maiores logits, softmax, sortear
+for (int v = 0; v < VOCAB_SIZE; v++) logits[v] /= TEMPERATURA;
+// ... (zera todos menos os K maiores) ...
+softmax(logits, VOCAB_SIZE);
+int next_token = amostrar(logits, VOCAB_SIZE);   // sorteio ponderado
+if (next_token == TOKEN_NEWLINE) break;          // fim da frase
+```
+
+Os parâmetros ficam no topo do firmware, fáceis de ajustar:
+`TEMPERATURA = 0.75`, `TOP_K = 4` (os mesmos valores escolhidos no PC).
+
+### O vocabulário no firmware
+
+O firmware precisa de uma cópia do vocabulário (os 59 caracteres) na mesma ordem do
+`vocab.json`, para traduzir números de volta em letras:
+
+```cpp
+const char VOCAB[59] = {
+  '\n',' ','\'',',','-','.',':','<','>','?',
+  'A','B','C','D','E','F','G','H','I','J',
+  'L','M','N','O','P','R','S','T','U','V',
+  'W','Y','_','a','b','c','d','e','f','g',
+  'h','i','j','k','l','m','n','o','p','q',
+  'r','s','t','u','v','w','x','y','z'
+};
+```
+
+---
+
+## 4.5 O display OLED (a personalidade aparece)
+
+O robô usa um display OLED **SH1106 128×64** (SPI) para mostrar as frases. A biblioteca
+é a **U8g2**. Pinos confirmados no hardware: CLK=12, MOSI=11, CS=8, DC=9, RES=10.
+
+```cpp
+#include <U8g2lib.h>
+U8G2_SH1106_128X64_NONAME_F_4W_HW_SPI display(U8G2_R0, /*cs=*/8, /*dc=*/9, /*reset=*/10);
+
+void setup() {
+  display.begin();
+  display.clearBuffer();
+  display.setFont(u8g2_font_6x10_tf);
+  display.drawStr(0, 12, "nano-grump v2");
+  display.sendBuffer();
+}
+```
+
+Conforme o modelo gera cada caractere, o firmware acumula a frase e a envia ao display,
+quebrando em linhas. Assim a reclamação sarcástica aparece na telinha do robô.
+
+---
+
+## 4.6 A comunicação entre os dois cérebros
+
+O sistema final tem **dois microcontroladores** com papéis distintos:
+
+- **ESP32-WROOM-32 (o corpo)** — cuida dos sensores e da navegação (a Parte 1). Ele
+  sabe quando bateu num obstáculo, quando ficou preso, etc.
+- **ESP32-S3 (o cérebro)** — roda a LLM e o display. Ele sabe gerar as frases.
+
+O corpo não precisa saber gerar frases; ele só manda a **etiqueta da situação** (o
+marcador) para o cérebro. O cérebro recebe, gera a frase e mostra no display:
+
+```
+corpo detecta obstáculo
+      │
+      │  envia "<obstacle>" pela Serial/UART
+      ▼
+cérebro recebe o marcador
+      │
+      │  roda a inferência (gera caractere por caractere)
+      ▼
+"A wall. Again. Wow." aparece no display
+```
+
+No firmware do cérebro, o `loop()` fica escutando a Serial. Quando chega um marcador
+(começando com `<`), ele dispara a geração:
+
+```cpp
+void loop() {
+  while (Serial.available()) {
+    char c = Serial.read();
+    if (c == '\n' || c == '\r') {
+      if (input_len > 0) {
+        input_buf[input_len] = '\0';
+        if (input_buf[0] == '<') {           // é um marcador?
+          char prompt[34];
+          snprintf(prompt, sizeof(prompt), "%s ", input_buf);
+          gerar(prompt);                     // gera e exibe a frase
+        }
+        input_len = 0;
+      }
+    } else if (input_len < 31) {
+      input_buf[input_len++] = c;
+    }
+  }
+}
+```
+
+Para testar sem o robô inteiro montado, basta abrir o Monitor Serial do ESP32-S3 e
+digitar um marcador (`<obstacle>`, `<stuck>`, etc.). A frase aparece na Serial e no
+display — exatamente como apareceria vinda do corpo.
+
+> **A ligação física entre os dois:** conecta-se o pino TX do WROOM-32 ao RX do S3 (e
+> os GNDs unidos). O corpo envia o texto do marcador; o cérebro escuta. É a mesma
+> comunicação Serial que você usa entre o PC e a placa, só que entre duas placas.
+
+---
+
+## Encerramento da Parte 4
+
+Você levou o cérebro do PC para o hardware:
+
+- ✅ Exportou os pesos do PyTorch para um `.bin` legível pelo C
+- ✅ Gravou o `.bin` na flash do ESP32-S3 (partição `model`, `0x110000`)
+- ✅ Leu o cabeçalho no firmware (a ponte Python → C confirmada)
+- ✅ Entendeu a inferência em C (as mesmas peças da Parte 3, traduzidas)
+- ✅ Integrou o display OLED
+- ✅ Montou a comunicação entre corpo (WROOM-32) e cérebro (ESP32-S3)
+
+O resultado é um robô autônomo com personalidade: ele explora, detecta obstáculos,
+e **reclama sarcasticamente** na telinha — com um modelo de linguagem que você
+construiu, treinou e embarcou, entendendo cada peça do caminho. 🎉
+
+> **Nota de honestidade técnica.** O firmware de inferência é a parte mais avançada e
+> costuma exigir ajustes finos (alinhamento exato dos pesos, detalhes do LayerNorm,
+> desempenho). Se algo não gerar texto coerente de primeira, é normal — depura-se uma
+> peça de cada vez, começando pelo cabeçalho (que já validamos) e seguindo função por
+> função. A jornada de entender cada etapa é o que torna esse ajuste possível.
+
+
+---
+
+# Parte 5 — Apêndices
+
+> Material de consulta: um glossário completo de todos os termos do projeto, uma
+> tabela de solução de problemas reunindo os perrengues mais comuns, a ficha técnica
+> do modelo, e caminhos para continuar aprendendo depois que o robô estiver pronto.
+
+---
+
+## A. Glossário completo
+
+Todos os termos do projeto, em ordem alfabética, em linguagem simples.
+
+**Atenção (self-attention)** — O mecanismo do modelo que faz cada pedacinho de texto
+"olhar" para os outros e decidir em quais prestar atenção. É o coração do transformer.
+
+**AdamW (otimizador)** — O "treinador" que decide o tamanho e a direção de cada
+ajuste nos parâmetros a cada passo do treino, a partir dos gradientes.
+
+**Autorregressivo** — A forma como o modelo gera texto: prevê um pedacinho, anexa ao
+que já tem, e usa o resultado para prever o próximo. Um caractere puxa o seguinte.
+
+**Backpropagation** — O cálculo automático de como cada parâmetro deve mudar para
+diminuir o erro durante o treino. No PyTorch, é a linha `loss.backward()`.
+
+**Bias** — Um número extra somado numa camada, que dá mais flexibilidade ao ajuste.
+
+**block_size** — O tamanho da "janela de contexto": quantos pedacinhos de texto o
+modelo consegue olhar de uma vez.
+
+**Cabeçalho (header)** — A "etiqueta" no começo do arquivo `.bin`, com as dimensões do
+modelo, que o firmware lê antes dos pesos.
+
+**Cache KV** — Uma memória que guarda as *keys* e *values* das posições já
+processadas, para o modelo não recalcular tudo a cada novo caractere.
+
+**Checkpoint** — Salvar o modelo no melhor momento do treino (quando o erro de
+validação está mais baixo), não apenas no final. Protege contra o overfitting.
+
+**Caractere (character)** — No nosso projeto, o "pedacinho" de texto que o modelo
+processa. Trabalhamos com um modelo de nível de caractere (uma letra por vez).
+
+**Cross-entropy** — A fórmula que mede o "erro" do modelo: o quanto ele se surpreendeu
+com a resposta certa. Erro alto = surpresa grande.
+
+**CUDA** — A tecnologia que permite usar a placa de vídeo (GPU) para acelerar o treino.
+
+**Embedding** — A transformação de um pedacinho de texto (um número) num conjunto de
+números (um vetor) que captura características dele.
+
+**ESP32-WROOM-32** — O microcontrolador do corpo do robô (navegação e sensores).
+
+**ESP32-S3** — O microcontrolador do cérebro (roda a LLM). Tem PSRAM e mais recursos.
+
+**FFN (rede feed-forward)** — A parte do bloco onde cada pedacinho de texto é
+processado sozinho, depois de reunir contexto na atenção.
+
+**Firmware** — O programa em C que roda dentro do microcontrolador.
+
+**Flash** — A memória permanente do microcontrolador, onde ficam o firmware e os pesos.
+
+**float32** — Um formato de número com 32 bits (4 bytes). O formato "universal" em que
+exportamos os pesos.
+
+**Forward pass** — A passagem dos dados pelo modelo, da entrada até a saída (os
+logits). É o "pensar" do modelo.
+
+**Gradiente** — A indicação, para cada parâmetro, de qual direção diminui o erro.
+O treino "desce a ladeira" seguindo o gradiente ao contrário.
+
+**GND (terra)** — O polo negativo do circuito. Regra de ouro: todos os GNDs unidos.
+
+**GPIO** — Os pinos programáveis do ESP32 (General Purpose Input/Output).
+
+**HC-SR04** — O sensor ultrassônico que mede distância (o "olho" do robô).
+
+**Hiperparâmetros** — As escolhas de configuração do modelo (n_embd, n_layer, etc.),
+definidas por você, não aprendidas no treino.
+
+**Inferência** — Usar o modelo já treinado para gerar texto. O contrário de treinar.
+
+**L298N** — A ponte H que controla os motores a partir dos sinais do ESP32.
+
+**LayerNorm** — Uma operação que reequilibra os números do vetor para uma escala
+padrão, estabilizando o treino.
+
+**Logits** — As "notas cruas" que o modelo dá para cada caractere possível, antes de
+virarem probabilidades.
+
+**LLM (Large Language Model)** — Um modelo que aprendeu padrões de texto observando
+exemplos. O nosso é uma versão minúscula.
+
+**Marcador** — Uma etiqueta curta de situação (`<obstacle>`, `<stuck>`, etc.) que o
+corpo envia ao cérebro.
+
+**Máscara causal** — A regra que impede cada pedacinho de "ver o futuro": ele só olha
+para o que veio antes.
+
+**Matmul (multiplicação de matrizes)** — A operação matemática central das camadas
+lineares.
+
+**mmap** — Mapear um arquivo (ou partição) na memória, para lê-lo como se fosse um
+array, sem copiar.
+
+**Modelo** — O programa que aprende padrões a partir de exemplos.
+
+**n_embd** — O tamanho do vetor de cada pedacinho de texto (a dimensão do embedding).
+
+**n_head** — O número de "cabeças" de atenção que olham o texto em paralelo.
+
+**n_layer** — O número de blocos empilhados no modelo (sua profundidade).
+
+**Overfitting (sobreajuste)** — Quando o modelo decora os exemplos de treino em vez
+de aprender o padrão geral, e passa a ir mal em texto novo. Detecta-se separando uma
+parte dos dados para validação.
+
+**Parâmetros** — Os números ajustáveis que guardam o "conhecimento" do modelo.
+
+**Partição** — Uma região da flash com um propósito específico (firmware, dados, etc.),
+definida no `partitions.csv`.
+
+**Ponte H** — Um circuito que controla o sentido de giro de um motor. É o que o L298N é.
+
+**Protoboard** — A placa de furos para montar circuitos sem solda, distribuindo VCC e
+GND.
+
+**PSRAM** — Uma memória extra e maior do ESP32-S3, onde ficam os buffers de cálculo.
+
+**PWM** — Um sinal que liga e desliga rápido para controlar velocidade (motores) ou
+ângulo (servo).
+
+**PyTorch** — A biblioteca Python usada para construir e treinar o modelo.
+
+**ReLU** — A "função de ativação" da FFN: mantém os positivos e zera os negativos.
+
+**Residual (conexão residual)** — O "atalho" que soma a entrada de volta à saída de
+cada sub-camada, ajudando o treino.
+
+**Servo (SG90)** — O pequeno motor que gira o sensor para varrer os lados.
+
+**Softmax** — A operação que transforma notas em probabilidades que somam 100%.
+
+**SRAM** — A memória rápida e pequena do microcontrolador, para os cálculos imediatos.
+
+**Temperatura** — Um ajuste na geração: baixa = respostas mais "seguras"; alta = mais
+ousadas e variadas.
+
+**Token** — Um pedacinho de texto. No nosso caso, um caractere.
+
+**Tokenizer** — O tradutor entre texto e números (e vice-versa).
+
+**Top-k** — Uma regra de geração que só considera os `k` caracteres mais prováveis no
+sorteio.
+
+**Treino** — O processo de ajustar os parâmetros do modelo mostrando exemplos.
+
+**UART / Serial** — A forma de comunicação por dois fios (TX e RX) entre placas, ou
+entre placa e computador.
+
+**uv** — O gerenciador de pacotes Python usado no projeto.
+
+**Validação (split treino/validação)** — Separar uma fração dos dados para medir se
+o modelo generaliza, em vez de só decorar. Se o erro de treino cai mas o de validação
+não, é sinal de overfitting.
+
+**Vetor** — Uma lista de números. Um embedding é um vetor.
+
+**Vocabulário** — A lista de todos os pedacinhos (caracteres) que o modelo conhece.
+
+**Wokwi** — O simulador online gratuito de ESP32/Arduino.
+
+---
+
+## B. Solução de problemas (troubleshooting)
+
+Os perrengues mais comuns do projeto, reunidos.
+
+### Robô e eletrônica
+
+| Sintoma | Provável causa | Solução |
+|---|---|---|
+| Upload falha em "Connecting..." | ESP32 não entrou em modo de gravação | Segure o botão **BOOT** durante o "Connecting..." |
+| ESP32 não liga com as pilhas | Jumper de 5V do L298N ausente | Coloque o jumper de 5V do L298N |
+| Motores não giram | Jumpers ENA/ENB presentes | Remova os dois jumpers de ENA e ENB |
+| Um motor gira ao contrário | Fios do motor invertidos | Troque os dois fios daquele motor nos bornes OUT |
+| Sensor sempre lê o mesmo valor | TRIG/ECHO trocados ou mal ligados | Confira TRIG=GPIO32 e ECHO=GPIO33 |
+| Servo treme sem parar | Alimentação fraca | Garanta 5V estáveis e todos os GNDs unidos |
+| Nada funciona / comportamento errático | GNDs não unidos | Una TODOS os GNDs (pilhas, L298N, ESP32, sensores) |
+| `LED_BUILTIN` não compila | Não existe no ESP32 | Use o GPIO2 diretamente |
+
+### IA e treino
+
+| Sintoma | Provável causa | Solução |
+|---|---|---|
+| `torch.cuda.is_available()` dá False | Torch instalado sem CUDA | Configure o índice CUDA no `pyproject.toml` e rode `uv sync` |
+| Mudanças com `uv pip install` somem | `uv run` re-sincroniza pelo lockfile | Declare tudo no `pyproject.toml`, não instale "por fora" |
+| Erro cai muito devagar | Taxa de aprendizado baixa, ou modelo pequeno | Confirme lr=1e-3; para qualidade, aumente o dataset |
+| Frases geradas muito repetitivas | Top-k baixo ou temperatura baixa | Aumente levemente (ex.: top_k=4, temperatura=0.75) |
+| Palavras "tortas" na geração | Modelo pequeno / dataset pequeno | Normal; melhora com mais dados e mais treino |
+| Falta de espaço em disco no `.venv` | Cache do PyTorch é grande | Apague `.venv`; o `uv sync` reinstala do cache |
+
+### Embarque no ESP32-S3
+
+| Sintoma | Provável causa | Solução |
+|---|---|---|
+| Partição "model" não encontrada | Partition Scheme não é Custom | `Ferramentas → Partition Scheme → Custom` |
+| Opção "Custom" não aparece | `partitions.csv` fora da pasta do sketch | Coloque-o na mesma pasta do `.ino`, de mesmo nome |
+| Firmware grava em 0x10000, não 0x110000 | Isso é normal | Firmware vai sempre em 0x10000; os pesos em 0x110000 |
+| Cabeçalho lê valores errados | Ordem dos pesos divergente | Confirme a mesma ordem no `export.py` e no firmware |
+| PSRAM não detectada | PSRAM não configurada | `Ferramentas → PSRAM → OPI PSRAM` |
+| Display não acende | Pinos SPI errados | Confira CLK=12, MOSI=11, CS=8, DC=9, RES=10 |
+| Interferência ao gravar firmware | Fio de UART conectado | Desconecte o fio de dados UART antes de gravar |
+
+---
+
+## C. Ficha técnica do modelo (referência rápida)
+
+O modelo "nano-grump" na versão embarcada (Parte 4):
+
+| Item | Valor |
+|---|---|
+| Tipo | Transformer decoder-only, nível de caractere |
+| Vocabulário | 59 caracteres |
+| Dimensão do embedding (n_embd) | 64 |
+| Janela de contexto (block_size) | 128 |
+| Número de blocos (n_layer) | 4 |
+| Cabeças de atenção (n_head) | 4 |
+| Parâmetros | ~215 mil |
+| Tamanho exportado (.bin) | ~840 KB (float32) |
+| Geração | top-k = 4, temperatura = 0.75 |
+| Marcadores | `<start>`, `<explore>`, `<obstacle>`, `<turn_left>`, `<turn_right>`, `<backup>`, `<stuck>`, `<clear>` |
+
+> **Duas versões, mesma arquitetura.** A Parte 3 usa uma versão *didática* ainda
+> menor (~42 mil parâmetros: `n_embd=32`, `block_size=32`, `n_layer=3`, 1 cabeça),
+> pensada para você acompanhar cada conta à mão. A versão *embarcada* acima é um
+> pouco maior para falar melhor rodando sozinha no chip. O passo a passo é idêntico;
+> só mudam os números da configuração.
+
+---
+
+## D. Mapa de pinos (referência rápida)
+
+**Robô (ESP32-WROOM-32):**
+
+| Componente | Pino |
+|---|---|
+| HC-SR04 TRIG | GPIO32 |
+| HC-SR04 ECHO | GPIO33 |
+| Servo SG90 | GPIO13 |
+| L298N ENA / IN1 / IN2 | GPIO23 / 22 / 21 |
+| L298N IN3 / IN4 / ENB | GPIO19 / 18 / 5 |
+
+**Display OLED (ESP32-S3, SH1106 SPI):**
+
+| Sinal | Pino |
+|---|---|
+| CLK | GPIO12 |
+| MOSI | GPIO11 |
+| CS | GPIO8 |
+| DC | GPIO9 |
+| RES | GPIO10 |
+
+**Comunicação entre as placas:** TX do WROOM-32 → RX do S3, com os GNDs unidos.
+
+---
+
+## E. Para onde ir depois
+
+O robô está pronto — e agora? Alguns caminhos para continuar aprendendo e evoluindo o
+projeto:
+
+**Melhorar o cérebro:**
+- Ampliar o dataset com mais frases e mais variadas (a maior alavanca de qualidade).
+- Refinar os marcadores mais fracos, dando mais exemplos de qualidade a eles.
+- Treinar por mais passos e comparar as perdas (loss) de treino e validação.
+
+**Melhorar o corpo:**
+- Adicionar mais sensores (por exemplo, sensores laterais para não raspar em paredes).
+- Melhorar a lógica de exploração e o desvio de obstáculos.
+- Ajustar o "debounce" dos marcadores, para o cérebro não ser inundado de situações.
+
+**Aprofundar o conhecimento:**
+- Estudar o `llama2.c` do Andrej Karpathy — a referência enxuta de inferência em C.
+- Ler sobre quantização (reduzir a precisão dos pesos para caber e acelerar).
+- Explorar modelos de nível de palavra ou de sub-palavra (BPE), além do de caractere.
+
+**Compartilhar:**
+- Publique seu projeto (código e este tutorial) num repositório público.
+- Documente suas próprias descobertas e adaptações — ensinar é a melhor forma de
+  consolidar o que se aprendeu.
+
+---
+
+## Encerramento
+
+Se você chegou até aqui e montou o projeto, parabéns de verdade. Você cruzou três
+mundos que raramente se encontram num tutorial só — eletrônica, robótica e
+inteligência artificial — e, mais importante, **entendeu cada um deles**.
+
+Você não seguiu uma receita: você aprendeu a cozinhar. Agora o robô é seu, o
+conhecimento é seu, e os próximos projetos também serão. 🤖✨
