@@ -93,15 +93,27 @@ const CURSOS: Curso[] = [
 ];
 
 function CursoCard({title, img, description, link, disponivel}: Curso) {
+  // [ADICIONADO] a imagem vira um link clicável (mesmo destino do botão) e ganha
+  // zoom suave no hover, igual ao Acessar curso — só quando o curso já existe.
+  const imagem = (
+    <img
+      src={useBaseUrl(img)}
+      className={styles.featureSvg}
+      role="img"
+      alt={title}
+    />
+  );
+
   return (
     <div className={clsx('col col--4', styles.cursoCard)}>
-      <div className="text--center">
-        <img
-          src={useBaseUrl(img)}
-          className={styles.featureSvg}
-          role="img"
-          alt={title}
-        />
+      <div className={clsx('text--center', styles.imagemWrapper)}>
+        {disponivel ? (
+          <Link to={link} aria-label={`Acessar curso: ${title}`}>
+            {imagem}
+          </Link>
+        ) : (
+          imagem
+        )}
       </div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>

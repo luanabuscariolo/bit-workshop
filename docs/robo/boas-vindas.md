@@ -4,6 +4,10 @@ title: "Boas-vindas"
 sidebar_position: 0
 ---
 
+# Construa um robô autônomo com ESP32
+
+![Capa do curso](/img/robo_autonomo_esp32.png)
+
 > Neste curso você vai construir, do zero, um robô que anda sozinho, enxerga obstáculos
 > com um sensor de ultrassom e desvia deles — sem controle remoto, sem ninguém dirigindo.
 

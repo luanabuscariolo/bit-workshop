@@ -4,6 +4,10 @@ title: "Boas-vindas"
 sidebar_position: 0
 ---
 
+# RoverMind completo: robô + cérebro
+
+![Capa do curso](/img/rovermind_completo.png)
+
 > Neste curso você vai pegar o modelo de linguagem treinado no computador e fazê-lo rodar
 > **dentro de um microcontrolador**, dando voz ao robô.
 

@@ -4,6 +4,10 @@ title: "Boas-vindas"
 sidebar_position: 0
 ---
 
+# Rode uma IA num chip (ESP32-S3)
+
+![Capa do curso](/img/ia_chip.png)
+
 > Neste curso você vai construir, do zero, um **modelo de linguagem** (uma "IA" minúscula)
 > e entender cada peça dele — do primeiro caractere até a frase gerada.
 

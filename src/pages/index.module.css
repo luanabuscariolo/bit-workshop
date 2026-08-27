@@ -21,3 +21,82 @@
   align-items: center;
   justify-content: center;
 }
+
+/* [ADICIONADO] fundo animado de placa de circuito */
+.circuitBg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: #2ee6d6; /* cor das linhas/nós — segue o Neon Teal do tema */
+  opacity: 0.28;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* garante que o texto/botão fiquem por cima do SVG */
+.heroContent {
+  position: relative;
+  z-index: 1;
+}
+
+/* efeito "desenhando o traçado": cada path começa invisível (todo tracejado
+   deslocado) e vai se revelando até formar a linha completa. */
+.circuitTraces path {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: rovermind-draw-trace 6s ease-out forwards;
+}
+
+.circuitTraces path:nth-child(2) { animation-delay: 0.4s; }
+.circuitTraces path:nth-child(3) { animation-delay: 0.9s; }
+.circuitTraces path:nth-child(4) { animation-delay: 1.3s; }
+.circuitTraces path:nth-child(5) { animation-delay: 1.7s; }
+.circuitTraces path:nth-child(6) { animation-delay: 2.1s; }
+
+@keyframes rovermind-draw-trace {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* nós pulsando como LEDs, começando só depois que os traços "chegam" neles */
+.circuitNodes circle {
+  opacity: 0;
+  animation: rovermind-node-pulse 2.6s ease-in-out infinite;
+  animation-fill-mode: backwards;
+}
+
+.circuitNodes circle:nth-child(1) { animation-delay: 1.4s; }
+.circuitNodes circle:nth-child(2) { animation-delay: 1.7s; }
+.circuitNodes circle:nth-child(3) { animation-delay: 2.0s; }
+.circuitNodes circle:nth-child(4) { animation-delay: 2.3s; }
+.circuitNodes circle:nth-child(5) { animation-delay: 1.9s; }
+.circuitNodes circle:nth-child(6) { animation-delay: 2.5s; }
+.circuitNodes circle:nth-child(7) { animation-delay: 2.2s; }
+.circuitNodes circle:nth-child(8) { animation-delay: 2.8s; }
+.circuitNodes circle:nth-child(9) { animation-delay: 1.6s; }
+.circuitNodes circle:nth-child(10) { animation-delay: 2.6s; }
+
+@keyframes rovermind-node-pulse {
+  0%, 100% {
+    opacity: 0.35;
+    filter: drop-shadow(0 0 1px currentColor);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+}
+
+/* [ADICIONADO] respeita quem prefere menos movimento na tela */
+@media (prefers-reduced-motion: reduce) {
+  .circuitTraces path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .circuitNodes circle {
+    animation: none;
+    opacity: 0.7;
+  }
+}

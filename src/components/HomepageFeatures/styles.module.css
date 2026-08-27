@@ -5,12 +5,26 @@
   width: 100%;
 }
 
+/* [ADICIONADO] corta o excesso da imagem quando ela cresce no hover, mantendo
+   o formato do card intacto */
+.imagemWrapper {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
 .featureSvg {
   width: 100%;
   max-width: 380px;
   height: 240px;
   border-radius: 8px;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* zoom suave: tanto passando o mouse na imagem quanto no card inteiro */
+.imagemWrapper:hover .featureSvg,
+.cursoCard:hover .featureSvg {
+  transform: scale(1.06);
 }
 
 /* espaçamento vertical entre cards */
