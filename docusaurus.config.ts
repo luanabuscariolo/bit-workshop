@@ -42,7 +42,7 @@ const config: Config = {
         id: 'ia-chip',                       // identificador único desta instância
         path: 'docs/ia-chip',                // onde moram os arquivos do Curso 2
         routeBasePath: 'ia-chip',            // endereço: /ia-chip/...
-        sidebarPath: './sidebars-ia-chip.ts', // barra lateral própria (criamos no passo 2)
+        sidebarPath: './sidebars-ia-chip.ts', // barra lateral própria (criada no passo 2)
       },
     ],
     [
@@ -51,7 +51,16 @@ const config: Config = {
         id: 'rovermind',                        // [ADICIONADO] Curso 3 — RoverMind Completo
         path: 'docs/rovermind',                 // onde mora o material do Curso 3
         routeBasePath: 'rovermind',             // endereço: /rovermind/...
-        sidebarPath: './sidebars-rovermind.ts', // o sidebar que você criou no Passo 2
+        sidebarPath: './sidebars-rovermind.ts', 
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'godot',                            // [ADICIONADO] Curso 4 — Godot
+        path: 'docs/godot',                     // onde mora o material do Curso 4
+        routeBasePath: 'godot',                 // endereço: /godot/...
+        sidebarPath: './sidebars-godot.ts',    
       },
     ],
   ],
@@ -111,14 +120,20 @@ const config: Config = {
             },
             {
               type: 'docSidebar',
-              sidebarId: 'rovermindSidebar',   // [ADICIONADO] sidebar do Passo 2
-              docsPluginId: 'rovermind',       // aponta para a instância do Passo 3
+              sidebarId: 'rovermindSidebar',   
+              docsPluginId: 'rovermind',       
               label: 'RoverMind Completo',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'godotSidebar',      
+              docsPluginId: 'godot',           
+              label: 'Jogo 2D na Godot',
             },
           ],
         },
         //{to: '/blog', label: 'Blog', position: 'left'},
-        {to: '/sobre', label: 'Sobre', position: 'left'}, // [ADICIONADO]
+        {to: '/sobre', label: 'Sobre', position: 'left'}, 
         {
           href: 'https://github.com/luanabuscariolo',
           label: 'GitHub',

@@ -52,6 +52,18 @@ const CURSOS: Curso[] = [
     link: '/rovermind/parte-4-esp32-s3', // [ALTERADO] era '#'
     disponivel: true, // [ALTERADO] era false — Curso 3 agora tem conteúdo
   },
+  {
+    title: 'Crie um jogo de plataforma 2D na Godot',
+    img: '/img/godot_capa.png',
+    description: (
+      <>
+        Desenvolvimento de jogos 2D na Godot 4.2 com GDScript: personagem,
+        plataformas, coletáveis e um inimigo com máquina de estados.
+      </>
+    ),
+    link: '/godot/parte-0-boas-vindas',
+    disponivel: true,
+  },
 ];
 
 function CursoCard({title, img, description, link, disponivel}: Curso) {
