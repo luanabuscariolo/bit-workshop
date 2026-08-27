@@ -51,7 +51,7 @@ const CURSOS: Curso[] = [
         situação com personalidade.
       </>
     ),
-    link: '/rovermind/parte-4-esp32-s3',
+    link: '/rovermind/boas-vindas',
     disponivel: true,
   },
   {
@@ -63,7 +63,7 @@ const CURSOS: Curso[] = [
         num microcontrolador.
       </>
     ),
-    link: '/ia-chip/parte-2-o-que-e-llm',
+    link: '/ia-chip/o-que-e-llm',
     disponivel: true,
   },
   {
@@ -75,7 +75,7 @@ const CURSOS: Curso[] = [
         percebe obstáculos e navega sozinho.
       </>
     ),
-    link: '/robo/parte-0-boas-vindas',
+    link: '/robo/boas-vindas',
     disponivel: true,
   },
   {

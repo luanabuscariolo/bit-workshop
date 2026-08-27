@@ -1,0 +1,8 @@
+{
+  "label": "Curso 1 — Robô Autônomo com ESP32",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Construa um robô que anda, enxerga e desvia de obstáculos sozinho."
+  }
+}
