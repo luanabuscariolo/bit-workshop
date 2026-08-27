@@ -21,7 +21,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/robo/parte-0-boas-vindas">
-           Começar minha jornada
+           Explorar cursos
           </Link>
         </div>
       </div>
@@ -33,8 +33,8 @@ export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title="Oficina Bit"
+      description="Projetos práticos de tecnologia e criação digital. Aprenda criando coisas de verdade, passo a passo.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

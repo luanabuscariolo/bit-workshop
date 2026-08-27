@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'AxonLabs Academy',
-  tagline: 'Conectando a lógica, a eletricidade e a inteligência para dar vida à tecnologia',
+  title: 'Oficina Bit',
+  tagline: 'Projetos práticos de tecnologia e criação digital, para quem quer aprender desde os primeiros passos e transformar ideias em coisas que funcionam.',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -95,9 +95,9 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'AxonLabs Academy',
+      title: 'Oficina Bit',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Oficina Bit Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -141,7 +141,7 @@ const config: Config = {
         },
       ],
     },
-    // [ALTERADO] footer limpo: removidos links de template (Stack Overflow, Discord, X, Docusaurus)
+
     footer: {
       style: 'dark',
       links: [
@@ -159,14 +159,14 @@ const config: Config = {
           ],
         },
         {
-          title: 'Projeto',
+          title: 'Oficina Bit',
           items: [
             {
               label: 'GitHub',
               href: 'https://github.com/luanabuscariolo',
             },
             {
-              label: 'LinkedIn',                                        // [ADICIONADO]
+              label: 'LinkedIn',                                        
               href: 'https://www.linkedin.com/in/luana-buscariolo',
             },
             // {
@@ -176,7 +176,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Luana Buscariolo. Feito com Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Oficina Bit · Luana Buscariolo. Feito com Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
