@@ -15,12 +15,12 @@ const config: Config = {
   },
 
   url: 'https://luanabuscariolo.github.io',
-  baseUrl: '/rovermind-nanogrump-course/',
+  baseUrl: '/bit-workshop/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'luanabuscariolo',
-  projectName: 'rovermind-nanogrump-course',
+  projectName: 'bit-workshop',
 
   onBrokenLinks: 'throw',
 
