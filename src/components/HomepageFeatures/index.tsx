@@ -17,54 +17,6 @@ type Curso = {
 
 const CURSOS: Curso[] = [
   {
-    title: 'Construa um robô autônomo com ESP32',
-    img: '/img/robo_autonomo_esp32.png',
-    description: (
-      <>
-        Eletrônica, sensores, motores e programação para criar um rover que
-        percebe obstáculos e navega sozinho.
-      </>
-    ),
-    link: '/robo/parte-0-boas-vindas',
-    disponivel: true,
-  },
-  {
-    title: 'Rode uma IA num chip (ESP32-S3)',
-    img: '/img/ia_chip.png',
-    description: (
-      <>
-        Construa um modelo de linguagem do zero e faça ele rodar embarcado
-        num microcontrolador.
-      </>
-    ),
-    link: '/ia-chip/parte-2-o-que-e-llm',
-    disponivel: true,
-  },
-  {
-    title: 'RoverMind completo: robô + cérebro',
-    img: '/img/rovermind_completo.png',
-    description: (
-      <>
-        Junte o corpo e o cérebro: o robô que anda, pensa e comenta cada
-        situação com personalidade.
-      </>
-    ),
-    link: '/rovermind/parte-4-esp32-s3',
-    disponivel: true,
-  },
-  {
-    title: 'Crie um jogo de plataforma 2D na Godot',
-    img: '/img/godot_capa_nova.png',
-    description: (
-      <>
-        Desenvolvimento de jogos 2D na Godot 4.2 com GDScript: personagem,
-        plataformas, coletáveis e um inimigo com máquina de estados.
-      </>
-    ),
-    link: '/godot/parte-0-boas-vindas',
-    disponivel: true,
-  },
-  {
     title: 'NanoGrump 3.0 — Versão Definitiva',
     img: '/img/nanogrump_v3.png',
     description: (
@@ -90,11 +42,59 @@ const CURSOS: Curso[] = [
     link: '#',
     disponivel: false,
   },
+  {
+    title: 'RoverMind completo: robô + cérebro',
+    img: '/img/rovermind_completo.png',
+    description: (
+      <>
+        Junte o corpo e o cérebro: o robô que anda, pensa e comenta cada
+        situação com personalidade.
+      </>
+    ),
+    link: '/rovermind/parte-4-esp32-s3',
+    disponivel: true,
+  },
+  {
+    title: 'Rode uma IA num chip (ESP32-S3)',
+    img: '/img/ia_chip.png',
+    description: (
+      <>
+        Construa um modelo de linguagem do zero e faça ele rodar embarcado
+        num microcontrolador.
+      </>
+    ),
+    link: '/ia-chip/parte-2-o-que-e-llm',
+    disponivel: true,
+  },
+  {
+    title: 'Construa um robô autônomo com ESP32',
+    img: '/img/robo_autonomo_esp32.png',
+    description: (
+      <>
+        Eletrônica, sensores, motores e programação para criar um rover que
+        percebe obstáculos e navega sozinho.
+      </>
+    ),
+    link: '/robo/parte-0-boas-vindas',
+    disponivel: true,
+  },
+  {
+    title: 'Crie um jogo de plataforma 2D na Godot',
+    img: '/img/godot_capa_nova.png',
+    description: (
+      <>
+        Desenvolvimento de jogos 2D na Godot 4.2 com GDScript: personagem,
+        plataformas, coletáveis e um inimigo com máquina de estados.
+      </>
+    ),
+    link: '/godot/parte-0-boas-vindas',
+    disponivel: true,
+  },
 ];
 
 function CursoCard({title, img, description, link, disponivel}: Curso) {
   return (
-    <div className={clsx('col col--4')}>
+    <div className={clsx('col col--4', styles.cursoCard)}>
       <div className="text--center">
         <img
           src={useBaseUrl(img)}
@@ -111,7 +111,9 @@ function CursoCard({title, img, description, link, disponivel}: Curso) {
             Acessar curso →
           </Link>
         ) : (
-          <em>Em breve</em>
+          <button className="button button--secondary" disabled>
+            Em breve
+          </button>
         )}
       </div>
     </div>
@@ -129,11 +131,6 @@ export default function HomepageFeatures(): ReactNode {
   return (
     <section className={styles.features}>
       <div className="container">
-        <div className="row">
-          {CURSOS.map((props, idx) => (
-            <CursoCard key={idx} {...props} />
-          ))}
-        </div>
 
         <div className={styles.comoFunciona}>
           <h2>Aprenda fazendo</h2>
@@ -147,6 +144,13 @@ export default function HomepageFeatures(): ReactNode {
             ))}
           </div>
         </div>
+
+        <div className="row">
+          {CURSOS.map((props, idx) => (
+            <CursoCard key={idx} {...props} />
+          ))}
+        </div>
+
       </div>
     </section>
   );

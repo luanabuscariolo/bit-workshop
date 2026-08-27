@@ -13,12 +13,18 @@
   object-fit: cover;
 }
 
+/* espaçamento vertical entre cards */
+.cursoCard {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
 /* ═══════════════ SEÇÃO "APRENDA FAZENDO" ═══════════════ */
 .comoFunciona {
   text-align: center;
   padding: 3rem 0 1rem;
-  border-top: 1px solid var(--ifm-color-emphasis-300);
-  margin-top: 2.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  margin-bottom: 2.5rem;
 }
 
 .comoFunciona h2 {
