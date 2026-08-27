@@ -2,7 +2,7 @@
 
 This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
-Acesse o site: https://luanabuscariolo.github.io/rovermind-nanogrump-course/
+Acesse o site: https://luanabuscariolo.github.io/bit-workshop/
 
 ## Installation
 
