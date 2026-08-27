@@ -54,7 +54,7 @@ const CURSOS: Curso[] = [
   },
   {
     title: 'Crie um jogo de plataforma 2D na Godot',
-    img: '/img/godot_capa.png',
+    img: '/img/godot_capa_nova.png',
     description: (
       <>
         Desenvolvimento de jogos 2D na Godot 4.2 com GDScript: personagem,
