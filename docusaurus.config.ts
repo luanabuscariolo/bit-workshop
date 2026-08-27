@@ -146,20 +146,7 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Cursos',
-          items: [
-            {
-              label: 'Construa um robô autônomo',
-              to: '/robo/parte-0-boas-vindas',
-            },
-            {
-              label: 'IA num Chip (ESP32-S3)',
-              to: '/ia-chip/parte-2-o-que-e-llm',
-            },
-          ],
-        },
-        {
-          title: 'Oficina Bit',
+          title: 'Mais informações',
           items: [
             {
               label: 'GitHub',

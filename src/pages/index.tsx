@@ -18,11 +18,11 @@ function HomepageHeader() {
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
-          <Link
+          <a
             className="button button--secondary button--lg"
-            to="/robo/parte-0-boas-vindas">
-           Explorar cursos
-          </Link>
+            href="#cursos">
+            Explorar cursos
+          </a>
         </div>
       </div>
     </header>
@@ -36,7 +36,7 @@ export default function Home(): ReactNode {
       title="Oficina Bit"
       description="Projetos práticos de tecnologia e criação digital. Aprenda criando coisas de verdade, passo a passo.">
       <HomepageHeader />
-      <main>
+      <main id="cursos">
         <HomepageFeatures />
       </main>
     </Layout>

@@ -30,7 +30,7 @@ const CURSOS: Curso[] = [
   },
   {
     title: 'Rode uma IA num chip (ESP32-S3)',
-    img: '/img/ia_chip.png',          // troque pela sua imagem (ou reuse a de cima por ora)
+    img: '/img/ia_chip.png',
     description: (
       <>
         Construa um modelo de linguagem do zero e faça ele rodar embarcado
@@ -49,8 +49,8 @@ const CURSOS: Curso[] = [
         situação com personalidade.
       </>
     ),
-    link: '/rovermind/parte-4-esp32-s3', // [ALTERADO] era '#'
-    disponivel: true, // [ALTERADO] era false — Curso 3 agora tem conteúdo
+    link: '/rovermind/parte-4-esp32-s3',
+    disponivel: true,
   },
   {
     title: 'Crie um jogo de plataforma 2D na Godot',
@@ -63,6 +63,32 @@ const CURSOS: Curso[] = [
     ),
     link: '/godot/parte-0-boas-vindas',
     disponivel: true,
+  },
+  {
+    title: 'NanoGrump 3.0 — Versão Definitiva',
+    img: '/img/nanogrump_v3.png',
+    description: (
+      <>
+        Uma versão completa e definitiva do NanoGrump: buzzer para falar, LEDs
+        para sinalizar e um único ESP32-S3 para tudo. Mais módulos, mais
+        personalidade.
+      </>
+    ),
+    link: '#',
+    disponivel: false,
+  },
+  {
+    title: 'Blocos Físicos: resolva um labirinto',
+    img: '/img/blocos_labirinto.png',
+    description: (
+      <>
+        Blocos físicos com componentes integrados que se comunicam entre si, com
+        um ESP32 e com o computador — para programar e resolver labirintos de
+        verdade.
+      </>
+    ),
+    link: '#',
+    disponivel: false,
   },
 ];
 
@@ -92,6 +118,13 @@ function CursoCard({title, img, description, link, disponivel}: Curso) {
   );
 }
 
+const PASSOS = [
+  { n: '1', titulo: 'Escolha um projeto', texto: 'Encontre algo que você gostaria de construir.' },
+  { n: '2', titulo: 'Aprenda o necessário', texto: 'Os conceitos são apresentados de forma progressiva e prática.' },
+  { n: '3', titulo: 'Construa passo a passo', texto: 'Cada etapa transforma o que você aprendeu em algo concreto.' },
+  { n: '4', titulo: 'Experimente', texto: 'Modifique o projeto, teste novas ideias e crie sua própria versão.' },
+];
+
 export default function HomepageFeatures(): ReactNode {
   return (
     <section className={styles.features}>
@@ -100,6 +133,19 @@ export default function HomepageFeatures(): ReactNode {
           {CURSOS.map((props, idx) => (
             <CursoCard key={idx} {...props} />
           ))}
+        </div>
+
+        <div className={styles.comoFunciona}>
+          <h2>Aprenda fazendo</h2>
+          <div className={clsx('row', styles.passos)}>
+            {PASSOS.map(({ n, titulo, texto }) => (
+              <div key={n} className={clsx('col col--3', styles.passo)}>
+                <span className={styles.passoNumero}>{n}</span>
+                <h3>{titulo}</h3>
+                <p>{texto}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
