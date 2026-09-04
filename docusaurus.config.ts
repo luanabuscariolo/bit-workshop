@@ -120,13 +120,7 @@ const config: Config = {
             },
             {
               type: 'docSidebar',
-              sidebarId: 'rovermindSidebar',   
-              docsPluginId: 'rovermind',       
-              label: 'RoverMind Completo',
-            },
-            {
-              type: 'docSidebar',
-              sidebarId: 'godotSidebar',      
+              sidebarId: 'godotSidebar',
               docsPluginId: 'godot',           
               label: 'Jogo 2D na Godot',
             },
