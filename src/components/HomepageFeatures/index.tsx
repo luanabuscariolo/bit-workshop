@@ -51,8 +51,8 @@ const CURSOS: Curso[] = [
         situação com personalidade.
       </>
     ),
-    link: '/rovermind/boas-vindas',
-    disponivel: true,
+    link: '#',
+    disponivel: false, // [ALTERADO] desabilitado temporariamente — reestruturação p/ cursos pagos
   },
   {
     title: 'Rode uma IA num chip (ESP32-S3)',
